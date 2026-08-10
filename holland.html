@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TES MINAT - Persona Research & Consulting</title>
+    <style>
+        :root { --primary: #000033; --accent: #D4AF37; --bg: #FDFCF0; --text: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; }
+        
+        #quiz-container { width: 100%; max-width: 700px; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,51,0.1); border-top: 8px solid var(--accent); margin-top: 20px; box-sizing: border-box; }
+        
+        .header { text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 30px; }
+        
+        .question-text { 
+            font-size: 1.4em; 
+            font-weight: 700; 
+            color: var(--primary); 
+            text-align: center; 
+            line-height: 1.4;
+            margin-bottom: 30px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .opt-container { 
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            margin-bottom: 20px;
+        }
+        
+        .option { 
+            width: 120px; 
+            padding: 10px 0; 
+            text-align: center; 
+            border: 2px solid #ddd; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 0.9em; 
+            transition: 0.3s;
+            background: #fff;
+        }
+
+        .option:hover { border-color: var(--accent); background: #fffdf0; }
+        .option.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap: 5px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+        .grid-item { height: 25px; display: flex; align-items: center; justify-content: center; background: #eee; border-radius: 4px; font-size: 9px; cursor: pointer; }
+        .grid-item.filled { background: var(--accent); color: white; }
+        .grid-item.current { border: 2px solid var(--primary); font-weight: bold; }
+
+        .btn { background: var(--primary); color: #fff; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 1em; }
+        .btn-finish { background: #28a745; display: none; margin-top: 20px; text-transform: uppercase; }
+        
+        .instruction-box { background: #f9f9f9; padding: 15px; border-radius: 10px; border-left: 5px solid var(--primary); font-size: 0.9em; margin-bottom: 20px; line-height: 1.5; }
+        input[type="text"] { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 8px; text-align: center; font-size: 1em; box-sizing: border-box; }
+        
+        .question-box { display: none; }
+        .question-box.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body oncontextmenu="return false">
+
+<div id="quiz-container">
+    <div class="header">
+        <h2 style="margin:0; color:var(--primary); font-size: 1.2em;">Persona Research & Consulting</h2>
+        <p style="color:var(--accent); font-weight:bold; margin:5px 0; font-size: 0.85em;">TES MINAT</p>
+    </div>
+
+    <div id="login-screen">
+        <div class="instruction-box">
+            <strong>Petunjuk:</strong><br>
+            Pilih <b>YA</b> jika Anda menyukai atau merasa mampu melakukan pernyataan tersebut, dan pilih <b>TIDAK</b> jika tidak sesuai. Gunakan navigasi grid di bawah untuk melompat ke nomor tertentu.
+        </div>
+        <input type="text" id="user-name" placeholder="Masukkan Nama Lengkap Peserta...">
+        <button class="btn" onclick="startTest()">MULAI SEKARANG</button>
+    </div>
+
+    <div id="test-content" style="display:none">
+        <div id="q-wrapper"></div>
+        <div class="nav-grid" id="q-grid"></div>
+        <button id="btn-final" class="btn btn-finish" onclick="finishToResult()">SELESAI & REKAP JAWABAN</button>
+    </div>
+
+    <div id="result-screen" style="display:none; text-align:center;">
+        <h3 style="color:var(--primary)">Tes Selesai</h3>
+        <p style="font-size: 0.9em; color: #666; margin-bottom: 20px;">Seluruh jawaban telah direkap. Silakan unduh hasil dan kirimkan ke Admin.</p>
+        <button class="btn" onclick="downloadTXT()">UNDUH HASIL (.TXT)</button>
+    </div>
+</div>
+
+<script>
+    if (new Date() > new Date("2029-07-01")) document.body.innerHTML = "Akses telah berakhir.";
+
+    const questions = [
+        "Senang menonton drama", "Senang Melatih Orang", "Mampu bermain dalam drama / berakting", "Suka membaca mengenai topik-topik khusus atas keinginan sendiri", 
+        "Mampu melakukan percobaan atau penelitian ilmiah", "Artistik", "Mampu memprogram komputer untuk mempelajari masalah ilmiah", "Tertarik menjadi pengawas konstruksi bangunan", 
+        "Suka dalam memecahkan soal eksak", "Mampu melakukan dan menyukai tugas administratif", "Bisa mempengaruhi dan membujuk orang lain", "Prosedural (Mengikuti aturan)", 
+        "Suka menggunakan aplikasi pencatatan keuangan", "Suka memperbaiki motor", "Bisa mengekspresikan diri secara kreatif", "Ingin bekerja dibagian Staff keuangan", 
+        "Mampu menyebutkan makanan yang memiliki protein tinggi", "Suka membantu orang lain", "Suka menulis cerita atau puisi", "Aktif dalam organisasi sosial", 
+        "Percaya diri", "Mampu membukukan pengeluaran/ pemasukan", "Menyukai kegiatan memancing/berkebun", "Mampu mengoperasikan proyektor / kamera", 
+        "Mampu membuat sketsa/lukisan/gambar", "Mudah bergaul", "Memiliki jiwa kepemimpinan", "Mampu menyusun arsip dengan rapi", 
+        "Tertarik menjadi Polisi/TNI/Pilot", "Tertarik menjadi Psikolog", "Tertarik menjadi penari/penyanyi", "Mampu bekerjasama dalam tim", 
+        "Suka tantangan", "Suka bekerja di dalam ruangan", "Mampu memperbaiki peralatan rumah tangga", "Mampu menggunakan Mikroskop", 
+        "Tertarik menjadi penulis/jurnalis", "Suka memberikan bimbingan kepada orang lain", "Tertarik menjadi Direktur", "Teliti dalam bekerja", 
+        "Suka merawat hewan", "Ingin bekerja di Laboratorium", "Suka mendesain pakaian/ruangan", "Mampu berempati kepada orang lain", 
+        "Suka berbicara didepan umum", "Mampu melakukan pengetikan dengan cepat", "Senang bekerja dengan mesin", "Suka mengumpulkan sampel (batuan, serangga, dll)", 
+        "Mampu memainkan alat musik", "Tertarik menjadi Guru", "Tertarik menjadi pengusaha/bisnis", "Mampu mengoperasikan komputer (Excel/Word)", 
+        "Tertarik pada bidang otomotif", "Suka menganalisis data", "Menyukai keindahan", "Suka melakukan pelayanan masyarakat", 
+        "Memiliki kemampuan negosiasi yang baik", "Tertarik menjadi staf administrasi", "Suka menggunakan peralatan teknik", "Tertarik pada astronomi", 
+        "Senang menciptakan karya seni baru", "Suka menolong sesama", "Optimis", "Suka keteraturan", 
+        "Mampu membaca gambar teknik/denah", "Mampu melakukan riset", "Suka mendekorasi sesuatu", "Suka mendengarkan curhat orang lain", 
+        "Berani mengambil risiko", "Suka mengelola data", "Suka aktivitas di luar ruangan", "Suka belajar hal baru melalui observasi", 
+        "Imajinatif", "Suka mengajar", "Ambisius", "Suka kegiatan rutin yang terukur", "Senang bekerja menggunakan tangan", "Suka membantu orang lain dengan masalah pribadinya", 
+        "Senang kegiatan fisik", "Tertarik menjadi ahli teknisi laboratorium medis", "Ingin menjadi seniman", "Mampu melakukan perbaikan kecil pada pipa air, kran, dan lain-lain", 
+        "Mampu membuat gambar dengan skala", "Prosedural (Suka mengikuti aturan)", "Suka mengarsip surat dan berkas-berkas lain", "Mampu menjadi seorang pembicara di depan umum yang baik", 
+        "Mampu memimpin diskusi kelompok", "Suka melakukan pekerjaan surat menyurat/ masalah perkantoran", "Senang bertemu orang baru", "Bisa bekerja dengan baik dalam system /aturan", 
+        "Suka merancang perabotan, pakaian atau poster", "Tertarik menjadi pembawa acara / MC", "Tertarik menjadi ilmuwan peneliti", "Suka memperbaiki alat-alat listrik", 
+        "Terbuka", "Tertarik menjadi penaksir biaya", "Suka mendamaikan orang", "Suka mengerjakan teka-teki", "Suka mengelola inventaris atau logistik", 
+        "Mampu menulis laporan penelitian", "Pandai bernegosiasi untuk mencapai tujuan organisasi", "Menyukai kegiatan yang membutuhkan konsentrasi tinggi dan detail", 
+        "Mampu merancang kampanye iklan", "Mampu menjelaskan konsep ilmiah yang sulit kepada orang awam", "Suka bekerja di organisasi nirlaba", 
+        "Tertarik pada bidang desain arsitektur", "Mampu bekerja dengan deadline yang ketat", "Mampu menjaga kerahasiaan data perusahaan"
+    ];
+
+    let currentIdx = 0;
+    let answers = new Array(questions.length).fill(null);
+    let userName = "";
+
+    // ===== PRC GOOGLE SHEETS CONNECTION =====
+    const PRC_API_URL = "https://script.google.com/macros/s/AKfycbyPSBX3Lk-HB68_Scmy2kNxLiBMsINJXe_qO-e8XGF3IOThKbcSydNpADW2qGO09fem/exec";
+    let participantId = "";
+    let sessionCode = "";
+    let testStartTime = null;
+
+    function createParticipantId() {
+        return "PRC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    function sendToPRC(data) {
+        try {
+            // text/plain avoids a CORS preflight when this HTML is opened directly.
+            return fetch(PRC_API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(data),
+                keepalive: true
+            }).catch(function(err) {
+                console.warn("PRC API send failed:", err);
+            });
+        } catch (err) {
+            console.warn("PRC API send failed:", err);
+            return Promise.resolve();
+        }
+    }
+
+    function saveMasterToSheet() {
+        const now = new Date();
+        participantId = createParticipantId();
+        sessionCode = "HOL-" + now.getTime();
+        testStartTime = Date.now();
+
+        const payload = {
+            tes: "MASTER",
+            id: participantId,
+            tanggal: now.toLocaleDateString("id-ID"),
+            jam: now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+            nama: userName,
+            absen: "",
+            wa: "",
+            kelas: "",
+            kodeSesi: sessionCode
+        };
+
+        localStorage.setItem("PRC_PARTICIPANT", JSON.stringify(payload));
+        sendToPRC(payload);
+    }
+
+    function getParticipantData() {
+        try {
+            return JSON.parse(localStorage.getItem("PRC_PARTICIPANT") || "null") || {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function saveHollandToSheet() {
+        const participant = getParticipantData();
+        const now = new Date();
+        const duration = testStartTime ? Math.round((Date.now() - testStartTime) / 1000) : "";
+
+        const payload = {
+            tes: "HOLLAND",
+            id: participant.id || participantId || "",
+            tanggal: participant.tanggal || now.toLocaleDateString("id-ID"),
+            jam: participant.jam || now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+            nama: userName,
+            absen: participant.absen || "",
+            wa: participant.wa || "",
+            kelas: participant.kelas || "",
+            kodeSesi: participant.kodeSesi || sessionCode || "",
+            durasi: duration,
+            answers: answers.slice()
+        };
+
+        sendToPRC(payload);
+    }
+
+    function startTest() {
+        userName = document.getElementById('user-name').value.trim();
+        if(!userName) return alert("Harap isi nama!");
+        saveMasterToSheet();
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('test-content').style.display = 'block';
+        init();
+    }
+
+    function init() {
+        const wrapper = document.getElementById('q-wrapper');
+        const grid = document.getElementById('q-grid');
+        
+        questions.forEach((q, i) => {
+            const div = document.createElement('div');
+            div.className = `question-box ${i===0?'active':''}`;
+            div.id = `qbox-${i}`;
+            div.innerHTML = `
+                <div class="question-text">${i+1}. ${q}</div>
+                <div class="opt-container">
+                    <div class="option" id="opt-${i}-Y" onclick="select(${i}, 'Y')">YA</div>
+                    <div class="option" id="opt-${i}-N" onclick="select(${i}, 'N')">TIDAK</div>
+                </div>`;
+            wrapper.appendChild(div);
+
+            const gItem = document.createElement('div');
+            gItem.className = 'grid-item';
+            gItem.id = `grid-${i}`;
+            gItem.innerText = i+1;
+            gItem.onclick = () => jump(i);
+            grid.appendChild(gItem);
+        });
+        updateGrid();
+    }
+
+    function select(idx, val) {
+        answers[idx] = val;
+        document.getElementById(`opt-${idx}-Y`).classList.remove('selected');
+        document.getElementById(`opt-${idx}-N`).classList.remove('selected');
+        document.getElementById(`opt-${idx}-${val}`).classList.add('selected');
+        document.getElementById(`grid-${idx}`).classList.add('filled');
+        
+        if(currentIdx < questions.length - 1) {
+            setTimeout(() => jump(currentIdx + 1), 200);
+        }
+        checkFinishButton();
+    }
+
+    function jump(idx) {
+        document.querySelectorAll('.question-box').forEach(b => b.classList.remove('active'));
+        currentIdx = idx;
+        document.getElementById(`qbox-${idx}`).classList.add('active');
+        updateGrid();
+    }
+
+    function updateGrid() {
+        document.querySelectorAll('.grid-item').forEach(i => i.classList.remove('current'));
+        document.getElementById(`grid-${currentIdx}`).classList.add('current');
+    }
+
+    function checkFinishButton() {
+        if(answers.filter(a => a !== null).length === questions.length) {
+            document.getElementById('btn-final').style.display = 'block';
+        }
+    }
+
+    function finishToResult() {
+        if(answers.filter(a => a !== null).length !== questions.length) {
+            return alert("Harap jawab seluruh 108 soal terlebih dahulu.");
+        }
+        saveHollandToSheet();
+        document.getElementById('test-content').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+    }
+
+    function downloadTXT() {
+        let text = "REKAP RIASEC HOLLAND (108) - PRC\n";
+        text += "=================================\n";
+        text += `NAMA PESERTA : ${userName.toUpperCase()}\n`;
+        text += `TANGGAL      : ${new Date().toLocaleString()}\n`;
+        text += "=================================\n\n";
+        answers.forEach((a, i) => { text += `${i+1}:${a}\n`; });
+        const blob = new Blob([text], {type:'text/plain'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `RIASEC_108_${userName.replace(/\s+/g,'_')}.txt`;
+        a.click();
+    }
+</script>
+</body>
+</html>
