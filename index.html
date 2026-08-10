@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesmen Psikologi — SMU Kesuma Mataram</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-main: #f1f5f9;
+            --surface: #ffffff;
+            --indigo-deep: #1e1b4b;
+            --indigo-accent: #4338ca;
+            --border-line: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Glow Background untuk bagian bawah */
+        .ambient-bg {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 600px;
+            background: radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 60%, rgba(236, 72, 153, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+        /* =========================================================
+           HERO HEADER (PERSIS KONSEP 3)
+        ========================================================= */
+        header { padding: 50px 0 30px; }
+
+        .hero-banner {
+            background: var(--surface);
+            border: 1px solid var(--border-line);
+            border-radius: 20px;
+            padding: 48px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        .brand-label {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--indigo-accent);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .main-title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--indigo-deep);
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .school-info { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
+        .academic-year { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); margin-bottom: 20px; }
+        .subtitle { font-size: 0.95rem; color: var(--text-muted); max-width: 650px; border-top: 1px solid var(--border-line); padding-top: 16px; }
+
+        .section-header { margin: 36px 0 20px; border-bottom: 2px solid var(--indigo-deep); padding-bottom: 8px; }
+        .section-title { font-size: 1.1rem; font-weight: 800; color: var(--indigo-deep); letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+
+        /* =========================================================
+           MENU CARD AREA (SESUAI FILE ASLI: WARNA, GRADASI, ANIMASI)
+        ========================================================= */
+        .test-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; padding-bottom: 60px; }
+
+        .card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Hover Effect dari File Asli */
+        .card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 35px -10px var(--card-shadow);
+            border-color: var(--accent-color);
+        }
+
+        /* Top Bar Accent Glow */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-gradient));
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover::before { opacity: 1; }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        
+        .card-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            opacity: 0.85;
+            line-height: 1;
+        }
+
+        .icon-box {
+            width: 52px; height: 52px;
+            border-radius: 16px;
+            background: var(--icon-bg);
+            color: var(--accent-color);
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.4s ease;
+        }
+
+        .card:hover .icon-box {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-gradient));
+            color: #ffffff;
+            transform: rotate(-6deg) scale(1.1);
+            box-shadow: 0 8px 16px var(--card-shadow);
+        }
+
+        .test-title { font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+        .test-desc { font-size: 0.92rem; color: #64748b; margin-bottom: 28px; line-height: 1.6; }
+
+        /* Tombol Aksi Animatis */
+        .btn-action {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+            font-weight: 700; font-size: 0.9rem;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action i { transition: transform 0.3s ease; }
+
+        .card:hover .btn-action {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-gradient));
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 6px 18px var(--card-shadow);
+        }
+
+        .card:hover .btn-action i { transform: translateX(6px); }
+
+        /* Tema Warna per Card (File Asli) */
+        .card-holland {
+            --accent-color: #0284c7;
+            --accent-gradient: #38bdf8;
+            --icon-bg: #e0f2fe;
+            --card-shadow: rgba(2, 132, 199, 0.25);
+        }
+
+        .card-rmib {
+            --accent-color: #4f46e5;
+            --accent-gradient: #818cf8;
+            --icon-bg: #e0e7ff;
+            --card-shadow: rgba(79, 70, 229, 0.25);
+        }
+
+        .card-bigfive {
+            --accent-color: #9333ea;
+            --accent-gradient: #c084fc;
+            --icon-bg: #f3e8ff;
+            --card-shadow: rgba(147, 51, 234, 0.25);
+        }
+
+        .card-mbti {
+            --accent-color: #db2777;
+            --accent-gradient: #f472b6;
+            --icon-bg: #fce7f3;
+            --card-shadow: rgba(219, 39, 119, 0.25);
+        }
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+        footer { background: var(--surface); border-top: 1px solid var(--border-line); padding: 32px 0; margin-top: auto; position: relative; z-index: 1; }
+        .footer-content { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .footer-brand { font-size: 0.9rem; font-weight: 800; color: var(--indigo-deep); }
+        .footer-sub { font-size: 0.8rem; color: var(--text-muted); }
+        
+        .footer-wa {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0;
+            padding: 8px 18px; border-radius: 30px; font-size: 0.85rem; font-weight: 700;
+            text-decoration: none; transition: all 0.25s ease;
+        }
+
+        .footer-wa:hover { background: #dcfce7; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(22, 101, 52, 0.1); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .test-grid { grid-template-columns: 1fr; }
+            .hero-banner { padding: 28px; }
+            .main-title { font-size: 1.8rem; }
+            .footer-content { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-bg"></div>
+
+    <div class="container">
+        <!-- HEADER PERSIS KONSEP 3 -->
+        <header>
+            <div class="hero-banner">
+                <span class="brand-label">PERSONA RESEARCH & CONSULTING</span>
+                <h1 class="main-title">TES KEPRIBADIAN MINAT BAKAT</h1>
+                <div class="school-info">SMU KESUMA MATARAM</div>
+                <div class="academic-year">TAHUN AJARAN 2026/2027</div>
+                <p class="subtitle">Pilih salah satu modul tes di bawah ini untuk memulai pemetaan minat, bakat, dan potensi kepribadian kamu.</p>
+            </div>
+        </header>
+
+        <div class="section-header">
+            <h2 class="section-title"><i data-lucide="compass" style="width:20px;"></i> MODUL TES TERSEDIA</h2>
+        </div>
+
+        <!-- MENU Tes SESUAI FILE ASLI (WARNA, GRADASI, EFEK HOVER & ANIMASI) -->
+        <main class="test-grid">
+            <article class="card card-holland">
+                <div>
+                    <div class="card-header">
+                        <span class="card-number">01</span>
+                        <div class="icon-box"><i data-lucide="compass"></i></div>
+                    </div>
+                    <h3 class="test-title">TES MINAT 1</h3>
+                    <p class="test-desc">Cari tahu bidang dan aktivitas yang paling sesuai dengan minat kamu.</p>
+                </div>
+                <a href="holland.html" class="btn-action">
+                    <span>MULAI TES</span> <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+
+            <article class="card card-rmib">
+                <div>
+                    <div class="card-header">
+                        <span class="card-number">02</span>
+                        <div class="icon-box"><i data-lucide="briefcase"></i></div>
+                    </div>
+                    <h3 class="test-title">TES MINAT DAN BAKAT 2</h3>
+                    <p class="test-desc">Kenali bidang pekerjaan dan aktivitas yang paling menarik bagi kamu.</p>
+                </div>
+                <a href="rmib.html" class="btn-action">
+                    <span>MULAI TES</span> <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+
+            <article class="card card-bigfive">
+                <div>
+                    <div class="card-header">
+                        <span class="card-number">03</span>
+                        <div class="icon-box"><i data-lucide="sliders"></i></div>
+                    </div>
+                    <h3 class="test-title">TES KEPRIBADIAN 1</h3>
+                    <p class="test-desc">Kenali lima aspek utama yang menggambarkan kecenderungan kepribadian kamu.</p>
+                </div>
+                <a href="big_five.html" class="btn-action">
+                    <span>MULAI TES</span> <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+
+            <article class="card card-mbti">
+                <div>
+                    <div class="card-header">
+                        <span class="card-number">04</span>
+                        <div class="icon-box"><i data-lucide="brain"></i></div>
+                    </div>
+                    <h3 class="test-title">TES KEPRIBADIAN 2</h3>
+                    <p class="test-desc">Kenali kecenderungan cara kamu berpikir, berinteraksi, dan mengambil keputusan.</p>
+                </div>
+                <a href="mbti.html" class="btn-action">
+                    <span>MULAI TES</span> <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container footer-content">
+            <div>
+                <div class="footer-brand">PERSONA RESEARCH & CONSULTING</div>
+                <div class="footer-sub">&copy; 2026 Persona Research & Consulting. All rights reserved.</div>
+            </div>
+            <a href="https://wa.me/6287742515786" target="_blank" class="footer-wa">
+                <i data-lucide="message-circle" style="width: 18px;"></i> WA: 087742515786
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

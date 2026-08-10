@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TES KEPRIBADIAN I - Persona Research & Consulting</title>
+    <style>
+        :root { --primary: #000033; --accent: #D4AF37; --bg: #FDFCF0; --text: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; }
+        #quiz-container { width: 100%; max-width: 750px; background: #fff; padding: 35px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,51,0.1); border-top: 8px solid var(--accent); margin-top: 20px; box-sizing: border-box; }
+        .header { text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 30px; }
+        .question-box { display: none; }
+        .question-box.active { display: block; animation: fadeIn 0.4s ease; }
+        .question-text { font-size: 1.3em; font-weight: 700; color: var(--primary); margin-bottom: 30px; text-align: center; line-height: 1.5; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+        .opt-container { display: flex; flex-direction: column; gap: 15px; }
+        
+        .option { width: 100%; padding: 18px 25px; text-align: left; border: 2px solid #eee; border-radius: 15px; cursor: pointer; font-weight: 500; transition: 0.3s; background: #fff; line-height: 1.5; display: flex; align-items: center; box-sizing: border-box; }
+        .option:hover { border-color: var(--accent); background: #fffdf0; }
+        .option.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .opt-label { font-weight: 800; color: var(--primary); margin-right: 15px; font-size: 1.1em; width: 25px; }
+        .option.selected .opt-label { color: #fff; }
+
+        .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); gap: 6px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 25px; }
+        .grid-item { height: 28px; display: flex; align-items: center; justify-content: center; background: #eee; border-radius: 5px; font-size: 9px; cursor: pointer; }
+        .grid-item.filled { background: var(--accent); color: white; }
+        .grid-item.current { border: 2px solid var(--primary); font-weight: bold; }
+        .btn { background: var(--primary); color: #fff; border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 15px; font-size: 1em; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-finish { background: #28a745; display: none; margin-top: 25px; }
+        .instruction-box { background: #f9f9f9; padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary); font-size: 0.95em; margin-bottom: 25px; line-height: 1.6; }
+        input[type="text"] { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #eee; border-radius: 10px; text-align: center; font-size: 1.1em; box-sizing: border-box; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body oncontextmenu="return false">
+
+<div id="quiz-container">
+    <div class="header">
+        <h2 style="margin:0; color:var(--primary);">Persona Research & Consulting</h2>
+        <p style="color:var(--accent); font-weight:bold; margin:5px 0;">TES KEPRIBADIAN I</p>
+    </div>
+
+    <div id="login-screen">
+        <div class="instruction-box">
+            <strong>Petunjuk Pengerjaan:</strong><br>
+            Pilihlah salah satu opsi (A atau B) yang paling sesuai dengan diri Anda. Klik <b>Selesai & Rekap</b> jika semua nomor sudah berwarna emas.
+        </div>
+        <input type="text" id="user-name" placeholder="Nama Lengkap Peserta..." autocomplete="off">
+        <button class="btn" onclick="startTest()">Mulai Asesmen</button>
+    </div>
+
+    <div id="test-content" style="display:none">
+        <div id="q-wrapper"></div>
+        <div class="nav-grid" id="q-grid"></div>
+        <button id="finish-btn" class="btn btn-finish" onclick="checkAndFinish()">Selesai & Rekap Jawaban</button>
+    </div>
+
+    <div id="result-screen" style="display:none; text-align:center;">
+        <h3 style="color:var(--primary)">Asesmen Selesai</h3>
+        <p style="color: #666; margin-bottom: 25px;">Data jawaban Anda telah direkap secara otomatis ke server. Silakan unduh backup file (.txt) jika diperlukan.</p>
+        <button class="btn" onclick="downloadTXT()">Unduh Hasil (.TXT)</button>
+    </div>
+</div>
+
+<script>
+    // URL WEB APP APPS SCRIPT TERBARU
+    const PRC_API_URL = "https://script.google.com/macros/s/AKfycbyPSBX3Lk-HB68_Scmy2kNxLiBMsINJXe_qO-e8XGF3IOThKbcSydNpADW2qGO09fem/exec";
+
+    const questions = [
+        {q: "Pada sebuah pesta, apakah Anda:", a: "bergaul dengan banyak orang termasuk orang-orang yang baru Anda kenal, atau", b: "bergaul dengan beberapa orang yang telah Anda kenal saja."},
+        {q: "Apakah Anda lebih:", a: "realistik, ATAU", b: "spekulatif"},
+        {q: "Adalah hal yang buruk:", a: "tenggelam dalam mengandai-andai, ATAU", b: "terlanjur basah kerepotan di tengah jalan"},
+        {q: "Biasanya Anda lebih terkesan dengan", a: "prinsip, ATAU", b: "perasaan"},
+        {q: "Apakah Anda cenderung lebih terjelaskan melalui:", a: "argumen logis, ATAU", b: "argumen emotif (feeling)"},
+        {q: "Apakah Anda lebih menyukai bekerja:", a: "menggunakan batas waktu, ATAU", b: "kapan-kapan saja"},
+        {q: "Apakah Anda cenderung untuk memilih:", a: "secara berhati-hati, ATAU", b: "secara spontan"},
+        {q: "Di pesta-pesta, Anda:", a: "tinggal sampai pesta berakhir dengan semakin segar, ATAU", b: "meninggalkan pesta lebih cepat dengan kondisi capai/lelah"},
+        {q: "Apakah Anda merupakan seseorang yang lebih:", a: "banyak menggunakan akal sehat", b: "imajinatif"},
+        {q: "Apakah Anda lebih tertarik pada:", a: "apa yang aktual, ATAU", b: "apa yang mungkin"},
+        {q: "Dalam memutuskan/memberi penilaian pada orang lain Anda lebih dipengaruhi oleh:", a: "hukum daripada situasi/keadaannya, ATAU", b: "situasi/keadaannya daripada hukum"},
+        {q: "Ketika pertama kali mendekati orang lain, apakah Anda lebih:", a: "tidak melibatkan perasaan dan menjaga jarak, ATAU", b: "melibatkan diri secara pribadi dan mencoba membuat orang tersebut tertarik"},
+        {q: "Apakah Anda biasanya lebih:", a: "tepat waktu, ATAU", b: "santai"},
+        {q: "Apakah mengganggu Anda, mempunyai banyak hal yang:", a: "tidak lengkap/tidak terselesaikan, ATAU", b: "sudah lengkap/terselesaikan"},
+        {q: "Dalam kelompok sosial Anda, Anda:", a: "mengetahui kejadian-kejadian yang dialami oleh orang lain, ATAU", b: "biasanya ketinggalan berita"},
+        {q: "Dalam mengerjakan sesuatu yang biasa, Anda lebih suka:", a: "mengerjakannya dengan cara lazimnya orang, ATAU", b: "mengerjakannya dengan cara Anda sendiri"},
+        {q: "Apakah Anda memilih penulis yang:", a: "menuliskan kata-kata dengan arti yang sebenarnya, ATAU", b: "menggunakan kiasan-kiasan"},
+        {q: "Bagi Anda, apa yang lebih penting:", a: "konsisten dan teguh dengan pemikiran/ide Anda, ATAU", b: "menjaga keharmonisan hubungan sosial"},
+        {q: "Anda merasa nyaman, membuat:", a: "keputusan logis, ATAU", b: "keputusan berdasar nilai-nilai"},
+        {q: "Apakah biasanya Anda:", a: "menyukai segala hal terselesaikan, ATAU", b: "membiarkan berbagai pilihan dengan berbagai kemungkinan"},
+        {q: "Menurut Anda, Anda orang yang:", a: "tegas, saklek, keras pendirian/kemauan, ATAU", b: "nyantai, bisa menyesuaikan pendirian/kemauan (easy-going)"},
+        {q: "Dalam menelpon, apakah Anda:", a: "langsung berbicara, ATAU", b: "menyusun dulu kata-kata yang diucapkan"},
+        {q: "Untuk Anda, fakta adalah:", a: "menggambarkan apa yang terjadi, ATAU", b: "biasanya perlu diinterpretasi"},
+        {q: "Apakah Anda memilih bekerja dengan:", a: "informasi praktis, ATAU", b: "ide-ide abstrak"},
+        {q: "Apakah Anda cenderung lebih:", a: "berpikiran jernih, ATAU", b: "berperasaan hangat"},
+        {q: "Apakah Anda lebih suka menjadi seorang yang:", a: "adil daripada pemaaf, ATAU", b: "pemaaf daripada adil"},
+        {q: "Bagi Anda, mengalami sesuatu:", a: "harus direncanakan dan berdasarkan pilihan, ATAU", b: "biarlah berjalan dengan sendirinya"},
+        {q: "Apakah Anda lebih nyaman dengan:", a: "langsung beli/dipesankan, ATAU", b: "mempunyai pilihan-pilihan"},
+        {q: "Dalam suatu pertemuan apakah Anda:", a: "memulai pembicaraan-pembicaraan, ATAU", b: "menunggu untuk ditanya"},
+        {q: "Akal sehat gaya tradisional:", a: "biasanya bisa dipercaya, ATAU", b: "sering menimbulkan salah tafsir"},
+        {q: "Anak-anak tidak:", a: "cukup sering melakukan kegiatan bermanfaat, ATAU", b: "cukup berfantasi"},
+        {q: "Apakah biasanya Anda lebih:", a: "mempertahankan prinsip, ATAU", b: "bersikap simpatik"},
+        {q: "Apakah Anda biasanya lebih bersikap:", a: "tegas daripada lemah lembut, ATAU", b: "lemah-lembut daripada tegas"},
+        {q: "Apakah Anda cenderung lebih menjaga hal-hal agar:", a: "terorganisasi dengan baik, ATAU", b: "terbuka untuk kemungkinan-kemungkinan"},
+        {q: "Apakah Anda lebih menghargai:", a: "sesuatu yang pasti, ATAU", b: "sesuatu yang berubah-ubah"},
+        {q: "Apakah interaksi baru dengan orang lain:", a: "menggugah semangat Anda, ATAU", b: "menguras tenaga Anda"},
+        {q: "Anda menggambarkan diri Anda lebih sering sebagai:", a: "orang yang praktis, ATAU", b: "orang yang teoritis"},
+        {q: "Anda lebih melihat orang lain:", a: "dari bagaimana kemanfaatannya, ATAU", b: "dari bagaimana kelihatannya"},
+        {q: "Mana yang lebih memuaskan Anda:", a: "mendiskusikan suatu topik sampai tuntas, ATAU", b: "mencapai kesepakatan tentang suatu permasalahan"},
+        {q: "Yang mana lebih banyak Anda gunakan:", a: "pemikiran, ATAU", b: "perasaan"},
+        {q: "Anda lebih nyaman dengan pekerjaan yang:", a: "berdasarkan kontrak, ATAU", b: "tidak terikat"},
+        {q: "Anda lebih menyukai bila segala hal:", a: "rapi dan teratur, ATAU", b: "tergantung situasi"},
+        {q: "Apakah Anda lebih memilih:", a: "banyak teman dengan hubungan yang singkat, ATAU", b: "beberapa teman dengan hubungan yang lama/langgeng"},
+        {q: "Apakah Anda lebih beranjak pada:", a: "fakta-fakta, ATAU", b: "kaidah-kaidah"},
+        {q: "Apakah Anda lebih tertarik pada:", a: "produksi dan distribusi/hasil akhir, ATAU", b: "perencana, penelitian"},
+        {q: "Mana yang lebih patut dipuji:", a: "orang yang sangat logis, ATAU", b: "orang yang sangat sentimentil (mengedepankan perasaan)"},
+        {q: "Apakah Anda menghargai diri Anda karena:", a: "berpendirian teguh, ATAU", b: "penuh pengabdian"},
+        {q: "Apakah Anda lebih suka dengan:", a: "pernyataan-pernyataan final dan tidak bisa diganggu-gugat, ATAU", b: "pernyataan-pernyataan tidak bersifat pasti (tentative)/masih awal"},
+        {q: "Apakah Anda lebih nyaman dengan:", a: "sesudah pengambilan keputusan, ATAU", b: "sebelum pengambilan keputusan"},
+        {q: "Apakah Anda:", a: "berbicara dengan mudah dan panjang lebar dengan orang yang baru dikenal, ATAU", b: "sulit bicara dengan orang yang baru dikenal"},
+        {q: "Apakah Anda sepertinya lebih mempercayai:", a: "pengalaman-pengalaman, ATAU", b: "firasat/dugaan/prasangka"},
+        {q: "Apakah Anda merasa:", a: "lebih praktis daripada kreatif, ATAU", b: "lebih kreatif daripada praktis"},
+        {q: "Apakah Anda memiliki ciri khas sebagai seorang dengan:", a: "rasio jelas, ATAU", b: "perasaan yang kuat"},
+        {q: "Apakah Anda cenderung lebih:", a: "adil apa adanya/tanpa prasangka, ATAU", b: "manruh perhatian (simpatis)"},
+        {q: "Anda sangat menyukai tindakan yang:", a: "memastikan segala sesuatu ditata dahulu, ATAU", b: "membiarkan hal-hal yang terjadi begitu saja"},
+        {q: "Apakah cara-cara Anda lebih pada:", a: "mengatur segala sesuatu, ATAU", b: "menunda-nunda penyelesaian"},
+        {q: "Bila telepon berbunyi, Anda akan:", a: "segera menerima telepon tersebut, ATAU", b: "berharap orang lain yang menerimanya"},
+        {q: "Apakah Anda lebih menghargai diri Anda dalam hal:", a: "kemampuan memahami realita, ATAU", b: "kemampuan imajinasi yang baik"},
+        {q: "Apakah Anda lebih tertarik pada:", a: "azas, ATAU", b: "penyesuaian"},
+        {q: "Dalam menilai, biasanya Anda lebih bersikap:", a: "netral, ATAU", b: "pemurah"},
+        {q: "Apakah Anda lebih menganggap diri Anda sebagai orang yang:", a: "keras hati/teguh, ATAU", b: "lunak hati/halus"},
+        {q: "Apakah Anda lebih cenderung mengalami:", a: "kejadian-kejadian yang telah terjadwal, ATAU", b: "kejadian-kejadian yang datang begitu saja"},
+        {q: "Apakah Anda lebih termasuk tipe orang yang menyukai:", a: "hal-hal yang bersifat rutin, ATAU", b: "hal-hal yang tidak biasa"},
+        {q: "Apakah Anda cenderung", a: "mudah didekati, ATAU", b: "agak menjaga jarak"},
+        {q: "Bila Anda menulis, Anda lebih menyukai:", a: "memakai kata-kata dengan arti yang sebenarnya, ATAU", b: "menggunakan kata-kata kiasan"},
+        {q: "Apakah Anda merasa lebih senang dengan:", a: "mengalami sendiri dan nyata, ATAU", b: "membayangkan"},
+        {q: "Apakah biasanya Anda lebih:", a: "berpikiran jernih, ATAU", b: "menunjukkan perasaan yang kuat"},
+        {q: "Apakah Anda lebih:", a: "adil daripada toleran, ATAU", b: "toleran daripada adil"},
+        {q: "Apakah Anda lebih memilih:", a: "kegiatan yang terencana, ATAU", b: "kegiatan yang tidak terencana"},
+        {q: "Apakah Anda cenderung lebih:", a: "hati-hati daripada spontan, ATAU", b: "spontan daripada hati-hati"}
+    ];
+
+    let currentIdx = 0;
+    let answers = new Array(questions.length).fill(null);
+    let userName = "";
+    let participantId = "";
+    let sessionCode = "";
+    let testStartTime = null;
+
+    function createParticipantId() {
+        return "PRC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    async function sendToPRC(data) {
+        try {
+            await fetch(PRC_API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(data)
+            });
+        } catch (e) {
+            console.error("Gagal kirim via Fetch:", e);
+        }
+    }
+
+    async function startTest() {
+        userName = document.getElementById('user-name').value.trim();
+        if(!userName) return alert("Isi nama Anda!");
+
+        const btn = document.querySelector('#login-screen .btn');
+        btn.disabled = true;
+        btn.textContent = "MENYIAPKAN TES...";
+
+        participantId = createParticipantId();
+        sessionCode = "MBTI-" + Date.now();
+        testStartTime = Date.now();
+
+        const masterPayload = {
+            tes: "MASTER",
+            id: participantId,
+            tanggal: new Date().toLocaleDateString("id-ID"),
+            jam: new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
+            nama: userName,
+            absen: "",
+            wa: "",
+            kelas: "",
+            kodeSesi: sessionCode
+        };
+
+        await sendToPRC(masterPayload);
+
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('test-content').style.display = 'block';
+        init();
+    }
+
+    function init() {
+        const wrapper = document.getElementById('q-wrapper');
+        const grid = document.getElementById('q-grid');
+        questions.forEach((q, i) => {
+            const div = document.createElement('div');
+            div.className = `question-box ${i===0?'active':''}`;
+            div.id = `qbox-${i}`;
+            div.innerHTML = `<div class="question-text">${i+1}. ${q.q}</div>
+                <div class="opt-container">
+                    <div class="option" id="opt-${i}-A" onclick="select(${i}, 'A')"><span class="opt-label">A.</span> ${q.a}</div>
+                    <div class="option" id="opt-${i}-B" onclick="select(${i}, 'B')"><span class="opt-label">B.</span> ${q.b}</div>
+                </div>`;
+            wrapper.appendChild(div);
+            const gItem = document.createElement('div');
+            gItem.className = 'grid-item'; gItem.id = `grid-${i}`; gItem.innerText = i+1;
+            gItem.onclick = () => jump(i);
+            grid.appendChild(gItem);
+        });
+        updateGrid();
+    }
+
+    function select(idx, val) {
+        answers[idx] = val;
+        document.getElementById(`opt-${idx}-A`).classList.remove('selected');
+        document.getElementById(`opt-${idx}-B`).classList.remove('selected');
+        document.getElementById(`opt-${idx}-${val}`).classList.add('selected');
+        document.getElementById(`grid-${idx}`).classList.add('filled');
+        if(currentIdx < questions.length - 1) setTimeout(() => jump(currentIdx + 1), 200);
+        if(answers.filter(a => a !== null).length === questions.length) document.getElementById('finish-btn').style.display = 'block';
+    }
+
+    function jump(idx) {
+        document.querySelectorAll('.question-box').forEach(b => b.classList.remove('active'));
+        currentIdx = idx;
+        document.getElementById(`qbox-${idx}`).classList.add('active');
+        updateGrid();
+    }
+
+    function updateGrid() {
+        document.querySelectorAll('.grid-item').forEach(i => i.classList.remove('current'));
+        document.getElementById(`grid-${currentIdx}`).classList.add('current');
+    }
+
+    async function checkAndFinish() {
+        if(answers.filter(a => a !== null).length < questions.length) return alert("Belum lengkap!");
+
+        const finishBtn = document.getElementById('finish-btn');
+        finishBtn.disabled = true;
+        finishBtn.textContent = "MENYIMPAN KE SERVER...";
+
+        const duration = testStartTime ? Math.round((Date.now() - testStartTime) / 1000) : "";
+
+        const payload = {
+            tes: "MBTI",
+            id: participantId,
+            nama: userName,
+            kodeSesi: sessionCode,
+            durasi: String(duration),
+            answers: answers
+        };
+
+        await sendToPRC(payload);
+
+        document.getElementById('test-content').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+    }
+
+    function downloadTXT() {
+        let text = "REKAP MBTI 70 - PERSONA RESEARCH & CONSULTING\nNAMA : " + userName.toUpperCase() + "\n---\n";
+        answers.forEach((a, i) => { text += `${i+1}:${a}\n`; });
+        const blob = new Blob([text], {type:'text/plain'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `MBTI70_${userName.replace(/\s+/g,'_')}.txt`; a.click();
+    }
+</script>
+</body>
+</html>

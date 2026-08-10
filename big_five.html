@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Five Inventory - Persona Research & Consulting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #0a192f; --accent: #c5a059; --bg: #fdfaf5; --white: #ffffff; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; color: #1a1a1a; }
+        #quiz-container { width: 100%; max-width: 800px; background: var(--white); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--primary); margin-top: 20px; }
+        .header { text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 30px; }
+        .brand { font-weight: 700; font-size: 1.4rem; color: var(--primary); }
+        .question-text { font-size: 1.2em; font-weight: 600; color: var(--primary); text-align: center; margin-bottom: 25px; min-height: 70px; display: flex; align-items: center; justify-content: center; }
+        .opt-container { display: flex; flex-direction: column; gap: 10px; }
+        .option { width: 100%; padding: 15px; text-align: left; border: 2px solid #eee; border-radius: 12px; cursor: pointer; font-size: 1em; transition: 0.2s; background: #fff; display: flex; align-items: center; font-weight: 600; }
+        .option:hover { background: #fdfaf5; border-color: var(--accent); }
+        .option.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .opt-num { font-weight: bold; margin-right: 15px; width: 25px; color: var(--accent); }
+        .option.selected .opt-num { color: var(--accent); }
+        .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap: 6px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+        .grid-item { height: 30px; display: flex; align-items: center; justify-content: center; background: #eee; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 600; }
+        .grid-item.filled { background: var(--primary); color: white; }
+        .grid-item.current { border: 2px solid var(--accent); font-weight: bold; }
+        .btn { background: var(--primary); color: var(--accent); border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 20px; font-size: 1em; letter-spacing: 1px; }
+        .instruction-box { background: #f9f9f9; padding: 20px; border-radius: 12px; border-left: 5px solid var(--accent); font-size: 0.9em; margin-bottom: 25px; line-height: 1.6; }
+        input[type="text"] { width: 100%; padding: 15px; margin: 15px 0; border: 2px solid #eee; border-radius: 12px; text-align: center; font-size: 1em; }
+        .question-box { display: none; }
+        .question-box.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body oncontextmenu="return false">
+
+<div id="quiz-container">
+    <div class="header">
+        <div class="brand">Persona Research & Consulting</div>
+        <div style="font-size: 0.8rem; color: var(--accent); font-weight: 700; letter-spacing: 2px; margin-top: 5px;">TES KEPRIBADIAN II (BFI)</div>
+    </div>
+
+    <div id="login-screen">
+        <div class="instruction-box">
+            <strong>PETUNJUK PENGERJAAN:</strong><br>
+            Pilihlah skala angka yang paling menggambarkan diri Anda:<br>
+            <strong>1</strong> = Sangat Tidak Sesuai | <strong>2</strong> = Tidak Sesuai | <strong>3</strong> = Netral | <strong>4</strong> = Sesuai | <strong>5</strong> = Sangat Sesuai
+        </div>
+        <input type="text" id="user-name" placeholder="Masukkan Nama Lengkap Anda...">
+        <button class="btn" onclick="startTest()">MULAI TES BFI</button>
+    </div>
+
+    <div id="test-content" style="display:none">
+        <div id="q-wrapper"></div>
+        <div class="nav-grid" id="q-grid"></div>
+        <button id="finish-btn" class="btn" style="display:none; background:#28a745; color:white;" onclick="finishTest()">SELESAI & SIMPAN HASIL</button>
+    </div>
+
+    <div id="result-screen" style="display:none; text-align:center;">
+        <h3 style="color:var(--primary)">Tes Selesai!</h3>
+        <p>Jawaban Anda telah berhasil diolah dan disimpan ke sistem rekapitulasi.</p>
+        <button class="btn" onclick="downloadTXT()">UNDUH REKAP (.TXT)</button>
+    </div>
+</div>
+
+<script>
+    const PRC_API_URL = "https://script.google.com/macros/s/AKfycbyPSBX3Lk-HB68_Scmy2kNxLiBMsINJXe_qO-e8XGF3IOThKbcSydNpADW2qGO09fem/exec";
+
+    const questions = [
+        "Aktif Berbicara", "Mencari Kelemahan Orang Lain", "Mengerjakan Tugas dengan Serius", "Merasa Tertekan", "Orang Unik yang Penuh dengan Gagasan Baru",
+        "Suka Menyendiri", "Suka Menolong dan Tidak Iri pada Orang Lain", "Bertindak Asal-asalan", "Orang yang Santai dan Mampu Mengatasi Stres", "Memiliki Rasa Ingin Tahu Terhadap Sesuatu yang Baru",
+        "Penuh Energi", "Suka Memulai Pertengkaran dengan Orang Lain", "Bisa Diandalkan dalam Bekerja", "Sering Merasa Tegang", "Pandai Menghargai Hal-hal Penting",
+        "Memiliki Antusiasme yang Tinggi", "Memiliki Sifat Pemaaf", "Cenderung Kurang Teratur", "Sering Merasa Khawatir", "Memiliki Imajinasi yang Aktif",
+        "Cenderung Pendiam", "Secara Umum Dapat Dipercaya", "Cenderung Pemalas", "Memiliki Perasaan yang Stabil dan Tidak Mudah Sedih", "Kreatif",
+        "Terbuka", "Dingin dan Kurang Bersahabat", "Dapat Memusatkan Diri Pada Pekerjaan", "Dipengaruhi Oleh Suasana Hati", "Menyukai Artistik dan Estetika",
+        "Orang Yang Pemalu", "Ramah dan Penuh Perhatian", "Melakukan Sesuatu Dengan Efisien", "Tetap Tenang Walaupun Berada Dalam Tekanan", "Lebih Memilih Pekerjaan Yang Rutin",
+        "Mudah Bergaul", "Kadang-kadang Bersikap Kasar Kepada Orang Lain", "Membuat Rencana Dan Melaksanakannya", "Mudah Gugup", "Suka Berpikir Serta Bermain Dengan Ide-ide",
+        "Minat Terhadap Seni Tidak Terlalu Besar", "Suka Bekerja Sama Dengan Orang Lain", "Mudah Terganggu Konsentrasinya", "Memiliki Pengetahuan Luas Dalam Bidang Seni, Musik, Dan Sastra"
+    ];
+
+    const options = ["Sangat Tidak Sesuai", "Tidak Sesuai", "Netral", "Sesuai", "Sangat Sesuai"];
+    let answers = new Array(questions.length).fill(null);
+    let currentIdx = 0;
+    let userName = "";
+    let participantId = "";
+    let sessionCode = "";
+    let testStartTime = null;
+
+    function createParticipantId() {
+        return "PRC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    async function sendToPRC(data) {
+        try {
+            const response = await fetch(PRC_API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(data)
+            });
+            return await response.json();
+        } catch (e) {
+            console.error("Gagal mengirim data ke backend PRC:", e);
+        }
+    }
+
+    async function startTest() {
+        userName = document.getElementById('user-name').value.trim();
+        if(!userName) return alert("Masukkan Nama Lengkap Anda!");
+
+        const btn = document.querySelector('#login-screen .btn');
+        btn.disabled = true;
+        btn.textContent = "MENYIAPKAN TES...";
+
+        participantId = createParticipantId();
+        sessionCode = "BFI-" + Date.now();
+        testStartTime = Date.now();
+
+        const masterPayload = {
+            tes: "MASTER",
+            id: participantId,
+            tanggal: new Date().toLocaleDateString("id-ID"),
+            jam: new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
+            nama: userName,
+            absen: "",
+            wa: "",
+            kelas: "",
+            kodeSesi: sessionCode
+        };
+
+        localStorage.setItem("PRC_PARTICIPANT_ID", participantId);
+        localStorage.setItem("PRC_PARTICIPANT_NAME", userName);
+
+        await sendToPRC(masterPayload);
+
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('test-content').style.display = 'block';
+        init();
+    }
+
+    function init() {
+        const wrapper = document.getElementById('q-wrapper');
+        const grid = document.getElementById('q-grid');
+        questions.forEach((q, i) => {
+            const div = document.createElement('div');
+            div.className = `question-box ${i===0?'active':''}`;
+            div.id = `qbox-${i}`;
+            let optsHtml = options.map((opt, v) => 
+                `<div class="option" id="opt-${i}-${v+1}" onclick="select(${i}, ${v+1})"><span class="opt-num">${v+1}</span> ${opt}</div>`
+            ).join("");
+            div.innerHTML = `<div class="question-text">${i+1}. Saya adalah orang yang ${q}</div><div class="opt-container">${optsHtml}</div>`;
+            wrapper.appendChild(div);
+
+            const gItem = document.createElement('div');
+            gItem.className = 'grid-item'; gItem.id = `grid-${i}`; gItem.innerText = i+1;
+            gItem.onclick = () => jump(i);
+            grid.appendChild(gItem);
+        });
+        updateGrid();
+    }
+
+    function select(idx, val) {
+        answers[idx] = val;
+        for(let j=1; j<=5; j++) document.getElementById(`opt-${idx}-${j}`).classList.remove('selected');
+        document.getElementById(`opt-${idx}-${val}`).classList.add('selected');
+        document.getElementById(`grid-${idx}`).classList.add('filled');
+        if(currentIdx < questions.length - 1) setTimeout(() => jump(currentIdx + 1), 200);
+        if(answers.filter(a => a !== null).length === questions.length) document.getElementById('finish-btn').style.display = 'block';
+    }
+
+    function jump(idx) {
+        document.querySelectorAll('.question-box').forEach(b => b.classList.remove('active'));
+        currentIdx = idx;
+        document.getElementById(`qbox-${idx}`).classList.add('active');
+        updateGrid();
+    }
+
+    function updateGrid() {
+        document.querySelectorAll('.grid-item').forEach(i => i.classList.remove('current'));
+        document.getElementById(`grid-${currentIdx}`).classList.add('current');
+    }
+
+    async function finishTest() {
+        if(answers.includes(null)) return alert("Mohon lengkapi seluruh jawaban terlebih dahulu.");
+
+        const finishBtn = document.getElementById('finish-btn');
+        finishBtn.disabled = true;
+        finishBtn.textContent = "MENYIMPAN KE SERVER...";
+
+        const duration = testStartTime ? Math.round((Date.now() - testStartTime) / 1000) : "";
+
+        const payload = {
+            tes: "BIGFIVE",
+            id: participantId,
+            nama: userName,
+            kodeSesi: sessionCode,
+            durasi: String(duration),
+            answers: answers
+        };
+
+        await sendToPRC(payload);
+
+        document.getElementById('test-content').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+    }
+
+    function downloadTXT() {
+        let text = "REKAP BIG FIVE - PERSONA RESEARCH & CONSULTING\nNAMA : " + userName.toUpperCase() + "\n---\n";
+        answers.forEach((a, i) => { text += `${i+1}:${a}\n`; });
+        const blob = new Blob([text], {type:'text/plain'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `BFI_${userName.replace(/\s+/g,'_')}.txt`; a.click();
+    }
+</script>
+</body>
+</html>
