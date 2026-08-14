@@ -26,6 +26,16 @@
         .btn { background: var(--primary); color: var(--accent); border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 20px; font-size: 1em; letter-spacing: 1px; }
         .instruction-box { background: #f9f9f9; padding: 20px; border-radius: 12px; border-left: 5px solid var(--accent); font-size: 0.9em; margin-bottom: 25px; line-height: 1.6; }
         input[type="text"] { width: 100%; padding: 15px; margin: 15px 0; border: 2px solid #eee; border-radius: 12px; text-align: center; font-size: 1em; }
+        .identity-row { margin-bottom: 15px; }
+        .identity-row label { display:block; font-size:.78rem; font-weight:700; color:var(--primary); margin-bottom:7px; letter-spacing:.4px; }
+        .identity-info { background:#f7f3ea; border:1px solid #e7dcc6; border-radius:12px; padding:13px 15px; margin:4px 0 15px; line-height:1.8; font-size:.9rem; }
+        .status-text { text-align:center; font-size:.8rem; color:#777; margin:-10px 0 18px; min-height:18px; }
+        .susulan-box { background:#fffaf0; border:1px solid #ead7a8; border-radius:12px; padding:12px 14px; margin-top:12px; font-size:.85rem; }
+        .susulan-box label { display:flex; gap:8px; align-items:center; cursor:pointer; }
+        #susulan-fields { margin-top:15px; }
+        #susulan-fields input, #susulan-fields select { margin-bottom:12px; }
+        select { width:100%; padding:15px; border:2px solid #eee; border-radius:12px; font-size:1em; background:#fff; }
+        .btn:disabled { opacity:.55; cursor:not-allowed; }
         .question-box { display: none; }
         .question-box.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -45,11 +55,63 @@
             Pilihlah skala angka yang paling menggambarkan diri Anda:<br>
             <strong>1</strong> = Sangat Tidak Sesuai | <strong>2</strong> = Tidak Sesuai | <strong>3</strong> = Netral | <strong>4</strong> = Sesuai | <strong>5</strong> = Sangat Sesuai
         </div>
-        <input type="text" id="user-name" placeholder="Masukkan Nama Lengkap Anda...">
+
+        <div id="participant-loading" class="status-text">Memuat daftar peserta...</div>
+
+        <div id="official-fields">
+            <div class="identity-row">
+                <label for="user-class">KELAS</label>
+                <select id="user-class" onchange="onClassChange()">
+                    <option value="">-- Pilih Kelas --</option>
+                </select>
+            </div>
+
+            <div class="identity-row">
+                <label for="user-absen">NO. ABSEN</label>
+                <select id="user-absen" onchange="onAbsenChange()" disabled>
+                    <option value="">-- Pilih No. Absen --</option>
+                </select>
+            </div>
+
+            <div id="identity-info" class="identity-info" style="display:none;">
+                <div>Nama: <b id="display-name">-</b></div>
+                <div>ID Peserta: <b id="display-id">-</b></div>
+            </div>
+        </div>
+
+        <div class="susulan-box">
+            <label>
+                <input type="checkbox" id="is-susulan" onchange="toggleSusulan()">
+                Peserta belum terdaftar / peserta susulan
+            </label>
+        </div>
+
+        <div id="susulan-fields" style="display:none;">
+            <div class="identity-row">
+                <label for="susulan-name">NAMA PESERTA</label>
+                <input type="text" id="susulan-name" placeholder="Masukkan Nama Lengkap Peserta...">
+            </div>
+            <div class="identity-row">
+                <label for="susulan-class">KELAS</label>
+                <select id="susulan-class">
+                    <option value="">-- Pilih Kelas --</option>
+                    <option value="X A">X A</option>
+                    <option value="X B">X B</option>
+                    <option value="X C">X C</option>
+                    <option value="X D">X D</option>
+                    <option value="X E">X E</option>
+                </select>
+            </div>
+            <div class="identity-row">
+                <label for="susulan-absen">NO. ABSEN (opsional)</label>
+                <input type="text" id="susulan-absen" inputmode="numeric" placeholder="Contoh: 34">
+            </div>
+        </div>
+
         <button class="btn" onclick="startTest()">MULAI TES BFI</button>
     </div>
 
-    <div id="test-content" style="display:none">
+    <div id="test-content"    <div id="test-content" style="display:none">
         <div id="q-wrapper"></div>
         <div class="nav-grid" id="q-grid"></div>
         <button id="finish-btn" class="btn" style="display:none; background:#28a745; color:white;" onclick="finishTest()">SELESAI & SIMPAN HASIL</button>
@@ -85,56 +147,216 @@
     let sessionCode = "";
     let testStartTime = null;
 
-    function createParticipantId() {
-        return "PRC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-    }
+    let daftarPeserta = [];
+    let selectedParticipant = null;
+    let isSusulan = false;
 
     async function sendToPRC(data) {
         try {
-            const response = await fetch(PRC_API_URL, {
+            await fetch(PRC_API_URL, {
                 method: "POST",
+                mode: "no-cors",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
+                keepalive: true
             });
-            return await response.json();
         } catch (e) {
             console.error("Gagal mengirim data ke backend PRC:", e);
         }
     }
 
-    async function startTest() {
-        userName = document.getElementById('user-name').value.trim();
-        if(!userName) return alert("Masukkan Nama Lengkap Anda!");
+    async function loadDaftarPeserta() {
+        const statusEl = document.getElementById('participant-loading');
+        try {
+            statusEl.textContent = "Memuat daftar peserta resmi...";
 
-        const btn = document.querySelector('#login-screen .btn');
+            const response = await fetch(
+                PRC_API_URL + "?action=getDaftarPeserta",
+                { method: "GET", cache: "no-store" }
+            );
+
+            if (!response.ok) throw new Error("HTTP " + response.status);
+
+            const result = await response.json();
+
+            if (result.status !== "success" || !Array.isArray(result.peserta)) {
+                throw new Error(result.message || "Data peserta tidak valid.");
+            }
+
+            daftarPeserta = result.peserta;
+            populateClasses();
+
+            statusEl.textContent =
+                "Daftar peserta berhasil dimuat: " +
+                daftarPeserta.length + " peserta.";
+        } catch (e) {
+            console.error("Gagal memuat daftar peserta:", e);
+            statusEl.textContent =
+                "Daftar peserta belum dapat dimuat. Peserta tetap dapat masuk melalui Peserta Susulan.";
+        }
+    }
+
+    function populateClasses() {
+        const select = document.getElementById("user-class");
+        const classes = [...new Set(
+            daftarPeserta
+                .map(p => String(p.kelas || "").trim())
+                .filter(Boolean)
+        )];
+
+        classes.sort((a, b) => a.localeCompare(b, "id", { numeric: true }));
+        select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+
+        classes.forEach(kelas => {
+            const opt = document.createElement("option");
+            opt.value = kelas;
+            opt.textContent = kelas;
+            select.appendChild(opt);
+        });
+    }
+
+    function onClassChange() {
+        const kelas = document.getElementById("user-class").value;
+        const absen = document.getElementById("user-absen");
+
+        selectedParticipant = null;
+        document.getElementById("identity-info").style.display = "none";
+
+        absen.disabled = !kelas;
+        absen.innerHTML = '<option value="">-- Pilih No. Absen --</option>';
+
+        if (!kelas) return;
+
+        const list = daftarPeserta
+            .filter(p => String(p.kelas || "").trim() === kelas)
+            .sort((a, b) => Number(a.absen) - Number(b.absen));
+
+        list.forEach(p => {
+            const opt = document.createElement("option");
+            opt.value = String(p.absen);
+            opt.textContent = String(p.absen);
+            absen.appendChild(opt);
+        });
+    }
+
+    function onAbsenChange() {
+        const kelas = document.getElementById("user-class").value;
+        const absen = document.getElementById("user-absen").value;
+
+        selectedParticipant = daftarPeserta.find(
+            p =>
+                String(p.kelas || "").trim() === kelas &&
+                String(p.absen || "").trim() === absen
+        ) || null;
+
+        const info = document.getElementById("identity-info");
+
+        if (selectedParticipant) {
+            document.getElementById("display-name").textContent =
+                selectedParticipant.nama || "-";
+            document.getElementById("display-id").textContent =
+                selectedParticipant.id || "-";
+            info.style.display = "block";
+        } else {
+            info.style.display = "none";
+        }
+    }
+
+    function toggleSusulan() {
+        isSusulan = document.getElementById("is-susulan").checked;
+
+        document.getElementById("official-fields").style.display =
+            isSusulan ? "none" : "block";
+
+        document.getElementById("susulan-fields").style.display =
+            isSusulan ? "block" : "none";
+
+        if (!isSusulan) {
+            document.getElementById("susulan-name").value = "";
+            document.getElementById("susulan-class").value = "";
+            document.getElementById("susulan-absen").value = "";
+        }
+    }
+
+    function createSusulanId(nama, kelas, absen) {
+        const key =
+            "PRC_BFI_SUSULAN_ID_" +
+            [nama, kelas, absen].map(v =>
+                String(v || "").trim().toUpperCase()
+            ).join("|");
+
+        const old = localStorage.getItem(key);
+        if (old) return old;
+
+        const id =
+            "SMUK-SUS-" +
+            Date.now().toString(36).toUpperCase();
+
+        localStorage.setItem(key, id);
+        return id;
+    }
+
+    async function startTest() {
+        if (isSusulan) {
+            userName = document.getElementById("susulan-name").value.trim();
+            const kelas = document.getElementById("susulan-class").value.trim();
+            const absen = document.getElementById("susulan-absen").value.trim();
+
+            if (!userName) return alert("Masukkan Nama Lengkap Peserta Susulan.");
+            if (!kelas) return alert("Pilih Kelas Peserta Susulan.");
+
+            participantId = createSusulanId(userName, kelas, absen);
+            selectedParticipant = {
+                id: participantId,
+                nama: userName,
+                kelas: kelas,
+                absen: absen,
+                status: "SUSULAN"
+            };
+        } else {
+            if (!selectedParticipant) {
+                return alert("Silakan pilih kelas dan nomor absen terlebih dahulu.");
+            }
+
+            participantId = String(selectedParticipant.id || "").trim();
+            userName = String(selectedParticipant.nama || "").trim();
+        }
+
+        const btn = document.querySelector("#login-screen .btn");
         btn.disabled = true;
         btn.textContent = "MENYIAPKAN TES...";
 
-        participantId = createParticipantId();
         sessionCode = "BFI-" + Date.now();
         testStartTime = Date.now();
 
+        const now = new Date();
         const masterPayload = {
             tes: "MASTER",
             id: participantId,
-            tanggal: new Date().toLocaleDateString("id-ID"),
-            jam: new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
+            tanggal: now.toLocaleDateString("id-ID"),
+            jam: now.toLocaleTimeString("id-ID", {
+                hour: "2-digit",
+                minute: "2-digit"
+            }),
             nama: userName,
-            absen: "",
+            absen: selectedParticipant.absen || "",
             wa: "",
-            kelas: "",
+            kelas: selectedParticipant.kelas || "",
             kodeSesi: sessionCode
         };
 
+        localStorage.setItem("PRC_PARTICIPANT", JSON.stringify(masterPayload));
         localStorage.setItem("PRC_PARTICIPANT_ID", participantId);
         localStorage.setItem("PRC_PARTICIPANT_NAME", userName);
 
         await sendToPRC(masterPayload);
 
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('test-content').style.display = 'block';
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("test-content").style.display = "block";
         init();
     }
+
+    document.addEventListener("DOMContentLoaded", loadDaftarPeserta);
 
     function init() {
         const wrapper = document.getElementById('q-wrapper');
@@ -187,10 +409,16 @@
 
         const duration = testStartTime ? Math.round((Date.now() - testStartTime) / 1000) : "";
 
+        const participant = JSON.parse(
+            localStorage.getItem("PRC_PARTICIPANT") || "{}"
+        );
+
         const payload = {
             tes: "BIGFIVE",
             id: participantId,
             nama: userName,
+            absen: participant.absen || "",
+            kelas: participant.kelas || "",
             kodeSesi: sessionCode,
             durasi: String(duration),
             answers: answers
@@ -203,7 +431,14 @@
     }
 
     function downloadTXT() {
-        let text = "REKAP BIG FIVE - PERSONA RESEARCH & CONSULTING\nNAMA : " + userName.toUpperCase() + "\n---\n";
+        const participant = JSON.parse(
+            localStorage.getItem("PRC_PARTICIPANT") || "{}"
+        );
+        let text = "REKAP BIG FIVE - PERSONA RESEARCH & CONSULTING\n";
+        text += "ID PESERTA : " + (participant.id || participantId) + "\n";
+        text += "NAMA : " + userName.toUpperCase() + "\n";
+        text += "KELAS : " + (participant.kelas || "") + "\n";
+        text += "NO. ABSEN : " + (participant.absen || "") + "\n---\n";
         answers.forEach((a, i) => { text += `${i+1}:${a}\n`; });
         const blob = new Blob([text], {type:'text/plain'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
