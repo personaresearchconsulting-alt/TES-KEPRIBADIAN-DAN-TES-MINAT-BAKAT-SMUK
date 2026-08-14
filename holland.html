@@ -58,7 +58,15 @@
         
         .instruction-box { background: #f9f9f9; padding: 15px; border-radius: 10px; border-left: 5px solid var(--primary); font-size: 0.9em; margin-bottom: 20px; line-height: 1.5; }
         input[type="text"] { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 8px; text-align: center; font-size: 1em; box-sizing: border-box; }
-        
+        select { width: 100%; padding: 12px; margin: 7px 0; border: 2px solid #eee; border-radius: 8px; font-size: 1em; box-sizing: border-box; background: #fff; }
+        .identity-row { margin: 10px 0; text-align: left; }
+        .identity-row label { display:block; font-weight:700; color:var(--primary); margin-bottom:5px; font-size:.9em; }
+        .identity-info { margin-top:12px; padding:12px; border-radius:8px; background:#f8f8f8; border:1px solid #eee; text-align:left; font-size:.9em; line-height:1.6; }
+        .identity-info b { color:var(--primary); }
+        .status-text { font-size:.82em; color:#777; margin:6px 0 10px; text-align:center; }
+        .susulan-box { margin-top:12px; padding:10px 12px; border:1px solid #eee; border-radius:8px; background:#fafafa; text-align:left; font-size:.88em; }
+        .susulan-box label { display:flex; align-items:center; gap:8px; cursor:pointer; }
+        .susulan-box input[type="checkbox"] { width:auto; margin:0; }
         .question-box { display: none; }
         .question-box.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -74,11 +82,64 @@
 
     <div id="login-screen">
         <div class="instruction-box">
-            <strong>Petunjuk:</strong><br>
-            Pilih <b>YA</b> jika Anda menyukai atau merasa mampu melakukan pernyataan tersebut, dan pilih <b>TIDAK</b> jika tidak sesuai. Gunakan navigasi grid di bawah untuk melompat ke nomor tertentu.
+            <strong>Identitas Peserta:</strong><br>
+            Pilih <b>kelas</b> dan <b>nomor absen</b>. Nama dan ID peserta akan muncul otomatis dari daftar peserta resmi.
+            Jika peserta belum ada di daftar, gunakan pilihan <b>Peserta Susulan</b>.
         </div>
-        <input type="text" id="user-name" placeholder="Masukkan Nama Lengkap Peserta...">
-        <button class="btn" onclick="startTest()">MULAI SEKARANG</button>
+
+        <div id="participant-loading" class="status-text">Memuat daftar peserta...</div>
+
+        <div id="official-fields">
+            <div class="identity-row">
+                <label for="user-class">KELAS</label>
+                <select id="user-class" onchange="onClassChange()">
+                    <option value="">-- Pilih Kelas --</option>
+                </select>
+            </div>
+
+            <div class="identity-row">
+                <label for="user-absen">NO. ABSEN</label>
+                <select id="user-absen" onchange="onAbsenChange()" disabled>
+                    <option value="">-- Pilih No. Absen --</option>
+                </select>
+            </div>
+
+            <div id="identity-info" class="identity-info" style="display:none;">
+                <div>Nama: <b id="display-name">-</b></div>
+                <div>ID Peserta: <b id="display-id">-</b></div>
+            </div>
+        </div>
+
+        <div class="susulan-box">
+            <label>
+                <input type="checkbox" id="is-susulan" onchange="toggleSusulan()">
+                Peserta belum terdaftar / peserta susulan
+            </label>
+        </div>
+
+        <div id="susulan-fields" style="display:none;">
+            <div class="identity-row">
+                <label for="susulan-name">NAMA PESERTA</label>
+                <input type="text" id="susulan-name" placeholder="Masukkan Nama Lengkap Peserta...">
+            </div>
+            <div class="identity-row">
+                <label for="susulan-class">KELAS</label>
+                <select id="susulan-class">
+                    <option value="">-- Pilih Kelas --</option>
+                    <option value="X A">X A</option>
+                    <option value="X B">X B</option>
+                    <option value="X C">X C</option>
+                    <option value="X D">X D</option>
+                    <option value="X E">X E</option>
+                </select>
+            </div>
+            <div class="identity-row">
+                <label for="susulan-absen">NO. ABSEN (opsional)</label>
+                <input type="text" id="susulan-absen" inputmode="numeric" placeholder="Contoh: 34">
+            </div>
+        </div>
+
+        <button id="btn-start" class="btn" onclick="startTest()" disabled>MULAI SEKARANG</button>
     </div>
 
     <div id="test-content" style="display:none">
@@ -137,8 +198,105 @@
     let sessionCode = "";
     let testStartTime = null;
 
-    function createParticipantId() {
-        return "PRC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    let daftarPeserta = [];
+    let selectedParticipant = null;
+    let isSusulan = false;
+
+    async function loadDaftarPeserta() {
+        const statusEl = document.getElementById('participant-loading');
+        const btn = document.getElementById('btn-start');
+        try {
+            statusEl.textContent = 'Memuat daftar peserta resmi...';
+            const response = await fetch(PRC_API_URL + '?action=getDaftarPeserta', {
+                method: 'GET',
+                cache: 'no-store'
+            });
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const result = await response.json();
+            if (result.status !== 'success' || !Array.isArray(result.peserta)) {
+                throw new Error(result.message || 'Data peserta tidak valid.');
+            }
+            daftarPeserta = result.peserta;
+            populateClasses();
+            statusEl.textContent = 'Daftar peserta berhasil dimuat: ' + daftarPeserta.length + ' peserta.';
+            btn.disabled = false;
+        } catch (err) {
+            console.error('Gagal memuat daftar peserta:', err);
+            statusEl.textContent = 'Daftar peserta resmi belum dapat dimuat. Peserta tetap dapat masuk melalui opsi Susulan.';
+            btn.disabled = false;
+        }
+    }
+
+    function populateClasses() {
+        const select = document.getElementById('user-class');
+        const classes = [...new Set(daftarPeserta.map(p => String(p.kelas || '').trim()).filter(Boolean))];
+        classes.sort((a,b) => a.localeCompare(b, 'id', {numeric:true}));
+        select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+        classes.forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k;
+            opt.textContent = k;
+            select.appendChild(opt);
+        });
+    }
+
+    function onClassChange() {
+        const kelas = document.getElementById('user-class').value;
+        const absen = document.getElementById('user-absen');
+        document.getElementById('identity-info').style.display = 'none';
+        selectedParticipant = null;
+        absen.disabled = !kelas;
+        absen.innerHTML = '<option value="">-- Pilih No. Absen --</option>';
+        if (!kelas) return;
+
+        const list = daftarPeserta
+            .filter(p => String(p.kelas || '').trim() === kelas)
+            .sort((a,b) => Number(a.absen) - Number(b.absen));
+        list.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = String(p.absen);
+            opt.textContent = String(p.absen);
+            absen.appendChild(opt);
+        });
+    }
+
+    function onAbsenChange() {
+        const kelas = document.getElementById('user-class').value;
+        const absen = document.getElementById('user-absen').value;
+        selectedParticipant = daftarPeserta.find(p =>
+            String(p.kelas || '').trim() === kelas && String(p.absen || '').trim() === absen
+        ) || null;
+
+        const info = document.getElementById('identity-info');
+        if (selectedParticipant) {
+            document.getElementById('display-name').textContent = selectedParticipant.nama || '-';
+            document.getElementById('display-id').textContent = selectedParticipant.id || '-';
+            info.style.display = 'block';
+        } else {
+            info.style.display = 'none';
+        }
+    }
+
+    function toggleSusulan() {
+        isSusulan = document.getElementById('is-susulan').checked;
+        document.getElementById('official-fields').style.display = isSusulan ? 'none' : 'block';
+        document.getElementById('susulan-fields').style.display = isSusulan ? 'block' : 'none';
+        if (isSusulan) {
+            selectedParticipant = null;
+        } else {
+            document.getElementById('susulan-name').value = '';
+            document.getElementById('susulan-class').value = '';
+            document.getElementById('susulan-absen').value = '';
+        }
+    }
+
+    function createSusulanId(nama, kelas, absen) {
+        const key = 'PRC_SUSULAN_ID_' + [nama, kelas, absen].map(v => String(v || '').trim().toUpperCase()).join('|');
+        const existing = localStorage.getItem(key);
+        if (existing) return existing;
+        const id = 'SMUK-SUS-' + Date.now().toString(36).toUpperCase();
+        localStorage.setItem(key, id);
+        return id;
     }
 
     function sendToPRC(data) {
@@ -161,24 +319,43 @@
 
     function saveMasterToSheet() {
         const now = new Date();
-        participantId = createParticipantId();
         sessionCode = "HOL-" + now.getTime();
         testStartTime = Date.now();
+
+        let nama = '';
+        let kelas = '';
+        let absen = '';
+
+        if (isSusulan) {
+            nama = document.getElementById('susulan-name').value.trim();
+            kelas = document.getElementById('susulan-class').value.trim();
+            absen = document.getElementById('susulan-absen').value.trim();
+            participantId = createSusulanId(nama, kelas, absen);
+        } else {
+            if (!selectedParticipant) return false;
+            participantId = String(selectedParticipant.id || '').trim();
+            nama = String(selectedParticipant.nama || '').trim();
+            kelas = String(selectedParticipant.kelas || '').trim();
+            absen = String(selectedParticipant.absen || '').trim();
+        }
+
+        userName = nama;
 
         const payload = {
             tes: "MASTER",
             id: participantId,
             tanggal: now.toLocaleDateString("id-ID"),
             jam: now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
-            nama: userName,
-            absen: "",
+            nama: nama,
+            absen: absen,
             wa: "",
-            kelas: "",
+            kelas: kelas,
             kodeSesi: sessionCode
         };
 
         localStorage.setItem("PRC_PARTICIPANT", JSON.stringify(payload));
         sendToPRC(payload);
+        return true;
     }
 
     function getParticipantData() {
@@ -212,13 +389,21 @@
     }
 
     function startTest() {
-        userName = document.getElementById('user-name').value.trim();
-        if(!userName) return alert("Harap isi nama!");
-        saveMasterToSheet();
+        if (isSusulan) {
+            const nama = document.getElementById('susulan-name').value.trim();
+            if (!nama) return alert('Harap isi nama peserta susulan.');
+        } else {
+            if (!selectedParticipant) return alert('Silakan pilih kelas dan nomor absen terlebih dahulu.');
+        }
+
+        if (!saveMasterToSheet()) return;
+
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('test-content').style.display = 'block';
         init();
     }
+
+    document.addEventListener('DOMContentLoaded', loadDaftarPeserta);
 
     function init() {
         const wrapper = document.getElementById('q-wrapper');
@@ -289,7 +474,11 @@
     function downloadTXT() {
         let text = "REKAP RIASEC HOLLAND (108) - PRC\n";
         text += "=================================\n";
+        const participant = getParticipantData();
+        text += `ID PESERTA   : ${participant.id || participantId || ""}\n`;
         text += `NAMA PESERTA : ${userName.toUpperCase()}\n`;
+        text += `KELAS        : ${participant.kelas || ""}\n`;
+        text += `NO. ABSEN    : ${participant.absen || ""}\n`;
         text += `TANGGAL      : ${new Date().toLocaleString()}\n`;
         text += "=================================\n\n";
         answers.forEach((a, i) => { text += `${i+1}:${a}\n`; });
