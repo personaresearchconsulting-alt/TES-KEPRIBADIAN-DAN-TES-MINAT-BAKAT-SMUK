@@ -3,31 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TES KEPRIBADIAN I - Persona Research & Consulting</title>
+    <title>TES MINAT - Persona Research & Consulting</title>
     <style>
         :root { --primary: #000033; --accent: #D4AF37; --bg: #FDFCF0; --text: #333; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; }
-        #quiz-container { width: 100%; max-width: 750px; background: #fff; padding: 35px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,51,0.1); border-top: 8px solid var(--accent); margin-top: 20px; box-sizing: border-box; }
-        .header { text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 30px; }
-        .question-box { display: none; }
-        .question-box.active { display: block; animation: fadeIn 0.4s ease; }
-        .question-text { font-size: 1.3em; font-weight: 700; color: var(--primary); margin-bottom: 30px; text-align: center; line-height: 1.5; min-height: 80px; display: flex; align-items: center; justify-content: center; }
-        .opt-container { display: flex; flex-direction: column; gap: 15px; }
         
-        .option { width: 100%; padding: 18px 25px; text-align: left; border: 2px solid #eee; border-radius: 15px; cursor: pointer; font-weight: 500; transition: 0.3s; background: #fff; line-height: 1.5; display: flex; align-items: center; box-sizing: border-box; }
+        #quiz-container { width: 100%; max-width: 700px; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,51,0.1); border-top: 8px solid var(--accent); margin-top: 20px; box-sizing: border-box; }
+        
+        .header { text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 30px; }
+        
+        .question-text { 
+            font-size: 1.4em; 
+            font-weight: 700; 
+            color: var(--primary); 
+            text-align: center; 
+            line-height: 1.4;
+            margin-bottom: 30px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .opt-container { 
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            margin-bottom: 20px;
+        }
+        
+        .option { 
+            width: 120px; 
+            padding: 10px 0; 
+            text-align: center; 
+            border: 2px solid #ddd; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 0.9em; 
+            transition: 0.3s;
+            background: #fff;
+        }
+
         .option:hover { border-color: var(--accent); background: #fffdf0; }
         .option.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
-        .opt-label { font-weight: 800; color: var(--primary); margin-right: 15px; font-size: 1.1em; width: 25px; }
-        .option.selected .opt-label { color: #fff; }
 
-        .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); gap: 6px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 25px; }
-        .grid-item { height: 28px; display: flex; align-items: center; justify-content: center; background: #eee; border-radius: 5px; font-size: 9px; cursor: pointer; }
+        .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap: 5px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+        .grid-item { height: 25px; display: flex; align-items: center; justify-content: center; background: #eee; border-radius: 4px; font-size: 9px; cursor: pointer; }
         .grid-item.filled { background: var(--accent); color: white; }
         .grid-item.current { border: 2px solid var(--primary); font-weight: bold; }
-        .btn { background: var(--primary); color: #fff; border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 15px; font-size: 1em; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-finish { background: #28a745; display: none; margin-top: 25px; }
-        .instruction-box { background: #f9f9f9; padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary); font-size: 0.95em; margin-bottom: 25px; line-height: 1.6; }
-        input[type="text"] { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #eee; border-radius: 10px; text-align: center; font-size: 1.1em; box-sizing: border-box; }
+
+        .btn { background: var(--primary); color: #fff; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 1em; }
+        .btn-finish { background: #28a745; display: none; margin-top: 20px; text-transform: uppercase; }
+        
+        .instruction-box { background: #f9f9f9; padding: 15px; border-radius: 10px; border-left: 5px solid var(--primary); font-size: 0.9em; margin-bottom: 20px; line-height: 1.5; }
+        input[type="text"] { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 8px; text-align: center; font-size: 1em; box-sizing: border-box; }
+        select { width: 100%; padding: 12px; margin: 7px 0; border: 2px solid #eee; border-radius: 8px; font-size: 1em; box-sizing: border-box; background: #fff; }
+        .identity-row { margin: 10px 0; text-align: left; }
+        .identity-row label { display:block; font-weight:700; color:var(--primary); margin-bottom:5px; font-size:.9em; }
+        .identity-info { margin-top:12px; padding:12px; border-radius:8px; background:#f8f8f8; border:1px solid #eee; text-align:left; font-size:.9em; line-height:1.6; }
+        .identity-info b { color:var(--primary); }
+        .status-text { font-size:.82em; color:#777; margin:6px 0 10px; text-align:center; }
+        .susulan-box { margin-top:12px; padding:10px 12px; border:1px solid #eee; border-radius:8px; background:#fafafa; text-align:left; font-size:.88em; }
+        .susulan-box label { display:flex; align-items:center; gap:8px; cursor:pointer; }
+        .susulan-box input[type="checkbox"] { width:auto; margin:0; }
+        .question-box { display: none; }
+        .question-box.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -35,179 +76,355 @@
 
 <div id="quiz-container">
     <div class="header">
-        <h2 style="margin:0; color:var(--primary);">Persona Research & Consulting</h2>
-        <p style="color:var(--accent); font-weight:bold; margin:5px 0;">TES KEPRIBADIAN I</p>
+        <h2 style="margin:0; color:var(--primary); font-size: 1.2em;">Persona Research & Consulting</h2>
+        <p style="color:var(--accent); font-weight:bold; margin:5px 0; font-size: 0.85em;">TES MINAT</p>
     </div>
 
     <div id="login-screen">
         <div class="instruction-box">
-            <strong>Petunjuk Pengerjaan:</strong><br>
-            Pilihlah salah satu opsi (A atau B) yang paling sesuai dengan diri Anda. Klik <b>Selesai & Rekap</b> jika semua nomor sudah berwarna emas.
+            <strong>Identitas Peserta:</strong><br>
+            Pilih <b>kelas</b> dan <b>nomor absen</b>. Nama dan ID peserta akan muncul otomatis dari daftar peserta resmi.
+            Jika peserta belum ada di daftar, gunakan pilihan <b>Peserta Susulan</b>.
         </div>
-        <input type="text" id="user-name" placeholder="Nama Lengkap Peserta..." autocomplete="off">
-        <button class="btn" onclick="startTest()">Mulai Asesmen</button>
+
+        <div id="participant-loading" class="status-text">Memuat daftar peserta...</div>
+
+        <div id="official-fields">
+            <div class="identity-row">
+                <label for="user-class">KELAS</label>
+                <select id="user-class" onchange="onClassChange()">
+                    <option value="">-- Pilih Kelas --</option>
+                </select>
+            </div>
+
+            <div class="identity-row">
+                <label for="user-absen">NO. ABSEN</label>
+                <select id="user-absen" onchange="onAbsenChange()" disabled>
+                    <option value="">-- Pilih No. Absen --</option>
+                </select>
+            </div>
+
+            <div id="identity-info" class="identity-info" style="display:none;">
+                <div>Nama: <b id="display-name">-</b></div>
+                <div>ID Peserta: <b id="display-id">-</b></div>
+            </div>
+        </div>
+
+        <div class="susulan-box">
+            <label>
+                <input type="checkbox" id="is-susulan" onchange="toggleSusulan()">
+                Peserta belum terdaftar / peserta susulan
+            </label>
+        </div>
+
+        <div id="susulan-fields" style="display:none;">
+            <div class="identity-row">
+                <label for="susulan-name">NAMA PESERTA</label>
+                <input type="text" id="susulan-name" placeholder="Masukkan Nama Lengkap Peserta...">
+            </div>
+            <div class="identity-row">
+                <label for="susulan-class">KELAS</label>
+                <select id="susulan-class">
+                    <option value="">-- Pilih Kelas --</option>
+                    <option value="X A">X A</option>
+                    <option value="X B">X B</option>
+                    <option value="X C">X C</option>
+                    <option value="X D">X D</option>
+                    <option value="X E">X E</option>
+                </select>
+            </div>
+            <div class="identity-row">
+                <label for="susulan-absen">NO. ABSEN (opsional)</label>
+                <input type="text" id="susulan-absen" inputmode="numeric" placeholder="Contoh: 34">
+            </div>
+        </div>
+
+        <button id="btn-start" class="btn" onclick="startTest()" disabled>MULAI SEKARANG</button>
     </div>
 
     <div id="test-content" style="display:none">
         <div id="q-wrapper"></div>
         <div class="nav-grid" id="q-grid"></div>
-        <button id="finish-btn" class="btn btn-finish" onclick="checkAndFinish()">Selesai & Rekap Jawaban</button>
+        <button id="btn-final" class="btn btn-finish" onclick="finishToResult()">SELESAI & REKAP JAWABAN</button>
     </div>
 
     <div id="result-screen" style="display:none; text-align:center;">
-        <h3 style="color:var(--primary)">Asesmen Selesai</h3>
-        <p style="color: #666; margin-bottom: 25px;">Data jawaban Anda telah direkap secara otomatis ke server. Silakan unduh backup file (.txt) jika diperlukan.</p>
-        <button class="btn" onclick="downloadTXT()">Unduh Hasil (.TXT)</button>
+        <h3 style="color:var(--primary)">Tes Selesai</h3>
+        <p style="font-size: 0.9em; color: #666; margin-bottom: 20px;">Seluruh jawaban telah direkap. Silakan unduh hasil dan kirimkan ke Admin.</p>
+        <button class="btn" onclick="downloadTXT()">UNDUH HASIL (.TXT)</button>
     </div>
 </div>
 
 <script>
-    // URL WEB APP APPS SCRIPT TERBARU
-    const PRC_API_URL = "https://script.google.com/macros/s/AKfycbyPSBX3Lk-HB68_Scmy2kNxLiBMsINJXe_qO-e8XGF3IOThKbcSydNpADW2qGO09fem/exec";
+    if (new Date() > new Date("2029-07-01")) document.body.innerHTML = "Akses telah berakhir.";
 
     const questions = [
-        {q: "Pada sebuah pesta, apakah Anda:", a: "bergaul dengan banyak orang termasuk orang-orang yang baru Anda kenal, atau", b: "bergaul dengan beberapa orang yang telah Anda kenal saja."},
-        {q: "Apakah Anda lebih:", a: "realistik, ATAU", b: "spekulatif"},
-        {q: "Adalah hal yang buruk:", a: "tenggelam dalam mengandai-andai, ATAU", b: "terlanjur basah kerepotan di tengah jalan"},
-        {q: "Biasanya Anda lebih terkesan dengan", a: "prinsip, ATAU", b: "perasaan"},
-        {q: "Apakah Anda cenderung lebih terjelaskan melalui:", a: "argumen logis, ATAU", b: "argumen emotif (feeling)"},
-        {q: "Apakah Anda lebih menyukai bekerja:", a: "menggunakan batas waktu, ATAU", b: "kapan-kapan saja"},
-        {q: "Apakah Anda cenderung untuk memilih:", a: "secara berhati-hati, ATAU", b: "secara spontan"},
-        {q: "Di pesta-pesta, Anda:", a: "tinggal sampai pesta berakhir dengan semakin segar, ATAU", b: "meninggalkan pesta lebih cepat dengan kondisi capai/lelah"},
-        {q: "Apakah Anda merupakan seseorang yang lebih:", a: "banyak menggunakan akal sehat", b: "imajinatif"},
-        {q: "Apakah Anda lebih tertarik pada:", a: "apa yang aktual, ATAU", b: "apa yang mungkin"},
-        {q: "Dalam memutuskan/memberi penilaian pada orang lain Anda lebih dipengaruhi oleh:", a: "hukum daripada situasi/keadaannya, ATAU", b: "situasi/keadaannya daripada hukum"},
-        {q: "Ketika pertama kali mendekati orang lain, apakah Anda lebih:", a: "tidak melibatkan perasaan dan menjaga jarak, ATAU", b: "melibatkan diri secara pribadi dan mencoba membuat orang tersebut tertarik"},
-        {q: "Apakah Anda biasanya lebih:", a: "tepat waktu, ATAU", b: "santai"},
-        {q: "Apakah mengganggu Anda, mempunyai banyak hal yang:", a: "tidak lengkap/tidak terselesaikan, ATAU", b: "sudah lengkap/terselesaikan"},
-        {q: "Dalam kelompok sosial Anda, Anda:", a: "mengetahui kejadian-kejadian yang dialami oleh orang lain, ATAU", b: "biasanya ketinggalan berita"},
-        {q: "Dalam mengerjakan sesuatu yang biasa, Anda lebih suka:", a: "mengerjakannya dengan cara lazimnya orang, ATAU", b: "mengerjakannya dengan cara Anda sendiri"},
-        {q: "Apakah Anda memilih penulis yang:", a: "menuliskan kata-kata dengan arti yang sebenarnya, ATAU", b: "menggunakan kiasan-kiasan"},
-        {q: "Bagi Anda, apa yang lebih penting:", a: "konsisten dan teguh dengan pemikiran/ide Anda, ATAU", b: "menjaga keharmonisan hubungan sosial"},
-        {q: "Anda merasa nyaman, membuat:", a: "keputusan logis, ATAU", b: "keputusan berdasar nilai-nilai"},
-        {q: "Apakah biasanya Anda:", a: "menyukai segala hal terselesaikan, ATAU", b: "membiarkan berbagai pilihan dengan berbagai kemungkinan"},
-        {q: "Menurut Anda, Anda orang yang:", a: "tegas, saklek, keras pendirian/kemauan, ATAU", b: "nyantai, bisa menyesuaikan pendirian/kemauan (easy-going)"},
-        {q: "Dalam menelpon, apakah Anda:", a: "langsung berbicara, ATAU", b: "menyusun dulu kata-kata yang diucapkan"},
-        {q: "Untuk Anda, fakta adalah:", a: "menggambarkan apa yang terjadi, ATAU", b: "biasanya perlu diinterpretasi"},
-        {q: "Apakah Anda memilih bekerja dengan:", a: "informasi praktis, ATAU", b: "ide-ide abstrak"},
-        {q: "Apakah Anda cenderung lebih:", a: "berpikiran jernih, ATAU", b: "berperasaan hangat"},
-        {q: "Apakah Anda lebih suka menjadi seorang yang:", a: "adil daripada pemaaf, ATAU", b: "pemaaf daripada adil"},
-        {q: "Bagi Anda, mengalami sesuatu:", a: "harus direncanakan dan berdasarkan pilihan, ATAU", b: "biarlah berjalan dengan sendirinya"},
-        {q: "Apakah Anda lebih nyaman dengan:", a: "langsung beli/dipesankan, ATAU", b: "mempunyai pilihan-pilihan"},
-        {q: "Dalam suatu pertemuan apakah Anda:", a: "memulai pembicaraan-pembicaraan, ATAU", b: "menunggu untuk ditanya"},
-        {q: "Akal sehat gaya tradisional:", a: "biasanya bisa dipercaya, ATAU", b: "sering menimbulkan salah tafsir"},
-        {q: "Anak-anak tidak:", a: "cukup sering melakukan kegiatan bermanfaat, ATAU", b: "cukup berfantasi"},
-        {q: "Apakah biasanya Anda lebih:", a: "mempertahankan prinsip, ATAU", b: "bersikap simpatik"},
-        {q: "Apakah Anda biasanya lebih bersikap:", a: "tegas daripada lemah lembut, ATAU", b: "lemah-lembut daripada tegas"},
-        {q: "Apakah Anda cenderung lebih menjaga hal-hal agar:", a: "terorganisasi dengan baik, ATAU", b: "terbuka untuk kemungkinan-kemungkinan"},
-        {q: "Apakah Anda lebih menghargai:", a: "sesuatu yang pasti, ATAU", b: "sesuatu yang berubah-ubah"},
-        {q: "Apakah interaksi baru dengan orang lain:", a: "menggugah semangat Anda, ATAU", b: "menguras tenaga Anda"},
-        {q: "Anda menggambarkan diri Anda lebih sering sebagai:", a: "orang yang praktis, ATAU", b: "orang yang teoritis"},
-        {q: "Anda lebih melihat orang lain:", a: "dari bagaimana kemanfaatannya, ATAU", b: "dari bagaimana kelihatannya"},
-        {q: "Mana yang lebih memuaskan Anda:", a: "mendiskusikan suatu topik sampai tuntas, ATAU", b: "mencapai kesepakatan tentang suatu permasalahan"},
-        {q: "Yang mana lebih banyak Anda gunakan:", a: "pemikiran, ATAU", b: "perasaan"},
-        {q: "Anda lebih nyaman dengan pekerjaan yang:", a: "berdasarkan kontrak, ATAU", b: "tidak terikat"},
-        {q: "Anda lebih menyukai bila segala hal:", a: "rapi dan teratur, ATAU", b: "tergantung situasi"},
-        {q: "Apakah Anda lebih memilih:", a: "banyak teman dengan hubungan yang singkat, ATAU", b: "beberapa teman dengan hubungan yang lama/langgeng"},
-        {q: "Apakah Anda lebih beranjak pada:", a: "fakta-fakta, ATAU", b: "kaidah-kaidah"},
-        {q: "Apakah Anda lebih tertarik pada:", a: "produksi dan distribusi/hasil akhir, ATAU", b: "perencana, penelitian"},
-        {q: "Mana yang lebih patut dipuji:", a: "orang yang sangat logis, ATAU", b: "orang yang sangat sentimentil (mengedepankan perasaan)"},
-        {q: "Apakah Anda menghargai diri Anda karena:", a: "berpendirian teguh, ATAU", b: "penuh pengabdian"},
-        {q: "Apakah Anda lebih suka dengan:", a: "pernyataan-pernyataan final dan tidak bisa diganggu-gugat, ATAU", b: "pernyataan-pernyataan tidak bersifat pasti (tentative)/masih awal"},
-        {q: "Apakah Anda lebih nyaman dengan:", a: "sesudah pengambilan keputusan, ATAU", b: "sebelum pengambilan keputusan"},
-        {q: "Apakah Anda:", a: "berbicara dengan mudah dan panjang lebar dengan orang yang baru dikenal, ATAU", b: "sulit bicara dengan orang yang baru dikenal"},
-        {q: "Apakah Anda sepertinya lebih mempercayai:", a: "pengalaman-pengalaman, ATAU", b: "firasat/dugaan/prasangka"},
-        {q: "Apakah Anda merasa:", a: "lebih praktis daripada kreatif, ATAU", b: "lebih kreatif daripada praktis"},
-        {q: "Apakah Anda memiliki ciri khas sebagai seorang dengan:", a: "rasio jelas, ATAU", b: "perasaan yang kuat"},
-        {q: "Apakah Anda cenderung lebih:", a: "adil apa adanya/tanpa prasangka, ATAU", b: "manruh perhatian (simpatis)"},
-        {q: "Anda sangat menyukai tindakan yang:", a: "memastikan segala sesuatu ditata dahulu, ATAU", b: "membiarkan hal-hal yang terjadi begitu saja"},
-        {q: "Apakah cara-cara Anda lebih pada:", a: "mengatur segala sesuatu, ATAU", b: "menunda-nunda penyelesaian"},
-        {q: "Bila telepon berbunyi, Anda akan:", a: "segera menerima telepon tersebut, ATAU", b: "berharap orang lain yang menerimanya"},
-        {q: "Apakah Anda lebih menghargai diri Anda dalam hal:", a: "kemampuan memahami realita, ATAU", b: "kemampuan imajinasi yang baik"},
-        {q: "Apakah Anda lebih tertarik pada:", a: "azas, ATAU", b: "penyesuaian"},
-        {q: "Dalam menilai, biasanya Anda lebih bersikap:", a: "netral, ATAU", b: "pemurah"},
-        {q: "Apakah Anda lebih menganggap diri Anda sebagai orang yang:", a: "keras hati/teguh, ATAU", b: "lunak hati/halus"},
-        {q: "Apakah Anda lebih cenderung mengalami:", a: "kejadian-kejadian yang telah terjadwal, ATAU", b: "kejadian-kejadian yang datang begitu saja"},
-        {q: "Apakah Anda lebih termasuk tipe orang yang menyukai:", a: "hal-hal yang bersifat rutin, ATAU", b: "hal-hal yang tidak biasa"},
-        {q: "Apakah Anda cenderung", a: "mudah didekati, ATAU", b: "agak menjaga jarak"},
-        {q: "Bila Anda menulis, Anda lebih menyukai:", a: "memakai kata-kata dengan arti yang sebenarnya, ATAU", b: "menggunakan kata-kata kiasan"},
-        {q: "Apakah Anda merasa lebih senang dengan:", a: "mengalami sendiri dan nyata, ATAU", b: "membayangkan"},
-        {q: "Apakah biasanya Anda lebih:", a: "berpikiran jernih, ATAU", b: "menunjukkan perasaan yang kuat"},
-        {q: "Apakah Anda lebih:", a: "adil daripada toleran, ATAU", b: "toleran daripada adil"},
-        {q: "Apakah Anda lebih memilih:", a: "kegiatan yang terencana, ATAU", b: "kegiatan yang tidak terencana"},
-        {q: "Apakah Anda cenderung lebih:", a: "hati-hati daripada spontan, ATAU", b: "spontan daripada hati-hati"}
+        "Senang menonton drama", "Senang Melatih Orang", "Mampu bermain dalam drama / berakting", "Suka membaca mengenai topik-topik khusus atas keinginan sendiri", 
+        "Mampu melakukan percobaan atau penelitian ilmiah", "Artistik", "Mampu memprogram komputer untuk mempelajari masalah ilmiah", "Tertarik menjadi pengawas konstruksi bangunan", 
+        "Suka dalam memecahkan soal eksak", "Mampu melakukan dan menyukai tugas administratif", "Bisa mempengaruhi dan membujuk orang lain", "Prosedural (Mengikuti aturan)", 
+        "Suka menggunakan aplikasi pencatatan keuangan", "Suka memperbaiki motor", "Bisa mengekspresikan diri secara kreatif", "Ingin bekerja dibagian Staff keuangan", 
+        "Mampu menyebutkan makanan yang memiliki protein tinggi", "Suka membantu orang lain", "Suka menulis cerita atau puisi", "Aktif dalam organisasi sosial", 
+        "Percaya diri", "Mampu membukukan pengeluaran/ pemasukan", "Menyukai kegiatan memancing/berkebun", "Mampu mengoperasikan proyektor / kamera", 
+        "Mampu membuat sketsa/lukisan/gambar", "Mudah bergaul", "Memiliki jiwa kepemimpinan", "Mampu menyusun arsip dengan rapi", 
+        "Tertarik menjadi Polisi/TNI/Pilot", "Tertarik menjadi Psikolog", "Tertarik menjadi penari/penyanyi", "Mampu bekerjasama dalam tim", 
+        "Suka tantangan", "Suka bekerja di dalam ruangan", "Mampu memperbaiki peralatan rumah tangga", "Mampu menggunakan Mikroskop", 
+        "Tertarik menjadi penulis/jurnalis", "Suka memberikan bimbingan kepada orang lain", "Tertarik menjadi Direktur", "Teliti dalam bekerja", 
+        "Suka merawat hewan", "Ingin bekerja di Laboratorium", "Suka mendesain pakaian/ruangan", "Mampu berempati kepada orang lain", 
+        "Suka berbicara didepan umum", "Mampu melakukan pengetikan dengan cepat", "Senang bekerja dengan mesin", "Suka mengumpulkan sampel (batuan, serangga, dll)", 
+        "Mampu memainkan alat musik", "Tertarik menjadi Guru", "Tertarik menjadi pengusaha/bisnis", "Mampu mengoperasikan komputer (Excel/Word)", 
+        "Tertarik pada bidang otomotif", "Suka menganalisis data", "Menyukai keindahan", "Suka melakukan pelayanan masyarakat", 
+        "Memiliki kemampuan negosiasi yang baik", "Tertarik menjadi staf administrasi", "Suka menggunakan peralatan teknik", "Tertarik pada astronomi", 
+        "Senang menciptakan karya seni baru", "Suka menolong sesama", "Optimis", "Suka keteraturan", 
+        "Mampu membaca gambar teknik/denah", "Mampu melakukan riset", "Suka mendekorasi sesuatu", "Suka mendengarkan curhat orang lain", 
+        "Berani mengambil risiko", "Suka mengelola data", "Suka aktivitas di luar ruangan", "Suka belajar hal baru melalui observasi", 
+        "Imajinatif", "Suka mengajar", "Ambisius", "Suka kegiatan rutin yang terukur", "Senang bekerja menggunakan tangan", "Suka membantu orang lain dengan masalah pribadinya", 
+        "Senang kegiatan fisik", "Tertarik menjadi ahli teknisi laboratorium medis", "Ingin menjadi seniman", "Mampu melakukan perbaikan kecil pada pipa air, kran, dan lain-lain", 
+        "Mampu membuat gambar dengan skala", "Prosedural (Suka mengikuti aturan)", "Suka mengarsip surat dan berkas-berkas lain", "Mampu menjadi seorang pembicara di depan umum yang baik", 
+        "Mampu memimpin diskusi kelompok", "Suka melakukan pekerjaan surat menyurat/ masalah perkantoran", "Senang bertemu orang baru", "Bisa bekerja dengan baik dalam system /aturan", 
+        "Suka merancang perabotan, pakaian atau poster", "Tertarik menjadi pembawa acara / MC", "Tertarik menjadi ilmuwan peneliti", "Suka memperbaiki alat-alat listrik", 
+        "Terbuka", "Tertarik menjadi penaksir biaya", "Suka mendamaikan orang", "Suka mengerjakan teka-teki", "Suka mengelola inventaris atau logistik", 
+        "Mampu menulis laporan penelitian", "Pandai bernegosiasi untuk mencapai tujuan organisasi", "Menyukai kegiatan yang membutuhkan konsentrasi tinggi dan detail", 
+        "Mampu merancang kampanye iklan", "Mampu menjelaskan konsep ilmiah yang sulit kepada orang awam", "Suka bekerja di organisasi nirlaba", 
+        "Tertarik pada bidang desain arsitektur", "Mampu bekerja dengan deadline yang ketat", "Mampu menjaga kerahasiaan data perusahaan"
     ];
 
     let currentIdx = 0;
     let answers = new Array(questions.length).fill(null);
     let userName = "";
+
+    // ===== PRC GOOGLE SHEETS CONNECTION =====
+    const PRC_API_URL = "https://script.google.com/macros/s/AKfycbyPSBX3Lk-HB68_Scmy2kNxLiBMsINJXe_qO-e8XGF3IOThKbcSydNpADW2qGO09fem/exec";
     let participantId = "";
     let sessionCode = "";
     let testStartTime = null;
 
-    function createParticipantId() {
-        return "PRC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-    }
+    let daftarPeserta = [];
+    let selectedParticipant = null;
+    let isSusulan = false;
 
-    async function sendToPRC(data) {
+    async function loadDaftarPeserta() {
+        const statusEl = document.getElementById('participant-loading');
+        const btn = document.getElementById('btn-start');
         try {
-            await fetch(PRC_API_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(data)
+            statusEl.textContent = 'Memuat daftar peserta resmi...';
+            const response = await fetch(PRC_API_URL + '?action=getDaftarPeserta', {
+                method: 'GET',
+                cache: 'no-store'
             });
-        } catch (e) {
-            console.error("Gagal kirim via Fetch:", e);
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const result = await response.json();
+            if (result.status !== 'success' || !Array.isArray(result.peserta)) {
+                throw new Error(result.message || 'Data peserta tidak valid.');
+            }
+            daftarPeserta = result.peserta;
+            populateClasses();
+            statusEl.textContent = 'Daftar peserta berhasil dimuat: ' + daftarPeserta.length + ' peserta.';
+            btn.disabled = false;
+        } catch (err) {
+            console.error('Gagal memuat daftar peserta:', err);
+            statusEl.textContent = 'Daftar peserta resmi belum dapat dimuat. Peserta tetap dapat masuk melalui opsi Susulan.';
+            btn.disabled = false;
         }
     }
 
-    async function startTest() {
-        userName = document.getElementById('user-name').value.trim();
-        if(!userName) return alert("Isi nama Anda!");
+    function populateClasses() {
+        const select = document.getElementById('user-class');
+        const classes = [...new Set(daftarPeserta.map(p => String(p.kelas || '').trim()).filter(Boolean))];
+        classes.sort((a,b) => a.localeCompare(b, 'id', {numeric:true}));
+        select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+        classes.forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k;
+            opt.textContent = k;
+            select.appendChild(opt);
+        });
+    }
 
-        const btn = document.querySelector('#login-screen .btn');
-        btn.disabled = true;
-        btn.textContent = "MENYIAPKAN TES...";
+    function onClassChange() {
+        const kelas = document.getElementById('user-class').value;
+        const absen = document.getElementById('user-absen');
+        document.getElementById('identity-info').style.display = 'none';
+        selectedParticipant = null;
+        absen.disabled = !kelas;
+        absen.innerHTML = '<option value="">-- Pilih No. Absen --</option>';
+        if (!kelas) return;
 
-        participantId = createParticipantId();
-        sessionCode = "MBTI-" + Date.now();
+        const list = daftarPeserta
+            .filter(p => String(p.kelas || '').trim() === kelas)
+            .sort((a,b) => Number(a.absen) - Number(b.absen));
+        list.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = String(p.absen);
+            opt.textContent = String(p.absen);
+            absen.appendChild(opt);
+        });
+    }
+
+    function onAbsenChange() {
+        const kelas = document.getElementById('user-class').value;
+        const absen = document.getElementById('user-absen').value;
+        selectedParticipant = daftarPeserta.find(p =>
+            String(p.kelas || '').trim() === kelas && String(p.absen || '').trim() === absen
+        ) || null;
+
+        const info = document.getElementById('identity-info');
+        if (selectedParticipant) {
+            document.getElementById('display-name').textContent = selectedParticipant.nama || '-';
+            document.getElementById('display-id').textContent = selectedParticipant.id || '-';
+            info.style.display = 'block';
+        } else {
+            info.style.display = 'none';
+        }
+    }
+
+    function toggleSusulan() {
+        isSusulan = document.getElementById('is-susulan').checked;
+        document.getElementById('official-fields').style.display = isSusulan ? 'none' : 'block';
+        document.getElementById('susulan-fields').style.display = isSusulan ? 'block' : 'none';
+        if (isSusulan) {
+            selectedParticipant = null;
+        } else {
+            document.getElementById('susulan-name').value = '';
+            document.getElementById('susulan-class').value = '';
+            document.getElementById('susulan-absen').value = '';
+        }
+    }
+
+    function createSusulanId(nama, kelas, absen) {
+        const key = 'PRC_SUSULAN_ID_' + [nama, kelas, absen].map(v => String(v || '').trim().toUpperCase()).join('|');
+        const existing = localStorage.getItem(key);
+        if (existing) return existing;
+        const id = 'SMUK-SUS-' + Date.now().toString(36).toUpperCase();
+        localStorage.setItem(key, id);
+        return id;
+    }
+
+    function sendToPRC(data) {
+        try {
+            // text/plain avoids a CORS preflight when this HTML is opened directly.
+            return fetch(PRC_API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(data),
+                keepalive: true
+            }).catch(function(err) {
+                console.warn("PRC API send failed:", err);
+            });
+        } catch (err) {
+            console.warn("PRC API send failed:", err);
+            return Promise.resolve();
+        }
+    }
+
+    function saveMasterToSheet() {
+        const now = new Date();
+        sessionCode = "HOL-" + now.getTime();
         testStartTime = Date.now();
 
-        const masterPayload = {
+        let nama = '';
+        let kelas = '';
+        let absen = '';
+
+        if (isSusulan) {
+            nama = document.getElementById('susulan-name').value.trim();
+            kelas = document.getElementById('susulan-class').value.trim();
+            absen = document.getElementById('susulan-absen').value.trim();
+            participantId = createSusulanId(nama, kelas, absen);
+        } else {
+            if (!selectedParticipant) return false;
+            participantId = String(selectedParticipant.id || '').trim();
+            nama = String(selectedParticipant.nama || '').trim();
+            kelas = String(selectedParticipant.kelas || '').trim();
+            absen = String(selectedParticipant.absen || '').trim();
+        }
+
+        userName = nama;
+
+        const payload = {
             tes: "MASTER",
             id: participantId,
-            tanggal: new Date().toLocaleDateString("id-ID"),
-            jam: new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
-            nama: userName,
-            absen: "",
+            tanggal: now.toLocaleDateString("id-ID"),
+            jam: now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+            nama: nama,
+            absen: absen,
             wa: "",
-            kelas: "",
+            kelas: kelas,
             kodeSesi: sessionCode
         };
 
-        await sendToPRC(masterPayload);
+        localStorage.setItem("PRC_PARTICIPANT", JSON.stringify(payload));
+        sendToPRC(payload);
+        return true;
+    }
+
+    function getParticipantData() {
+        try {
+            return JSON.parse(localStorage.getItem("PRC_PARTICIPANT") || "null") || {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function saveHollandToSheet() {
+        const participant = getParticipantData();
+        const now = new Date();
+        const duration = testStartTime ? Math.round((Date.now() - testStartTime) / 1000) : "";
+
+        const payload = {
+            tes: "HOLLAND",
+            id: participant.id || participantId || "",
+            tanggal: participant.tanggal || now.toLocaleDateString("id-ID"),
+            jam: participant.jam || now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+            nama: userName,
+            absen: participant.absen || "",
+            wa: participant.wa || "",
+            kelas: participant.kelas || "",
+            kodeSesi: participant.kodeSesi || sessionCode || "",
+            durasi: duration,
+            answers: answers.slice()
+        };
+
+        sendToPRC(payload);
+    }
+
+    function startTest() {
+        if (isSusulan) {
+            const nama = document.getElementById('susulan-name').value.trim();
+            if (!nama) return alert('Harap isi nama peserta susulan.');
+        } else {
+            if (!selectedParticipant) return alert('Silakan pilih kelas dan nomor absen terlebih dahulu.');
+        }
+
+        if (!saveMasterToSheet()) return;
 
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('test-content').style.display = 'block';
         init();
     }
 
+    document.addEventListener('DOMContentLoaded', loadDaftarPeserta);
+
     function init() {
         const wrapper = document.getElementById('q-wrapper');
         const grid = document.getElementById('q-grid');
+        
         questions.forEach((q, i) => {
             const div = document.createElement('div');
             div.className = `question-box ${i===0?'active':''}`;
             div.id = `qbox-${i}`;
-            div.innerHTML = `<div class="question-text">${i+1}. ${q.q}</div>
+            div.innerHTML = `
+                <div class="question-text">${i+1}. ${q}</div>
                 <div class="opt-container">
-                    <div class="option" id="opt-${i}-A" onclick="select(${i}, 'A')"><span class="opt-label">A.</span> ${q.a}</div>
-                    <div class="option" id="opt-${i}-B" onclick="select(${i}, 'B')"><span class="opt-label">B.</span> ${q.b}</div>
+                    <div class="option" id="opt-${i}-Y" onclick="select(${i}, 'Y')">YA</div>
+                    <div class="option" id="opt-${i}-N" onclick="select(${i}, 'N')">TIDAK</div>
                 </div>`;
             wrapper.appendChild(div);
+
             const gItem = document.createElement('div');
-            gItem.className = 'grid-item'; gItem.id = `grid-${i}`; gItem.innerText = i+1;
+            gItem.className = 'grid-item';
+            gItem.id = `grid-${i}`;
+            gItem.innerText = i+1;
             gItem.onclick = () => jump(i);
             grid.appendChild(gItem);
         });
@@ -216,12 +433,15 @@
 
     function select(idx, val) {
         answers[idx] = val;
-        document.getElementById(`opt-${idx}-A`).classList.remove('selected');
-        document.getElementById(`opt-${idx}-B`).classList.remove('selected');
+        document.getElementById(`opt-${idx}-Y`).classList.remove('selected');
+        document.getElementById(`opt-${idx}-N`).classList.remove('selected');
         document.getElementById(`opt-${idx}-${val}`).classList.add('selected');
         document.getElementById(`grid-${idx}`).classList.add('filled');
-        if(currentIdx < questions.length - 1) setTimeout(() => jump(currentIdx + 1), 200);
-        if(answers.filter(a => a !== null).length === questions.length) document.getElementById('finish-btn').style.display = 'block';
+        
+        if(currentIdx < questions.length - 1) {
+            setTimeout(() => jump(currentIdx + 1), 200);
+        }
+        checkFinishButton();
     }
 
     function jump(idx) {
@@ -236,36 +456,37 @@
         document.getElementById(`grid-${currentIdx}`).classList.add('current');
     }
 
-    async function checkAndFinish() {
-        if(answers.filter(a => a !== null).length < questions.length) return alert("Belum lengkap!");
+    function checkFinishButton() {
+        if(answers.filter(a => a !== null).length === questions.length) {
+            document.getElementById('btn-final').style.display = 'block';
+        }
+    }
 
-        const finishBtn = document.getElementById('finish-btn');
-        finishBtn.disabled = true;
-        finishBtn.textContent = "MENYIMPAN KE SERVER...";
-
-        const duration = testStartTime ? Math.round((Date.now() - testStartTime) / 1000) : "";
-
-        const payload = {
-            tes: "MBTI",
-            id: participantId,
-            nama: userName,
-            kodeSesi: sessionCode,
-            durasi: String(duration),
-            answers: answers
-        };
-
-        await sendToPRC(payload);
-
+    function finishToResult() {
+        if(answers.filter(a => a !== null).length !== questions.length) {
+            return alert("Harap jawab seluruh 108 soal terlebih dahulu.");
+        }
+        saveHollandToSheet();
         document.getElementById('test-content').style.display = 'none';
         document.getElementById('result-screen').style.display = 'block';
     }
 
     function downloadTXT() {
-        let text = "REKAP MBTI 70 - PERSONA RESEARCH & CONSULTING\nNAMA : " + userName.toUpperCase() + "\n---\n";
+        let text = "REKAP RIASEC HOLLAND (108) - PRC\n";
+        text += "=================================\n";
+        const participant = getParticipantData();
+        text += `ID PESERTA   : ${participant.id || participantId || ""}\n`;
+        text += `NAMA PESERTA : ${userName.toUpperCase()}\n`;
+        text += `KELAS        : ${participant.kelas || ""}\n`;
+        text += `NO. ABSEN    : ${participant.absen || ""}\n`;
+        text += `TANGGAL      : ${new Date().toLocaleString()}\n`;
+        text += "=================================\n\n";
         answers.forEach((a, i) => { text += `${i+1}:${a}\n`; });
         const blob = new Blob([text], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = `MBTI70_${userName.replace(/\s+/g,'_')}.txt`; a.click();
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `RIASEC_108_${userName.replace(/\s+/g,'_')}.txt`;
+        a.click();
     }
 </script>
 </body>
