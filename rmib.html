@@ -1,3 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TES MINAT DAN BAKAT - Persona Research & Consulting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #0a192f; --accent: #c5a059; --ivory: #fdfaf5; --white: #ffffff; }
+        * { -webkit-user-select: none; user-select: none; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--ivory); margin: 0; padding: 15px; color: #1a1a1a; display: flex; flex-direction: column; min-height: 100vh; }
+        .container { max-width: 850px; margin: 0 auto; background: var(--white); padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--primary); flex: 1; }
+        header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid var(--accent); padding-bottom: 15px; }
+        .brand { font-weight: 700; font-size: 1.5rem; color: var(--primary); letter-spacing: 1px; }
+        .instruction-card { background: #f9f9f9; padding: 20px; border-radius: 15px; margin-bottom: 25px; border-left: 5px solid var(--accent); font-size: 0.9rem; line-height: 1.6; }
+        input[type="text"], select { width: 100%; padding: 15px; border: 2px solid #f0f0f0; border-radius: 12px; margin-bottom: 15px; font-family: inherit; font-size: 1rem; }
+        .group-card { margin-bottom: 40px; border: 1px solid #eee; border-radius: 20px; overflow: hidden; background: #fff; }
+        .group-header { background: var(--primary); color: var(--accent); padding: 15px 25px; font-weight: 700; font-size: 1.1rem; }
+        .job-row { display: grid; grid-template-columns: 1fr 100px; align-items: center; border-bottom: 1px solid #f9f9f9; padding: 5px 0; }
+        .job-name { padding: 10px 25px; font-size: 1rem; }
+        .rank-input { width: 70px; height: 45px; border: 2px solid #eee; border-radius: 8px; text-align: center; font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-right: 20px; }
+        .rank-input.filled { background: #f0f7f0; border-color: #bcdcbc; }
+        .rank-input.error { background: #fff0f0; border-color: #eebbbb; color: #c62828; }
+        .btn { background: var(--primary); color: var(--accent); border: none; padding: 20px; border-radius: 15px; cursor: pointer; font-weight: 700; width: 100%; font-size: 1.1rem; margin-top: 10px; }
+        footer { text-align: center; padding: 20px; color: #666; font-size: 0.85rem; line-height: 1.5; }
+        .identity-row { margin-bottom: 15px; }
+        .identity-row label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--primary); margin-bottom: 7px; letter-spacing: .4px; }
+        .identity-info { background: #f7f3ea; border: 1px solid #e7dcc6; border-radius: 12px; padding: 13px 15px; margin: 4px 0 15px; line-height: 1.8; font-size: .9rem; }
+        .status-text { text-align: center; font-size: .8rem; color: #777; margin: -10px 0 18px; min-height: 18px; }
+        .susulan-box { background: #fffaf0; border: 1px solid #ead7a8; border-radius: 12px; padding: 12px 14px; margin-top: 12px; font-size: .85rem; }
+        .susulan-box label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+        #susulan-fields { margin-top: 15px; }
+        #susulan-fields input, #susulan-fields select { margin-bottom: 12px; }
+        .btn:disabled { opacity: .55; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="brand">Persona Research & Consulting</div>
+        <div style="font-size: 0.75rem; color: var(--accent); font-weight: 600; letter-spacing: 2px;">TES MINAT DAN BAKAT</div>
+    </header>
+
+    <div id="setup-screen">
+        <div class="instruction-card">
+            <strong>PETUNJUK PENGERJAAN:</strong><br>
+            1. Pilih <b>kelas</b> dan <b>nomor absen</b>. Nama dan ID peserta akan muncul otomatis dari daftar peserta resmi.<br>
+            2. Anda akan melihat 9 Kelompok (A-I), masing-masing berisi 12 pekerjaan.<br>
+            3. Urutkan pekerjaan tersebut dari angka <strong>1 sampai 12</strong> pada setiap kelompok.<br>
+            4. Tulis angka <strong>1</strong> untuk pekerjaan yang paling disukai, dan <strong>12</strong> untuk yang paling tidak disukai.<br>
+            5. Jika peserta belum ada dalam daftar, gunakan pilihan <b>Peserta Susulan</b>.<br>
+            6. Klik tombol "MULAI ASESMEN" untuk memulai.
+        </div>
+
+        <div id="participant-loading" class="status-text">Memuat daftar peserta...</div>
+
+        <div id="official-fields" style="background:#fff; padding:25px; border:1px solid #eee; border-radius:20px;">
+            <div class="identity-row">
+                <label for="user-class">KELAS</label>
+                <select id="user-class" onchange="onClassChange()">
+                    <option value="">-- Pilih Kelas --</option>
+                </select>
+            </div>
+
+            <div class="identity-row">
+                <label for="user-absen">NO. ABSEN</label>
+                <select id="user-absen" onchange="onAbsenChange()" disabled>
+                    <option value="">-- Pilih No. Absen --</option>
+                </select>
+            </div>
+
+            <div id="identity-info" class="identity-info" style="display:none;">
+                <div>Nama: <b id="display-name">-</b></div>
+                <div>ID Peserta: <b id="display-id">-</b></div>
+            </div>
+        </div>
+
+        <div class="susulan-box">
+            <label>
+                <input type="checkbox" id="is-susulan" onchange="toggleSusulan()">
+                Peserta belum terdaftar / peserta susulan
+            </label>
+        </div>
+
+        <div class="identity-row" style="margin-top:15px;">
+            <label for="gender">JENIS KELAMIN</label>
+            <select id="gender">
+                <option value="">Pilih Jenis Kelamin</option>
+                <option value="L">Laki-laki</option>
+                <option value="P">Perempuan</option>
+            </select>
+        </div>
+
+        <div id="susulan-fields" style="display:none;">
+            <div class="identity-row">
+                <label for="susulan-name">NAMA PESERTA</label>
+                <input type="text" id="susulan-name" placeholder="Masukkan Nama Lengkap Peserta...">
+            </div>
+            <div class="identity-row">
+                <label for="susulan-class">KELAS</label>
+                <select id="susulan-class">
+                    <option value="">-- Pilih Kelas --</option>
+                    <option value="X A">X A</option>
+                    <option value="X B">X B</option>
+                    <option value="X C">X C</option>
+                    <option value="X D">X D</option>
+                    <option value="X E">X E</option>
+                </select>
+            </div>
+            <div class="identity-row">
+                <label for="susulan-absen">NO. ABSEN (opsional)</label>
+                <input type="text" id="susulan-absen" inputmode="numeric" placeholder="Contoh: 34">
+            </div>
+        </div>
+
+        <button id="btn-start" class="btn" onclick="startTest()" disabled>MULAI ASESMEN</button>
+    </div>
+
+    <div id="test-screen" style="display:none">
+        <div id="groups-container"></div>
+        <button class="btn" onclick="finishAndDownload()">SELESAI & UNDUH HASIL (.TXT)</button>
+    </div>
+
+    <div id="result-screen" style="display:none; text-align: center;">
+        <h2 style="color:var(--primary)">Terima Kasih!</h2>
+        <p>Jawaban Anda telah berhasil diolah dan disimpan ke sistem.</p>
+        <button class="btn" onclick="location.reload()" style="background:#eee; color:#333;">ULANGI TES</button>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 Digital Assessment System | Persona Research & Consulting
+</footer>
+
 <script>
     if (new Date() > new Date("2029-07-01")) {
         document.body.innerHTML = "<div style='text-align:center; padding-top:100px;'><h3>Masa Berlaku Telah Berakhir.</h3></div>";
@@ -20,7 +155,7 @@
              P: ["Kritikus buku","Ahli pustaka musik","Pejabat klub remaja","Pegawai kantor","Tukang binatu","Ahli rontgent","Petani bunga","Operator mesin sulam","Ahli tata buku","Ahli astronomi","Peraga alat kosmetika","Penata panggung"] },
         H: { L: ["Pemimpin band","Ahli penyuluh jabatan","Pegawai pos","Tukang ledeng","Ahli fisioterapi","Sopir angkutan","Montir radio","Juru bayar","Ahli geologi","Petugas hub. Masyarakat","Penata etalase","Penulis sandiwara radio"],
              P: ["Pemain musik band","Ahli penyuluh jabatan","Pegawai kantorpos","Penjahit","Ahli fisioterapi","Peternak ayam","Ahli reparasi permata","Juru bayar","Ahli geologi","Petugas hub. Masyarakat","Penata etalase","Penulis sandiwara radio"] },
-        I: { L: ["Petugas kesejahteraan sosial","Petugas ekspedisi surat","Tukang sepatu","Paramedic","Petani tanaman hias","Tukang las","Petugas pajak","Asisten laboratorium","Salesman asuransi","Perancang motif tekstil","Penyair","Pramuniaga toko musik"],
+        I: { L: ["Petugas kesejahteraan sosial","Petugas ekspedisi surat","Tukang sepatu","Paramedik","Petani tanaman hias","Tukang las","Petugas pajak","Asisten laboratorium","Salesman asuransi","Perancang motif tekstil","Penyair","Pramuniaga toko musik"],
              P: ["Petugas kesejahteraan sosial","Petugas arsip","Juru masak","Perawat orang tua","Tukang kebun","Operator mesin kaos kaki","Petugas pajak","Asisten laboratorium","Peraga barang","Perancang motif tekstil","Penyair","Pramuniaga toko musik"] }
     };
 
@@ -61,7 +196,8 @@
 
         } catch (err) {
             console.error('Gagal memuat daftar peserta:', err);
-            statusEl.textContent = 'Daftar peserta resmi belum dapat dimuat. Silakan gunakan opsi Peserta Susulan.';
+            statusEl.textContent = 'Silakan pilih kelas di bawah atau gunakan Opsi Susulan.';
+            populateFallbackClasses();
             btn.disabled = false;
         }
     }
@@ -70,10 +206,28 @@
         const select = document.getElementById('user-class');
         const classes = [...new Set(daftarPeserta.map(p => String(p.kelas || '').trim()).filter(Boolean))];
 
+        if (classes.length === 0) {
+            populateFallbackClasses();
+            return;
+        }
+
         classes.sort((a, b) => a.localeCompare(b, 'id', { numeric: true }));
 
         select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
         classes.forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k;
+            opt.textContent = k;
+            select.appendChild(opt);
+        });
+    }
+
+    function populateFallbackClasses() {
+        const select = document.getElementById('user-class');
+        const defaultClasses = ["X A", "X B", "X C", "X D", "X E", "XI A", "XI B", "XII A"];
+        
+        select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+        defaultClasses.forEach(k => {
             const opt = document.createElement('option');
             opt.value = k;
             opt.textContent = k;
@@ -97,12 +251,21 @@
             .filter(p => String(p.kelas || '').trim() === kelas)
             .sort((a, b) => Number(a.absen) - Number(b.absen));
 
-        list.forEach(p => {
-            const opt = document.createElement('option');
-            opt.value = String(p.absen);
-            opt.textContent = String(p.absen);
-            absen.appendChild(opt);
-        });
+        if (list.length > 0) {
+            list.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = String(p.absen);
+                opt.textContent = String(p.absen);
+                absen.appendChild(opt);
+            });
+        } else {
+            for (let i = 1; i <= 40; i++) {
+                const opt = document.createElement('option');
+                opt.value = String(i);
+                opt.textContent = String(i);
+                absen.appendChild(opt);
+            }
+        }
     }
 
     function onAbsenChange() {
@@ -178,12 +341,16 @@
             absen = document.getElementById('susulan-absen').value.trim();
             participantId = createSusulanId(nama, kelas, absen);
         } else {
-            if (!selectedParticipant) return false;
+            kelas = document.getElementById('user-class').value.trim();
+            absen = document.getElementById('user-absen').value.trim();
 
-            participantId = String(selectedParticipant.id || '').trim();
-            nama = String(selectedParticipant.nama || '').trim();
-            kelas = String(selectedParticipant.kelas || '').trim();
-            absen = String(selectedParticipant.absen || '').trim();
+            if (selectedParticipant) {
+                participantId = String(selectedParticipant.id || '').trim();
+                nama = String(selectedParticipant.nama || '').trim();
+            } else {
+                nama = "Peserta " + kelas + " Absen " + absen;
+                participantId = createSusulanId(nama, kelas, absen);
+            }
         }
 
         const payload = {
@@ -243,7 +410,9 @@
             const nama = document.getElementById('susulan-name').value.trim();
             if (!nama) return alert('Harap isi nama peserta susulan.');
         } else {
-            if (!selectedParticipant) return alert('Silakan pilih kelas dan nomor absen terlebih dahulu.');
+            const kelas = document.getElementById('user-class').value;
+            const absen = document.getElementById('user-absen').value;
+            if (!kelas || !absen) return alert('Silakan pilih kelas dan nomor absen terlebih dahulu.');
         }
 
         if (!saveMasterToSheet()) return;
@@ -258,6 +427,7 @@
     function renderJobs() {
         const gender = document.getElementById('gender').value;
         const container = document.getElementById('groups-container');
+        container.innerHTML = '';
         ["A","B","C","D","E","F","G","H","I"].forEach(gKey => {
             let html = `<div class="group-card"><div class="group-header">KELOMPOK ${gKey}</div>`;
             jobs[gKey][gender].forEach((job, idx) => {
@@ -342,3 +512,5 @@
         document.getElementById('result-screen').style.display = 'block';
     }
 </script>
+</body>
+</html>
