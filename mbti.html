@@ -109,7 +109,7 @@
         <button class="btn" onclick="startTest()">Mulai Asesmen</button>
     </div>
 
-    <div id="test-content"    <div id="test-content" style="display:none">
+    <div id="test-content" style="display:none">
         <div id="q-wrapper"></div>
         <div class="nav-grid" id="q-grid"></div>
         <button id="finish-btn" class="btn btn-finish" onclick="checkAndFinish()">Selesai & Rekap Jawaban</button>
@@ -199,6 +199,11 @@
         {q: "Apakah Anda cenderung lebih:", a: "hati-hati daripada spontan, ATAU", b: "spontan daripada hati-hati"}
     ];
 
+    // Validasi jumlah soal saat halaman di-load
+    if (questions.length !== 70) {
+        console.error("ERROR: Jumlah soal MBTI harus 70.");
+    }
+
     let currentIdx = 0;
     let answers = new Array(questions.length).fill(null);
     let userName = "";
@@ -219,8 +224,10 @@
                 body: JSON.stringify(data),
                 keepalive: true
             });
+            return true;
         } catch (e) {
-            console.error("Gagal kirim via Fetch:", e);
+            console.error("Gagal kirim ke Apps Script:", e);
+            throw e;
         }
     }
 
@@ -238,13 +245,7 @@
 
             const result = await response.json();
 
-            // Kompatibel dengan beberapa format respons Code.gs:
-            // 1. {status:"success", peserta:[...]}
-            // 2. {status:"success", data:[...]}
-            // 3. {peserta:[...]}
-            // 4. array peserta langsung
             let peserta = [];
-
             if (Array.isArray(result)) {
                 peserta = result;
             } else if (Array.isArray(result.peserta)) {
@@ -426,7 +427,11 @@
         localStorage.setItem("PRC_PARTICIPANT_ID", participantId);
         localStorage.setItem("PRC_PARTICIPANT_NAME", userName);
 
-        await sendToPRC(masterPayload);
+        try {
+            await sendToPRC(masterPayload);
+        } catch (e) {
+            console.error("Gagal mengirim data MASTER:", e);
+        }
 
         document.getElementById("login-screen").style.display = "none";
         document.getElementById("test-content").style.display = "block";
@@ -438,6 +443,9 @@
     function init() {
         const wrapper = document.getElementById('q-wrapper');
         const grid = document.getElementById('q-grid');
+        wrapper.innerHTML = '';
+        grid.innerHTML = '';
+
         questions.forEach((q, i) => {
             const div = document.createElement('div');
             div.className = `question-box ${i===0?'active':''}`;
@@ -448,8 +456,11 @@
                     <div class="option" id="opt-${i}-B" onclick="select(${i}, 'B')"><span class="opt-label">B.</span> ${q.b}</div>
                 </div>`;
             wrapper.appendChild(div);
+
             const gItem = document.createElement('div');
-            gItem.className = 'grid-item'; gItem.id = `grid-${i}`; gItem.innerText = i+1;
+            gItem.className = 'grid-item'; 
+            gItem.id = `grid-${i}`; 
+            gItem.innerText = i+1;
             gItem.onclick = () => jump(i);
             grid.appendChild(gItem);
         });
@@ -458,12 +469,22 @@
 
     function select(idx, val) {
         answers[idx] = val;
+        
         document.getElementById(`opt-${idx}-A`).classList.remove('selected');
         document.getElementById(`opt-${idx}-B`).classList.remove('selected');
         document.getElementById(`opt-${idx}-${val}`).classList.add('selected');
+        
         document.getElementById(`grid-${idx}`).classList.add('filled');
-        if(currentIdx < questions.length - 1) setTimeout(() => jump(currentIdx + 1), 200);
-        if(answers.filter(a => a !== null).length === questions.length) document.getElementById('finish-btn').style.display = 'block';
+        
+        // Autonext hanya jika bukan nomor terakhir
+        if(currentIdx < questions.length - 1) {
+            setTimeout(() => jump(currentIdx + 1), 200);
+        }
+
+        // Tampilkan tombol selesai jika SEMUA 70 soal sudah dijawab
+        if(answers.filter(a => a !== null).length === questions.length) {
+            document.getElementById('finish-btn').style.display = 'block';
+        }
     }
 
     function jump(idx) {
@@ -479,7 +500,14 @@
     }
 
     async function checkAndFinish() {
-        if(answers.filter(a => a !== null).length < questions.length) return alert("Belum lengkap!");
+        const unanswered = answers
+            .map((answer, index) => answer === null ? index + 1 : null)
+            .filter(Boolean);
+
+        if (unanswered.length > 0) {
+            alert("Jawaban belum lengkap. Silakan lengkapi seluruh 70 soal terlebih dahulu.\n\nNomor yang belum dijawab: Q" + unanswered.join(", Q"));
+            return;
+        }
 
         const finishBtn = document.getElementById('finish-btn');
         finishBtn.disabled = true;
@@ -492,17 +520,22 @@
         );
 
         const payload = {
-            tes: "KEPRIBADIAN1",
+            tes: "MBTI",
             id: participantId,
             nama: userName,
             absen: participant.absen || "",
             kelas: participant.kelas || "",
             kodeSesi: sessionCode,
             durasi: String(duration),
-            answers: answers
+            jumlahSoal: 70,
+            answers: answers.slice()
         };
 
-        await sendToPRC(payload);
+        try {
+            await sendToPRC(payload);
+        } catch (e) {
+            console.error("Gagal mengirim payload MBTI:", e);
+        }
 
         document.getElementById('test-content').style.display = 'none';
         document.getElementById('result-screen').style.display = 'block';
@@ -512,15 +545,22 @@
         const participant = JSON.parse(
             localStorage.getItem("PRC_PARTICIPANT") || "{}"
         );
-        let text = "REKAP KEPRIBADIAN 1 - PERSONA RESEARCH & CONSULTING\n";
+        let text = "REKAP MBTI 70 - PERSONA RESEARCH & CONSULTING\n\n";
         text += "ID PESERTA : " + (participant.id || participantId) + "\n";
-        text += "NAMA : " + userName.toUpperCase() + "\n";
-        text += "KELAS : " + (participant.kelas || "") + "\n";
-        text += "NO. ABSEN : " + (participant.absen || "") + "\n---\n";
-        answers.forEach((a, i) => { text += `${i+1}:${a}\n`; });
-        const blob = new Blob([text], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = `KEP1_${userName.replace(/\s+/g,'_')}.txt`; a.click();
+        text += "NAMA       : " + userName.toUpperCase() + "\n";
+        text += "KELAS      : " + (participant.kelas || "") + "\n";
+        text += "NO. ABSEN  : " + (participant.absen || "") + "\n";
+        text += "----------------------------------------\n\n";
+        
+        answers.forEach((a, i) => { 
+            text += `Q${i + 1} : ${a || '-'}\n`; 
+        });
+
+        const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+        const a = document.createElement('a'); 
+        a.href = URL.createObjectURL(blob);
+        a.download = `MBTI70_${userName.replace(/\s+/g,'_')}.txt`; 
+        a.click();
     }
 </script>
 </body>
