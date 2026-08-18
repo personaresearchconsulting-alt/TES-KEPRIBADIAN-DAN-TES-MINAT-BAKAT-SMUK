@@ -132,7 +132,7 @@
         }
 
         .btn:disabled {
-            opacity: .6;
+            opacity: 0.6;
             cursor: not-allowed;
         }
 
@@ -173,6 +173,12 @@
             font-size: 1em;
             box-sizing: border-box;
             background: #fff;
+            cursor: pointer;
+        }
+
+        select:disabled {
+            background: #f3f3f3;
+            cursor: not-allowed;
         }
 
         .identity-row {
@@ -208,6 +214,14 @@
             color: #777;
             margin: 6px 0 10px;
             text-align: center;
+        }
+
+        .status-success {
+            color: #198754;
+        }
+
+        .status-error {
+            color: #dc3545;
         }
 
         .susulan-box {
@@ -269,10 +283,9 @@
         </p>
     </div>
 
-
-    <!-- =========================================================
+    <!-- =====================================================
          LOGIN
-         ========================================================= -->
+    ====================================================== -->
 
     <div id="login-screen">
 
@@ -280,13 +293,15 @@
             <strong>Identitas Peserta:</strong><br>
             Pilih <b>kelas</b> dan <b>nomor absen</b>.
             Nama dan ID peserta akan muncul otomatis dari daftar peserta resmi.
-            Jika peserta belum ada di daftar, gunakan pilihan <b>Peserta Susulan</b>.
+            Jika peserta belum ada di daftar, gunakan pilihan
+            <b>Peserta Susulan</b>.
         </div>
 
         <div id="participant-loading" class="status-text">
-            Memuat daftar peserta...
+            Menghubungkan ke daftar peserta...
         </div>
 
+        <!-- PESERTA RESMI -->
 
         <div id="official-fields">
 
@@ -296,17 +311,16 @@
                     KELAS
                 </label>
 
-                <select id="user-class"
-                        onchange="onClassChange()">
-
+                <select
+                    id="user-class"
+                    onchange="onClassChange()"
+                >
                     <option value="">
-                        -- Pilih Kelas --
+                        -- Memuat Kelas --
                     </option>
-
                 </select>
 
             </div>
-
 
             <div class="identity-row">
 
@@ -314,22 +328,23 @@
                     NO. ABSEN
                 </label>
 
-                <select id="user-absen"
-                        onchange="onAbsenChange()"
-                        disabled>
-
+                <select
+                    id="user-absen"
+                    onchange="onAbsenChange()"
+                    disabled
+                >
                     <option value="">
-                        -- Pilih No. Absen --
+                        -- Pilih Kelas Terlebih Dahulu --
                     </option>
-
                 </select>
 
             </div>
 
-
-            <div id="identity-info"
-                 class="identity-info"
-                 style="display:none;">
+            <div
+                id="identity-info"
+                class="identity-info"
+                style="display:none;"
+            >
 
                 <div>
                     Nama:
@@ -345,14 +360,17 @@
 
         </div>
 
+        <!-- PESERTA SUSULAN -->
 
         <div class="susulan-box">
 
             <label>
 
-                <input type="checkbox"
-                       id="is-susulan"
-                       onchange="toggleSusulan">
+                <input
+                    type="checkbox"
+                    id="is-susulan"
+                    onchange="toggleSusulan()"
+                >
 
                 Peserta belum terdaftar / peserta susulan
 
@@ -360,9 +378,10 @@
 
         </div>
 
-
-        <div id="susulan-fields"
-             style="display:none;">
+        <div
+            id="susulan-fields"
+            style="display:none;"
+        >
 
             <div class="identity-row">
 
@@ -370,12 +389,13 @@
                     NAMA PESERTA
                 </label>
 
-                <input type="text"
-                       id="susulan-name"
-                       placeholder="Masukkan Nama Lengkap Peserta...">
+                <input
+                    type="text"
+                    id="susulan-name"
+                    placeholder="Masukkan Nama Lengkap Peserta..."
+                >
 
             </div>
-
 
             <div class="identity-row">
 
@@ -399,79 +419,91 @@
 
             </div>
 
-
             <div class="identity-row">
 
                 <label for="susulan-absen">
                     NO. ABSEN (opsional)
                 </label>
 
-                <input type="text"
-                       id="susulan-absen"
-                       inputmode="numeric"
-                       placeholder="Contoh: 34">
+                <input
+                    type="text"
+                    id="susulan-absen"
+                    inputmode="numeric"
+                    placeholder="Contoh: 34"
+                >
 
             </div>
 
         </div>
 
-
-        <button id="btn-start"
-                class="btn"
-                onclick="startTest()"
-                disabled>
-
-            MULAI SEKARANG
-
+        <button
+            id="btn-start"
+            class="btn"
+            onclick="startTest()"
+            disabled
+        >
+            MEMUAT DATA PESERTA...
         </button>
 
     </div>
 
 
-    <!-- =========================================================
+    <!-- =====================================================
          TEST
-         ========================================================= -->
+    ====================================================== -->
 
-    <div id="test-content"
-         style="display:none">
+    <div
+        id="test-content"
+        style="display:none"
+    >
 
         <div id="q-wrapper"></div>
 
-        <div class="nav-grid"
-             id="q-grid"></div>
+        <div
+            class="nav-grid"
+            id="q-grid"
+        ></div>
 
-        <button id="btn-final"
-                class="btn btn-finish"
-                onclick="finishToResult()">
-
+        <button
+            id="btn-final"
+            class="btn btn-finish"
+            onclick="finishToResult()"
+        >
             SELESAI & REKAP JAWABAN
-
         </button>
 
     </div>
 
 
-    <!-- =========================================================
-         RESULT
-         ========================================================= -->
+    <!-- =====================================================
+         HASIL
+    ====================================================== -->
 
-    <div id="result-screen"
-         style="display:none; text-align:center;">
+    <div
+        id="result-screen"
+        style="display:none; text-align:center;"
+    >
 
         <h3 style="color:var(--primary)">
             Tes Selesai
         </h3>
 
-        <p style="font-size:.9em; color:#666; margin-bottom:20px;">
+        <p
+            style="
+                font-size:.9em;
+                color:#666;
+                margin-bottom:20px;
+            "
+        >
             Seluruh jawaban telah direkap.
             Silakan unduh hasil dan kirimkan ke Admin.
         </p>
 
-        <button class="btn"
-                onclick="downloadTXT()">
-
+        <button
+            class="btn"
+            onclick="downloadTXT()"
+        >
             UNDUH HASIL (.TXT)
-
         </button>
 
     </div>
@@ -482,8 +514,8 @@
 <script>
 
     /* =========================================================
-       BATAS AKSES
-       ========================================================= */
+       MASA AKSES
+    ========================================================= */
 
     if (new Date() > new Date("2029-07-01")) {
 
@@ -494,8 +526,8 @@
 
 
     /* =========================================================
-       SOAL HOLLAND
-       ========================================================= */
+       SOAL HOLLAND - 108
+    ========================================================= */
 
     const questions = [
 
@@ -612,35 +644,23 @@
 
 
     /* =========================================================
-       VALIDASI SOAL
-       ========================================================= */
-
-    if (questions.length !== 108) {
-
-        console.error(
-            "ERROR: jumlah soal Holland bukan 108.",
-            questions.length
-        );
-
-    }
-
-
-    /* =========================================================
-       STATE
-       ========================================================= */
+       VARIABEL
+    ========================================================= */
 
     let currentIdx = 0;
 
     let answers =
-        new Array(questions.length)
-            .fill(null);
+        new Array(
+            questions.length
+        ).fill(null);
 
     let userName = "";
 
+    const PRC_API_URL =
+        "https://script.google.com/macros/s/AKfycbyWpBAb3WQxj8vZ8rlZ2YTjZWQKa3IOB9D7QhZMnxLALnQSJMIt27NefS5za0zF7Ad/exec";
+
     let participantId = "";
-
     let sessionCode = "";
-
     let testStartTime = null;
 
     let daftarPeserta = [];
@@ -648,14 +668,6 @@
     let selectedParticipant = null;
 
     let isSusulan = false;
-
-
-    /* =========================================================
-       URL APPS SCRIPT
-       ========================================================= */
-
-    const PRC_API_URL =
-        "https://script.google.com/macros/s/AKfycbyWpBAb3WQxj8vZ8rlZ2YTjZWQKa3IOB9D7QhZMnxLALnQSJMIt27NefS5za0zF7Ad/exec";
 
 
     /* =========================================================
@@ -669,26 +681,47 @@
                 "participant-loading"
             );
 
-        const btn =
+        const classSelect =
+            document.getElementById(
+                "user-class"
+            );
+
+        const absenSelect =
+            document.getElementById(
+                "user-absen"
+            );
+
+        const startButton =
             document.getElementById(
                 "btn-start"
             );
+
 
         try {
 
             statusEl.textContent =
                 "Memuat daftar peserta resmi...";
 
+            statusEl.className =
+                "status-text";
+
+
+            const url =
+                PRC_API_URL +
+                "?action=getDaftarPeserta&_=" +
+                Date.now();
+
+
             const response =
                 await fetch(
-                    PRC_API_URL +
-                    "?action=getDaftarPeserta&_=" +
-                    Date.now(),
+                    url,
                     {
                         method: "GET",
-                        cache: "no-store"
+                        cache: "no-store",
+                        redirect: "follow"
                     }
                 );
+
 
             if (!response.ok) {
 
@@ -699,32 +732,104 @@
 
             }
 
-            const result =
-                await response.json();
+
+            const text =
+                await response.text();
+
+
+            if (!text) {
+
+                throw new Error(
+                    "Respons server kosong."
+                );
+
+            }
+
+
+            let result;
+
+            try {
+
+                result =
+                    JSON.parse(text);
+
+            } catch (jsonError) {
+
+                console.error(
+                    "Respons bukan JSON:",
+                    text
+                );
+
+                throw new Error(
+                    "Respons Apps Script bukan JSON."
+                );
+
+            }
+
 
             if (
+                !result ||
                 result.status !== "success" ||
                 !Array.isArray(result.peserta)
             ) {
 
                 throw new Error(
-                    result.message ||
-                    "Data peserta tidak valid."
+                    result &&
+                    result.message
+                        ? result.message
+                        : "Format daftar peserta tidak valid."
                 );
 
             }
 
+
             daftarPeserta =
-                result.peserta;
+                result.peserta
+                    .filter(
+                        p =>
+                            p &&
+                            String(
+                                p.kelas || ""
+                            ).trim() !== ""
+                    );
+
+
+            if (
+                daftarPeserta.length === 0
+            ) {
+
+                throw new Error(
+                    "Daftar peserta kosong."
+                );
+
+            }
+
 
             populateClasses();
+
 
             statusEl.textContent =
                 "Daftar peserta berhasil dimuat: " +
                 daftarPeserta.length +
                 " peserta.";
 
-            btn.disabled = false;
+            statusEl.className =
+                "status-text status-success";
+
+
+            startButton.disabled =
+                false;
+
+            startButton.textContent =
+                "MULAI SEKARANG";
+
+
+            classSelect.disabled =
+                false;
+
+            absenSelect.disabled =
+                true;
+
 
         } catch (err) {
 
@@ -733,13 +838,47 @@
                 err
             );
 
+
+            /*
+             * PENTING:
+             * Jangan membuat dropdown kelas
+             * seolah-olah rusak.
+             */
+
+            classSelect.innerHTML =
+                '<option value="">-- Data peserta gagal dimuat --</option>';
+
+            classSelect.disabled =
+                true;
+
+
+            absenSelect.innerHTML =
+                '<option value="">-- Tidak tersedia --</option>';
+
+            absenSelect.disabled =
+                true;
+
+
             statusEl.textContent =
                 "Daftar peserta resmi belum dapat dimuat. " +
-                "Peserta tetap dapat masuk melalui opsi Susulan.";
+                "Gunakan opsi Peserta Susulan jika diperlukan.";
 
-            btn.disabled = false;
+            statusEl.className =
+                "status-text status-error";
+
+
+            /*
+             * Tetap izinkan peserta susulan.
+             */
+
+            startButton.disabled =
+                false;
+
+            startButton.textContent =
+                "MULAI SEKARANG";
 
         }
+
     }
 
 
@@ -754,6 +893,7 @@
                 "user-class"
             );
 
+
         const classes =
             [
                 ...new Set(
@@ -764,9 +904,12 @@
                                     p.kelas || ""
                                 ).trim()
                         )
-                        .filter(Boolean)
+                        .filter(
+                            Boolean
+                        )
                 )
             ];
+
 
         classes.sort(
             (a, b) =>
@@ -779,29 +922,42 @@
                 )
         );
 
+
         select.innerHTML =
             '<option value="">-- Pilih Kelas --</option>';
 
-        classes.forEach(k => {
 
-            const opt =
-                document.createElement(
-                    "option"
+        classes.forEach(
+            kelas => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    kelas;
+
+                option.textContent =
+                    kelas;
+
+                select.appendChild(
+                    option
                 );
 
-            opt.value = k;
+            }
+        );
 
-            opt.textContent = k;
 
-            select.appendChild(opt);
+        select.disabled =
+            false;
 
-        });
     }
 
 
     /* =========================================================
-       KELAS
-       ========================================================= */
+       PILIH KELAS
+    ========================================================= */
 
     function onClassChange() {
 
@@ -810,23 +966,40 @@
                 "user-class"
             ).value;
 
+
         const absen =
             document.getElementById(
                 "user-absen"
             );
 
-        document.getElementById(
-            "identity-info"
-        ).style.display = "none";
 
-        selectedParticipant = null;
+        const info =
+            document.getElementById(
+                "identity-info"
+            );
 
-        absen.disabled = !kelas;
+
+        selectedParticipant =
+            null;
+
+
+        info.style.display =
+            "none";
+
 
         absen.innerHTML =
             '<option value="">-- Pilih No. Absen --</option>';
 
-        if (!kelas) return;
+
+        if (!kelas) {
+
+            absen.disabled =
+                true;
+
+            return;
+
+        }
+
 
         const list =
             daftarPeserta
@@ -837,33 +1010,109 @@
                         ).trim() === kelas
                 )
                 .sort(
-                    (a, b) =>
-                        Number(a.absen) -
-                        Number(b.absen)
+                    (a, b) => {
+
+                        const aNum =
+                            parseInt(
+                                String(
+                                    a.absen || ""
+                                ).replace(
+                                    /\D/g,
+                                    ""
+                                ),
+                                10
+                            );
+
+                        const bNum =
+                            parseInt(
+                                String(
+                                    b.absen || ""
+                                ).replace(
+                                    /\D/g,
+                                    ""
+                                ),
+                                10
+                            );
+
+                        if (
+                            Number.isNaN(aNum) &&
+                            Number.isNaN(bNum)
+                        ) {
+                            return String(
+                                a.absen || ""
+                            ).localeCompare(
+                                String(
+                                    b.absen || ""
+                                )
+                            );
+                        }
+
+                        if (
+                            Number.isNaN(aNum)
+                        ) {
+                            return 1;
+                        }
+
+                        if (
+                            Number.isNaN(bNum)
+                        ) {
+                            return -1;
+                        }
+
+                        return aNum - bNum;
+
+                    }
                 );
 
-        list.forEach(p => {
 
-            const opt =
-                document.createElement(
-                    "option"
+        if (list.length === 0) {
+
+            absen.innerHTML =
+                '<option value="">-- Tidak ada peserta --</option>';
+
+            absen.disabled =
+                true;
+
+            return;
+
+        }
+
+
+        list.forEach(
+            peserta => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    String(
+                        peserta.absen || ""
+                    ).trim();
+
+                option.textContent =
+                    String(
+                        peserta.absen || ""
+                    ).trim();
+
+                absen.appendChild(
+                    option
                 );
 
-            opt.value =
-                String(p.absen);
+            }
+        );
 
-            opt.textContent =
-                String(p.absen);
 
-            absen.appendChild(opt);
+        absen.disabled =
+            false;
 
-        });
     }
 
 
     /* =========================================================
-       ABSEN
-       ========================================================= */
+       PILIH ABSEN
+    ========================================================= */
 
     function onAbsenChange() {
 
@@ -872,52 +1121,79 @@
                 "user-class"
             ).value;
 
+
         const absen =
             document.getElementById(
                 "user-absen"
             ).value;
 
-        selectedParticipant =
-            daftarPeserta.find(
-                p =>
-                    String(
-                        p.kelas || ""
-                    ).trim() === kelas &&
-                    String(
-                        p.absen || ""
-                    ).trim() === absen
-            ) || null;
 
         const info =
             document.getElementById(
                 "identity-info"
             );
 
-        if (selectedParticipant) {
+
+        selectedParticipant =
+            daftarPeserta.find(
+                peserta => {
+
+                    const pesertaKelas =
+                        String(
+                            peserta.kelas || ""
+                        ).trim();
+
+                    const pesertaAbsen =
+                        String(
+                            peserta.absen || ""
+                        ).trim();
+
+                    return (
+                        pesertaKelas === kelas &&
+                        pesertaAbsen === absen
+                    );
+
+                }
+            ) || null;
+
+
+        if (
+            selectedParticipant
+        ) {
 
             document.getElementById(
                 "display-name"
             ).textContent =
-                selectedParticipant.nama || "-";
+                String(
+                    selectedParticipant.nama || "-"
+                );
+
 
             document.getElementById(
                 "display-id"
             ).textContent =
-                selectedParticipant.id || "-";
+                String(
+                    selectedParticipant.id || "-"
+                );
 
-            info.style.display = "block";
+
+            info.style.display =
+                "block";
+
 
         } else {
 
-            info.style.display = "none";
+            info.style.display =
+                "none";
 
         }
+
     }
 
 
     /* =========================================================
-       SUSULAN
-       ========================================================= */
+       TOGGLE SUSULAN
+    ========================================================= */
 
     function toggleSusulan() {
 
@@ -926,12 +1202,14 @@
                 "is-susulan"
             ).checked;
 
+
         document.getElementById(
             "official-fields"
         ).style.display =
             isSusulan
                 ? "none"
                 : "block";
+
 
         document.getElementById(
             "susulan-fields"
@@ -940,31 +1218,20 @@
                 ? "block"
                 : "none";
 
+
         if (isSusulan) {
 
-            selectedParticipant = null;
-
-        } else {
-
-            document.getElementById(
-                "susulan-name"
-            ).value = "";
-
-            document.getElementById(
-                "susulan-class"
-            ).value = "";
-
-            document.getElementById(
-                "susulan-absen"
-            ).value = "";
+            selectedParticipant =
+                null;
 
         }
+
     }
 
 
     /* =========================================================
-       ID SUSULAN
-       ========================================================= */
+       CREATE ID SUSULAN
+    ========================================================= */
 
     function createSusulanId(
         nama,
@@ -980,15 +1247,21 @@
                 absen
             ]
                 .map(
-                    v =>
-                        String(v || "")
+                    value =>
+                        String(
+                            value || ""
+                        )
                             .trim()
                             .toUpperCase()
                 )
                 .join("|");
 
+
         const existing =
-            localStorage.getItem(key);
+            localStorage.getItem(
+                key
+            );
+
 
         if (existing) {
 
@@ -996,48 +1269,32 @@
 
         }
 
+
         const id =
             "SMUK-SUS-" +
             Date.now()
                 .toString(36)
                 .toUpperCase();
 
+
         localStorage.setItem(
             key,
             id
         );
 
+
         return id;
+
     }
 
 
     /* =========================================================
        KIRIM KE APPS SCRIPT
-       ========================================================= */
+    ========================================================= */
 
     async function sendToPRC(data) {
 
-        if (!data || !data.tes) {
-
-            console.error(
-                "Payload kosong/tidak valid:",
-                data
-            );
-
-            return false;
-
-        }
-
         try {
-
-            const json =
-                JSON.stringify(data);
-
-            /*
-             * text/plain sengaja digunakan agar
-             * Apps Script menerima data pada
-             * e.postData.contents tanpa preflight.
-             */
 
             await fetch(
                 PRC_API_URL,
@@ -1048,46 +1305,53 @@
                         "Content-Type":
                             "text/plain;charset=utf-8"
                     },
-                    body: json,
+                    body:
+                        JSON.stringify(data),
                     keepalive: true
                 }
             );
 
+
             return true;
 
-        } catch (err) {
+
+        } catch (error) {
 
             console.error(
-                "Gagal mengirim ke Apps Script:",
-                err
+                "Gagal mengirim data:",
+                error
             );
 
             return false;
+
         }
+
     }
 
 
     /* =========================================================
-       MASTER
-       ========================================================= */
+       SIMPAN MASTER
+    ========================================================= */
 
     async function saveMasterToSheet() {
 
         const now =
             new Date();
 
+
         sessionCode =
             "HOL-" +
             now.getTime();
 
+
         testStartTime =
             Date.now();
 
+
         let nama = "";
-
         let kelas = "";
-
         let absen = "";
+
 
         if (isSusulan) {
 
@@ -1096,15 +1360,18 @@
                     "susulan-name"
                 ).value.trim();
 
+
             kelas =
                 document.getElementById(
                     "susulan-class"
                 ).value.trim();
 
+
             absen =
                 document.getElementById(
                     "susulan-absen"
                 ).value.trim();
+
 
             if (!nama) {
 
@@ -1116,6 +1383,7 @@
 
             }
 
+
             if (!kelas) {
 
                 alert(
@@ -1126,12 +1394,14 @@
 
             }
 
+
             participantId =
                 createSusulanId(
                     nama,
                     kelas,
                     absen
                 );
+
 
         } else {
 
@@ -1145,36 +1415,58 @@
 
             }
 
+
             participantId =
                 String(
                     selectedParticipant.id || ""
                 ).trim();
+
 
             nama =
                 String(
                     selectedParticipant.nama || ""
                 ).trim();
 
+
             kelas =
                 String(
                     selectedParticipant.kelas || ""
                 ).trim();
+
 
             absen =
                 String(
                     selectedParticipant.absen || ""
                 ).trim();
 
+
+            if (
+                !participantId ||
+                !nama ||
+                !kelas
+            ) {
+
+                alert(
+                    "Data peserta tidak lengkap. Silakan pilih ulang kelas dan nomor absen."
+                );
+
+                return false;
+
+            }
+
         }
 
-        userName = nama;
+
+        userName =
+            nama;
 
 
         const payload = {
 
             tes: "MASTER",
 
-            id: participantId,
+            id:
+                participantId,
 
             tanggal:
                 now.toLocaleDateString(
@@ -1191,138 +1483,77 @@
                     }
                 ),
 
-            nama: nama,
+            nama:
+                nama,
 
-            absen: absen,
+            absen:
+                absen,
 
-            wa: "",
+            wa:
+                "",
 
-            kelas: kelas,
+            kelas:
+                kelas,
 
-            kodeSesi: sessionCode
+            kodeSesi:
+                sessionCode
 
         };
 
 
         localStorage.setItem(
             "PRC_PARTICIPANT",
-            JSON.stringify(payload)
+            JSON.stringify(
+                payload
+            )
         );
 
 
-        const sent =
-            await sendToPRC(
-                payload
-            );
+        await sendToPRC(
+            payload
+        );
 
-        if (!sent) {
-
-            console.warn(
-                "MASTER tidak dapat diverifikasi."
-            );
-
-        }
 
         return true;
+
     }
 
 
     /* =========================================================
-       PESERTA
-       ========================================================= */
+       AMBIL DATA PESERTA
+    ========================================================= */
 
     function getParticipantData() {
 
         try {
 
-            const raw =
+            return JSON.parse(
                 localStorage.getItem(
                     "PRC_PARTICIPANT"
-                );
+                ) || "null"
+            ) || {};
 
-            return raw
-                ? JSON.parse(raw)
-                : {};
-
-        } catch (e) {
-
-            console.error(
-                "Gagal membaca participant data:",
-                e
-            );
+        } catch (error) {
 
             return {};
 
         }
-    }
 
-
-    /* =========================================================
-       NORMALISASI JAWABAN
-       ========================================================= */
-
-    function normalizeAnswers() {
-
-        if (
-            !Array.isArray(answers) ||
-            answers.length !== 108
-        ) {
-
-            throw new Error(
-                "Jumlah jawaban Holland harus tepat 108."
-            );
-
-        }
-
-        const normalized =
-            answers.map(
-                function(value, index) {
-
-                    const v =
-                        String(
-                            value == null
-                                ? ""
-                                : value
-                        )
-                            .trim()
-                            .toUpperCase();
-
-                    if (
-                        v !== "Y" &&
-                        v !== "N"
-                    ) {
-
-                        throw new Error(
-                            "Jawaban nomor " +
-                            (index + 1) +
-                            " tidak valid."
-                        );
-
-                    }
-
-                    return v;
-
-                }
-            );
-
-        return normalized;
     }
 
 
     /* =========================================================
        SIMPAN HOLLAND
-       ========================================================= */
+    ========================================================= */
 
     async function saveHollandToSheet() {
 
         const participant =
             getParticipantData();
 
+
         const now =
             new Date();
-
-        const finalAnswers =
-            normalizeAnswers();
 
 
         const duration =
@@ -1336,14 +1567,6 @@
                 : "";
 
 
-        const finalId =
-            String(
-                participant.id ||
-                participantId ||
-                ""
-            ).trim();
-
-
         const finalName =
             String(
                 participant.nama ||
@@ -1352,53 +1575,20 @@
             ).trim();
 
 
-        if (!finalId) {
+        const finalId =
+            String(
+                participant.id ||
+                participantId ||
+                ""
+            ).trim();
 
-            throw new Error(
-                "ID peserta kosong."
-            );
-
-        }
-
-
-        if (!finalName) {
-
-            throw new Error(
-                "Nama peserta kosong."
-            );
-
-        }
-
-
-        /*
-         * PAYLOAD FINAL HOLLAND
-         *
-         * Apps Script:
-         *
-         * A ID
-         * B TANGGAL
-         * C JAM
-         * D NAMA
-         * E ABSEN
-         * F WA
-         * G KELAS
-         * H KODE SESI
-         * I DURASI
-         * J R
-         * K I
-         * L A
-         * M S
-         * N E
-         * O C
-         * P KODE RIASEC
-         * Q dst ANSWERS 1-108
-         */
 
         const payload = {
 
             tes: "HOLLAND",
 
-            id: finalId,
+            id:
+                finalId,
 
             tanggal:
                 participant.tanggal ||
@@ -1417,16 +1607,20 @@
                     }
                 ),
 
-            nama: finalName,
+            nama:
+                finalName,
 
             absen:
-                participant.absen || "",
+                participant.absen ||
+                "",
 
             wa:
-                participant.wa || "",
+                participant.wa ||
+                "",
 
             kelas:
-                participant.kelas || "",
+                participant.kelas ||
+                "",
 
             kodeSesi:
                 participant.kodeSesi ||
@@ -1436,33 +1630,19 @@
             durasi:
                 duration,
 
-            /*
-             * Penting:
-             * scoring di Apps Script akan menggunakan
-             * scores jika dikirim.
-             *
-             * Di sini jawaban tetap menjadi sumber utama.
-             */
-
             answers:
-                finalAnswers
+                answers.slice()
 
         };
 
 
-        /*
-         * BACKUP LOKAL
-         */
-
         localStorage.setItem(
             "PRC_LAST_HOLLAND",
-            JSON.stringify(payload)
+            JSON.stringify(
+                payload
+            )
         );
 
-
-        /*
-         * KIRIM KE APPS SCRIPT
-         */
 
         const sent =
             await sendToPRC(
@@ -1471,18 +1651,16 @@
 
 
         return {
-
             success: sent,
-
             payload: payload
-
         };
+
     }
 
 
     /* =========================================================
-       START
-       ========================================================= */
+       START TEST
+    ========================================================= */
 
     async function startTest() {
 
@@ -1493,10 +1671,28 @@
                     "susulan-name"
                 ).value.trim();
 
+
+            const kelas =
+                document.getElementById(
+                    "susulan-class"
+                ).value.trim();
+
+
             if (!nama) {
 
                 alert(
                     "Harap isi nama peserta susulan."
+                );
+
+                return;
+
+            }
+
+
+            if (!kelas) {
+
+                alert(
+                    "Harap pilih kelas peserta susulan."
                 );
 
                 return;
@@ -1523,75 +1719,52 @@
                 "btn-start"
             );
 
-        button.disabled = true;
+
+        button.disabled =
+            true;
+
 
         button.textContent =
             "MENYIAPKAN TES...";
 
 
-        try {
-
-            const saved =
-                await saveMasterToSheet();
-
-            if (!saved) {
-
-                button.disabled = false;
-
-                button.textContent =
-                    "MULAI SEKARANG";
-
-                return;
-
-            }
+        const saved =
+            await saveMasterToSheet();
 
 
-            document.getElementById(
-                "login-screen"
-            ).style.display = "none";
+        if (!saved) {
 
-
-            document.getElementById(
-                "test-content"
-            ).style.display = "block";
-
-
-            init();
-
-        } catch (err) {
-
-            console.error(
-                "Gagal memulai tes:",
-                err
-            );
-
-            alert(
-                "Gagal menyiapkan tes."
-            );
-
-            button.disabled = false;
+            button.disabled =
+                false;
 
             button.textContent =
                 "MULAI SEKARANG";
 
+            return;
+
         }
+
+
+        document.getElementById(
+            "login-screen"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "test-content"
+        ).style.display =
+            "block";
+
+
+        init();
 
     }
 
 
     /* =========================================================
-       DOM READY
-       ========================================================= */
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        loadDaftarPeserta
-    );
-
-
-    /* =========================================================
        INIT
-       ========================================================= */
+    ========================================================= */
 
     function init() {
 
@@ -1600,56 +1773,74 @@
                 "q-wrapper"
             );
 
+
         const grid =
             document.getElementById(
                 "q-grid"
             );
 
-        wrapper.innerHTML = "";
 
-        grid.innerHTML = "";
+        wrapper.innerHTML =
+            "";
+
+
+        grid.innerHTML =
+            "";
+
+
+        currentIdx =
+            0;
+
+
+        answers =
+            new Array(
+                questions.length
+            ).fill(null);
 
 
         questions.forEach(
-            (q, i) => {
+            (question, index) => {
 
                 const div =
                     document.createElement(
                         "div"
                     );
 
+
                 div.className =
-                    "question-box " +
+                    "question-box" +
                     (
-                        i === 0
-                            ? "active"
+                        index === 0
+                            ? " active"
                             : ""
                     );
 
+
                 div.id =
-                    "qbox-" + i;
+                    "qbox-" +
+                    index;
 
 
                 div.innerHTML = `
 
                     <div class="question-text">
-                        ${i + 1}. ${q}
+                        ${index + 1}. ${question}
                     </div>
 
                     <div class="opt-container">
 
                         <div
                             class="option"
-                            id="opt-${i}-Y"
-                            onclick="select(${i}, 'Y')"
+                            id="opt-${index}-Y"
+                            onclick="select(${index}, 'Y')"
                         >
                             YA
                         </div>
 
                         <div
                             class="option"
-                            id="opt-${i}-N"
-                            onclick="select(${i}, 'N')"
+                            id="opt-${index}-N"
+                            onclick="select(${index}, 'N')"
                         >
                             TIDAK
                         </div>
@@ -1664,29 +1855,41 @@
                 );
 
 
-                const gItem =
+                const gridItem =
                     document.createElement(
                         "div"
                     );
 
-                gItem.className =
+
+                gridItem.className =
                     "grid-item";
 
-                gItem.id =
-                    "grid-" + i;
 
-                gItem.innerText =
-                    i + 1;
+                gridItem.id =
+                    "grid-" +
+                    index;
 
-                gItem.onclick =
-                    () => jump(i);
+
+                gridItem.innerText =
+                    index + 1;
+
+
+                gridItem.onclick =
+                    () => jump(index);
+
 
                 grid.appendChild(
-                    gItem
+                    gridItem
                 );
 
             }
         );
+
+
+        document.getElementById(
+            "btn-final"
+        ).style.display =
+            "none";
 
 
         updateGrid();
@@ -1695,67 +1898,64 @@
 
 
     /* =========================================================
-       SELECT
-       ========================================================= */
+       PILIH JAWABAN
+    ========================================================= */
 
     function select(
-        idx,
-        val
+        index,
+        value
     ) {
 
-        answers[idx] =
-            val === "Y"
-                ? "Y"
-                : "N";
+        answers[index] =
+            value;
 
 
-        document
-            .getElementById(
-                "opt-" +
-                idx +
-                "-Y"
-            )
-            .classList
-            .remove(
-                "selected"
+        const yes =
+            document.getElementById(
+                `opt-${index}-Y`
             );
 
 
-        document
-            .getElementById(
-                "opt-" +
-                idx +
-                "-N"
-            )
-            .classList
-            .remove(
-                "selected"
+        const no =
+            document.getElementById(
+                `opt-${index}-N`
             );
 
 
-        document
-            .getElementById(
-                "opt-" +
-                idx +
-                "-" +
-                answers[idx]
-            )
+        yes.classList.remove(
+            "selected"
+        );
+
+
+        no.classList.remove(
+            "selected"
+        );
+
+
+        document.getElementById(
+            `opt-${index}-${value}`
+        )
             .classList
             .add(
                 "selected"
             );
 
 
-        document
-            .getElementById(
-                "grid-" +
-                idx
-            )
+        document.getElementById(
+            `grid-${index}`
+        )
             .classList
             .add(
                 "filled"
             );
 
+
+        checkFinishButton();
+
+
+        /*
+         * AUTONEXT
+         */
 
         if (
             currentIdx <
@@ -1775,44 +1975,44 @@
 
         }
 
-
-        checkFinishButton();
-
     }
 
 
     /* =========================================================
        JUMP
-       ========================================================= */
+    ========================================================= */
 
-    function jump(idx) {
+    function jump(index) {
 
         document
             .querySelectorAll(
                 ".question-box"
             )
             .forEach(
-                b =>
-                    b.classList
-                        .remove(
-                            "active"
-                        )
+                box =>
+                    box.classList.remove(
+                        "active"
+                    )
             );
 
 
         currentIdx =
-            idx;
+            index;
 
 
-        document
-            .getElementById(
-                "qbox-" +
-                idx
-            )
-            .classList
-            .add(
+        const box =
+            document.getElementById(
+                `qbox-${index}`
+            );
+
+
+        if (box) {
+
+            box.classList.add(
                 "active"
             );
+
+        }
 
 
         updateGrid();
@@ -1821,8 +2021,8 @@
 
 
     /* =========================================================
-       GRID
-       ========================================================= */
+       UPDATE GRID
+    ========================================================= */
 
     function updateGrid() {
 
@@ -1831,18 +2031,16 @@
                 ".grid-item"
             )
             .forEach(
-                i =>
-                    i.classList
-                        .remove(
-                            "current"
-                        )
+                item =>
+                    item.classList.remove(
+                        "current"
+                    )
             );
 
 
         const current =
             document.getElementById(
-                "grid-" +
-                currentIdx
+                `grid-${currentIdx}`
             );
 
 
@@ -1858,17 +2056,22 @@
 
 
     /* =========================================================
-       CHECK FINISH
-       ========================================================= */
+       CEK SEMUA TERJAWAB
+    ========================================================= */
 
     function checkFinishButton() {
 
         const answered =
             answers.filter(
-                a =>
-                    a === "Y" ||
-                    a === "N"
+                answer =>
+                    answer !== null
             ).length;
+
+
+        const finish =
+            document.getElementById(
+                "btn-final"
+            );
 
 
         if (
@@ -1876,10 +2079,13 @@
             questions.length
         ) {
 
-            document.getElementById(
-                "btn-final"
-            ).style.display =
+            finish.style.display =
                 "block";
+
+        } else {
+
+            finish.style.display =
+                "none";
 
         }
 
@@ -1888,21 +2094,20 @@
 
     /* =========================================================
        FINISH
-       ========================================================= */
+    ========================================================= */
 
     async function finishToResult() {
 
         const answered =
             answers.filter(
-                a =>
-                    a === "Y" ||
-                    a === "N"
+                answer =>
+                    answer !== null
             ).length;
 
 
         if (
             answered !==
-            108
+            questions.length
         ) {
 
             alert(
@@ -1923,57 +2128,14 @@
         finishButton.disabled =
             true;
 
+
         finishButton.textContent =
             "MENYIMPAN HASIL...";
 
 
         try {
 
-            /*
-             * Validasi final sebelum dikirim.
-             */
-
-            const normalized =
-                normalizeAnswers();
-
-
-            if (
-                normalized.length !== 108
-            ) {
-
-                throw new Error(
-                    "Jumlah jawaban bukan 108."
-                );
-
-            }
-
-
-            /*
-             * Simpan payload.
-             */
-
-            const result =
-                await saveHollandToSheet();
-
-
-            /*
-             * Karena no-cors tidak memberikan
-             * response body, browser tidak dapat
-             * membaca status Apps Script.
-             *
-             * Namun request sudah dikirim.
-             */
-
-            if (
-                !result ||
-                !result.success
-            ) {
-
-                console.warn(
-                    "Request telah dikirim tetapi status server tidak dapat dibaca browser karena no-cors."
-                );
-
-            }
+            await saveHollandToSheet();
 
 
             finishButton.textContent =
@@ -1992,11 +2154,11 @@
                 "block";
 
 
-        } catch (err) {
+        } catch (error) {
 
             console.error(
                 "Gagal menyimpan Holland:",
-                err
+                error
             );
 
 
@@ -2009,8 +2171,7 @@
 
 
             alert(
-                "Terjadi kendala saat menyimpan hasil Holland:\n\n" +
-                err.message
+                "Terjadi kendala saat menyimpan hasil Holland. Silakan coba kembali."
             );
 
         }
@@ -2019,8 +2180,8 @@
 
 
     /* =========================================================
-       DOWNLOAD TXT LOKAL
-       ========================================================= */
+       DOWNLOAD TXT
+    ========================================================= */
 
     function downloadTXT() {
 
@@ -2031,54 +2192,46 @@
         let text =
             "REKAP RIASEC HOLLAND (108) - PRC\n";
 
+
         text +=
             "=================================\n";
 
+
         text +=
-            "ID PESERTA   : " +
-            (
+            `ID PESERTA   : ${
                 participant.id ||
                 participantId ||
                 ""
-            ) +
-            "\n";
+            }\n`;
 
 
         text +=
-            "NAMA PESERTA : " +
-            (
-                participant.nama ||
+            `NAMA PESERTA : ${
                 userName ||
+                participant.nama ||
                 ""
-            ).toUpperCase() +
-            "\n";
+            }\n`;
 
 
         text +=
-            "KELAS        : " +
-            (
+            `KELAS        : ${
                 participant.kelas ||
                 ""
-            ) +
-            "\n";
+            }\n`;
 
 
         text +=
-            "NO. ABSEN    : " +
-            (
+            `NO. ABSEN    : ${
                 participant.absen ||
                 ""
-            ) +
-            "\n";
+            }\n`;
 
 
         text +=
-            "TANGGAL      : " +
-            new Date()
-                .toLocaleString(
-                    "id-ID"
-                ) +
-            "\n";
+            `TANGGAL      : ${
+                new Date()
+                    .toLocaleString("id-ID")
+            }\n`;
 
 
         text +=
@@ -2086,17 +2239,10 @@
 
 
         answers.forEach(
-            (a, i) => {
+            (answer, index) => {
 
                 text +=
-                    (
-                        i + 1
-                    ) +
-                    ":" +
-                    (
-                        a || ""
-                    ) +
-                    "\n";
+                    `${index + 1}:${answer || ""}\n`;
 
             }
         );
@@ -2118,42 +2264,40 @@
             );
 
 
-        const a =
+        const link =
             document.createElement(
                 "a"
             );
 
 
-        a.href = url;
+        link.href =
+            url;
 
 
-        a.download =
-            "RIASEC_108_" +
-            (
-                participant.nama ||
-                userName ||
-                "Peserta"
-            )
-                .replace(
-                    /[\\\/:*?"<>|]/g,
-                    ""
+        link.download =
+            `RIASEC_108_${
+                (
+                    userName ||
+                    "PESERTA"
                 )
-                .replace(
-                    /\s+/g,
-                    "_"
-                ) +
-            ".txt";
+                    .replace(
+                        /\s+/g,
+                        "_"
+                    )
+            }.txt`;
 
 
         document.body.appendChild(
-            a
+            link
         );
 
 
-        a.click();
+        link.click();
 
 
-        a.remove();
+        document.body.removeChild(
+            link
+        );
 
 
         setTimeout(
@@ -2168,6 +2312,20 @@
         );
 
     }
+
+
+    /* =========================================================
+       DOM READY
+    ========================================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            loadDaftarPeserta();
+
+        }
+    );
 
 </script>
 
