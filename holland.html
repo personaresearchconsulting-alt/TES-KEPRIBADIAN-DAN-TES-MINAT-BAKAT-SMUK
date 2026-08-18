@@ -132,7 +132,7 @@
         }
 
         .btn:disabled {
-            opacity: 0.6;
+            opacity: .6;
             cursor: not-allowed;
         }
 
@@ -270,22 +270,18 @@
     </div>
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          LOGIN
-    ====================================================== -->
+         ========================================================= -->
 
     <div id="login-screen">
 
         <div class="instruction-box">
             <strong>Identitas Peserta:</strong><br>
-
             Pilih <b>kelas</b> dan <b>nomor absen</b>.
             Nama dan ID peserta akan muncul otomatis dari daftar peserta resmi.
-
-            Jika peserta belum ada di daftar,
-            gunakan pilihan <b>Peserta Susulan</b>.
+            Jika peserta belum ada di daftar, gunakan pilihan <b>Peserta Susulan</b>.
         </div>
-
 
         <div id="participant-loading" class="status-text">
             Memuat daftar peserta...
@@ -300,10 +296,8 @@
                     KELAS
                 </label>
 
-                <select
-                    id="user-class"
-                    onchange="onClassChange()"
-                >
+                <select id="user-class"
+                        onchange="onClassChange()">
 
                     <option value="">
                         -- Pilih Kelas --
@@ -320,11 +314,9 @@
                     NO. ABSEN
                 </label>
 
-                <select
-                    id="user-absen"
-                    onchange="onAbsenChange()"
-                    disabled
-                >
+                <select id="user-absen"
+                        onchange="onAbsenChange()"
+                        disabled>
 
                     <option value="">
                         -- Pilih No. Absen --
@@ -335,11 +327,9 @@
             </div>
 
 
-            <div
-                id="identity-info"
-                class="identity-info"
-                style="display:none;"
-            >
+            <div id="identity-info"
+                 class="identity-info"
+                 style="display:none;">
 
                 <div>
                     Nama:
@@ -356,17 +346,13 @@
         </div>
 
 
-        <!-- PESERTA SUSULAN -->
-
         <div class="susulan-box">
 
             <label>
 
-                <input
-                    type="checkbox"
-                    id="is-susulan"
-                    onchange="toggleSusulan()"
-                >
+                <input type="checkbox"
+                       id="is-susulan"
+                       onchange="toggleSusulan">
 
                 Peserta belum terdaftar / peserta susulan
 
@@ -375,10 +361,8 @@
         </div>
 
 
-        <div
-            id="susulan-fields"
-            style="display:none;"
-        >
+        <div id="susulan-fields"
+             style="display:none;">
 
             <div class="identity-row">
 
@@ -386,11 +370,9 @@
                     NAMA PESERTA
                 </label>
 
-                <input
-                    type="text"
-                    id="susulan-name"
-                    placeholder="Masukkan Nama Lengkap Peserta..."
-                >
+                <input type="text"
+                       id="susulan-name"
+                       placeholder="Masukkan Nama Lengkap Peserta...">
 
             </div>
 
@@ -424,82 +406,72 @@
                     NO. ABSEN (opsional)
                 </label>
 
-                <input
-                    type="text"
-                    id="susulan-absen"
-                    inputmode="numeric"
-                    placeholder="Contoh: 34"
-                >
+                <input type="text"
+                       id="susulan-absen"
+                       inputmode="numeric"
+                       placeholder="Contoh: 34">
 
             </div>
 
         </div>
 
 
-        <button
-            id="btn-start"
-            class="btn"
-            onclick="startTest()"
-            disabled
-        >
+        <button id="btn-start"
+                class="btn"
+                onclick="startTest()"
+                disabled>
+
             MULAI SEKARANG
+
         </button>
 
     </div>
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          TEST
-    ====================================================== -->
+         ========================================================= -->
 
-    <div
-        id="test-content"
-        style="display:none"
-    >
+    <div id="test-content"
+         style="display:none">
 
         <div id="q-wrapper"></div>
 
-        <div
-            class="nav-grid"
-            id="q-grid"
-        ></div>
+        <div class="nav-grid"
+             id="q-grid"></div>
 
-        <button
-            id="btn-final"
-            class="btn btn-finish"
-            onclick="finishToResult()"
-        >
+        <button id="btn-final"
+                class="btn btn-finish"
+                onclick="finishToResult()">
+
             SELESAI & REKAP JAWABAN
+
         </button>
 
     </div>
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          RESULT
-    ====================================================== -->
+         ========================================================= -->
 
-    <div
-        id="result-screen"
-        style="display:none; text-align:center;"
-    >
+    <div id="result-screen"
+         style="display:none; text-align:center;">
 
         <h3 style="color:var(--primary)">
             Tes Selesai
         </h3>
 
-        <p
-            style="font-size:.9em; color:#666; margin-bottom:20px;"
-        >
+        <p style="font-size:.9em; color:#666; margin-bottom:20px;">
             Seluruh jawaban telah direkap.
             Silakan unduh hasil dan kirimkan ke Admin.
         </p>
 
-        <button
-            class="btn"
-            onclick="downloadTXT()"
-        >
+        <button class="btn"
+                onclick="downloadTXT()">
+
             UNDUH HASIL (.TXT)
+
         </button>
 
     </div>
@@ -509,296 +481,308 @@
 
 <script>
 
-/* =========================================================
-   MASA AKSES
-========================================================= */
+    /* =========================================================
+       BATAS AKSES
+       ========================================================= */
 
-if (new Date() > new Date("2029-07-01")) {
+    if (new Date() > new Date("2029-07-01")) {
 
-    document.body.innerHTML =
-        "Akses telah berakhir.";
-
-}
-
-
-/* =========================================================
-   SOAL HOLLAND
-========================================================= */
-
-const questions = [
-
-    "Senang menonton drama",
-    "Senang Melatih Orang",
-    "Mampu bermain dalam drama / berakting",
-    "Suka membaca mengenai topik-topik khusus atas keinginan sendiri",
-    "Mampu melakukan percobaan atau penelitian ilmiah",
-    "Artistik",
-    "Mampu memprogram komputer untuk mempelajari masalah ilmiah",
-    "Tertarik menjadi pengawas konstruksi bangunan",
-    "Suka dalam memecahkan soal eksak",
-    "Mampu melakukan dan menyukai tugas administratif",
-    "Bisa mempengaruhi dan membujuk orang lain",
-    "Prosedural (Mengikuti aturan)",
-    "Suka menggunakan aplikasi pencatatan keuangan",
-    "Suka memperbaiki motor",
-    "Bisa mengekspresikan diri secara kreatif",
-    "Ingin bekerja dibagian Staff keuangan",
-    "Mampu menyebutkan makanan yang memiliki protein tinggi",
-    "Suka membantu orang lain",
-    "Suka menulis cerita atau puisi",
-    "Aktif dalam organisasi sosial",
-    "Percaya diri",
-    "Mampu membukukan pengeluaran/ pemasukan",
-    "Menyukai kegiatan memancing/berkebun",
-    "Mampu mengoperasikan proyektor / kamera",
-    "Mampu membuat sketsa/lukisan/gambar",
-    "Mudah bergaul",
-    "Memiliki jiwa kepemimpinan",
-    "Mampu menyusun arsip dengan rapi",
-    "Tertarik menjadi Polisi/TNI/Pilot",
-    "Tertarik menjadi Psikolog",
-    "Tertarik menjadi penari/penyanyi",
-    "Mampu bekerjasama dalam tim",
-    "Suka tantangan",
-    "Suka bekerja di dalam ruangan",
-    "Mampu memperbaiki peralatan rumah tangga",
-    "Mampu menggunakan Mikroskop",
-    "Tertarik menjadi penulis/jurnalis",
-    "Suka memberikan bimbingan kepada orang lain",
-    "Tertarik menjadi Direktur",
-    "Teliti dalam bekerja",
-    "Suka merawat hewan",
-    "Ingin bekerja di Laboratorium",
-    "Suka mendesain pakaian/ruangan",
-    "Mampu berempati kepada orang lain",
-    "Suka berbicara didepan umum",
-    "Mampu melakukan pengetikan dengan cepat",
-    "Senang bekerja dengan mesin",
-    "Suka mengumpulkan sampel (batuan, serangga, dll)",
-    "Mampu memainkan alat musik",
-    "Tertarik menjadi Guru",
-    "Tertarik menjadi pengusaha/bisnis",
-    "Mampu mengoperasikan komputer (Excel/Word)",
-    "Tertarik pada bidang otomotif",
-    "Suka menganalisis data",
-    "Menyukai keindahan",
-    "Suka melakukan pelayanan masyarakat",
-    "Memiliki kemampuan negosiasi yang baik",
-    "Tertarik menjadi staf administrasi",
-    "Suka menggunakan peralatan teknik",
-    "Tertarik pada astronomi",
-    "Senang menciptakan karya seni baru",
-    "Suka menolong sesama",
-    "Optimis",
-    "Suka keteraturan",
-    "Mampu membaca gambar teknik/denah",
-    "Mampu melakukan riset",
-    "Suka mendekorasi sesuatu",
-    "Suka mendengarkan curhat orang lain",
-    "Berani mengambil risiko",
-    "Suka mengelola data",
-    "Suka aktivitas di luar ruangan",
-    "Suka belajar hal baru melalui observasi",
-    "Imajinatif",
-    "Suka mengajar",
-    "Ambisius",
-    "Suka kegiatan rutin yang terukur",
-    "Senang bekerja menggunakan tangan",
-    "Suka membantu orang lain dengan masalah pribadinya",
-    "Senang kegiatan fisik",
-    "Tertarik menjadi ahli teknisi laboratorium medis",
-    "Ingin menjadi seniman",
-    "Mampu melakukan perbaikan kecil pada pipa air, kran, dan lain-lain",
-    "Mampu membuat gambar dengan skala",
-    "Prosedural (Suka mengikuti aturan)",
-    "Suka mengarsip surat dan berkas-berkas lain",
-    "Mampu menjadi seorang pembicara di depan umum yang baik",
-    "Mampu memimpin diskusi kelompok",
-    "Suka melakukan pekerjaan surat menyurat/ masalah perkantoran",
-    "Senang bertemu orang baru",
-    "Bisa bekerja dengan baik dalam system /aturan",
-    "Suka merancang perabotan, pakaian atau poster",
-    "Tertarik menjadi pembawa acara / MC",
-    "Tertarik menjadi ilmuwan peneliti",
-    "Suka memperbaiki alat-alat listrik",
-    "Terbuka",
-    "Tertarik menjadi penaksir biaya",
-    "Suka mendamaikan orang",
-    "Suka mengerjakan teka-teki",
-    "Suka mengelola inventaris atau logistik",
-    "Mampu menulis laporan penelitian",
-    "Pandai bernegosiasi untuk mencapai tujuan organisasi",
-    "Menyukai kegiatan yang membutuhkan konsentrasi tinggi dan detail",
-    "Mampu merancang kampanye iklan",
-    "Mampu menjelaskan konsep ilmiah yang sulit kepada orang awam",
-    "Suka bekerja di organisasi nirlaba",
-    "Tertarik pada bidang desain arsitektur",
-    "Mampu bekerja dengan deadline yang ketat",
-    "Mampu menjaga kerahasiaan data perusahaan"
-
-];
-
-
-/* =========================================================
-   STATE
-========================================================= */
-
-let currentIdx = 0;
-
-let answers =
-    new Array(questions.length).fill(null);
-
-let userName = "";
-
-let participantId = "";
-
-let sessionCode = "";
-
-let testStartTime = null;
-
-let daftarPeserta = [];
-
-let selectedParticipant = null;
-
-let isSusulan = false;
-
-let isSaving = false;
-
-
-/* =========================================================
-   GOOGLE APPS SCRIPT
-========================================================= */
-
-const PRC_API_URL =
-    "https://script.google.com/macros/s/AKfycbyWpBAb3WQxj8vZ8rlZ2YTjZWQKa3IOB9D7QhZMnxLALnQSJMIt27NefS5za0zF7Ad/exec";
-
-
-/* =========================================================
-   LOAD PESERTA
-========================================================= */
-
-async function loadDaftarPeserta() {
-
-    const statusEl =
-        document.getElementById(
-            "participant-loading"
-        );
-
-    const btn =
-        document.getElementById(
-            "btn-start"
-        );
-
-    try {
-
-        statusEl.textContent =
-            "Memuat daftar peserta resmi...";
-
-        const response =
-            await fetch(
-                PRC_API_URL +
-                "?action=getDaftarPeserta&_=" +
-                Date.now(),
-                {
-                    method: "GET",
-                    cache: "no-store"
-                }
-            );
-
-        if (!response.ok) {
-
-            throw new Error(
-                "HTTP " + response.status
-            );
-
-        }
-
-        const result =
-            await response.json();
-
-        if (
-            result.status !== "success" ||
-            !Array.isArray(result.peserta)
-        ) {
-
-            throw new Error(
-                result.message ||
-                "Data peserta tidak valid."
-            );
-
-        }
-
-        daftarPeserta =
-            result.peserta;
-
-        populateClasses();
-
-        statusEl.textContent =
-            "Daftar peserta berhasil dimuat: " +
-            daftarPeserta.length +
-            " peserta.";
-
-        btn.disabled = false;
-
-    } catch (err) {
-
-        console.error(
-            "Gagal memuat daftar peserta:",
-            err
-        );
-
-        statusEl.textContent =
-            "Daftar peserta resmi belum dapat dimuat. " +
-            "Peserta tetap dapat masuk melalui opsi Susulan.";
-
-        btn.disabled = false;
+        document.body.innerHTML =
+            "Akses telah berakhir.";
 
     }
 
-}
+
+    /* =========================================================
+       SOAL HOLLAND
+       ========================================================= */
+
+    const questions = [
+
+        "Senang menonton drama",
+        "Senang Melatih Orang",
+        "Mampu bermain dalam drama / berakting",
+        "Suka membaca mengenai topik-topik khusus atas keinginan sendiri",
+        "Mampu melakukan percobaan atau penelitian ilmiah",
+        "Artistik",
+        "Mampu memprogram komputer untuk mempelajari masalah ilmiah",
+        "Tertarik menjadi pengawas konstruksi bangunan",
+        "Suka dalam memecahkan soal eksak",
+        "Mampu melakukan dan menyukai tugas administratif",
+        "Bisa mempengaruhi dan membujuk orang lain",
+        "Prosedural (Mengikuti aturan)",
+        "Suka menggunakan aplikasi pencatatan keuangan",
+        "Suka memperbaiki motor",
+        "Bisa mengekspresikan diri secara kreatif",
+        "Ingin bekerja dibagian Staff keuangan",
+        "Mampu menyebutkan makanan yang memiliki protein tinggi",
+        "Suka membantu orang lain",
+        "Suka menulis cerita atau puisi",
+        "Aktif dalam organisasi sosial",
+        "Percaya diri",
+        "Mampu membukukan pengeluaran/ pemasukan",
+        "Menyukai kegiatan memancing/berkebun",
+        "Mampu mengoperasikan proyektor / kamera",
+        "Mampu membuat sketsa/lukisan/gambar",
+        "Mudah bergaul",
+        "Memiliki jiwa kepemimpinan",
+        "Mampu menyusun arsip dengan rapi",
+        "Tertarik menjadi Polisi/TNI/Pilot",
+        "Tertarik menjadi Psikolog",
+        "Tertarik menjadi penari/penyanyi",
+        "Mampu bekerjasama dalam tim",
+        "Suka tantangan",
+        "Suka bekerja di dalam ruangan",
+        "Mampu memperbaiki peralatan rumah tangga",
+        "Mampu menggunakan Mikroskop",
+        "Tertarik menjadi penulis/jurnalis",
+        "Suka memberikan bimbingan kepada orang lain",
+        "Tertarik menjadi Direktur",
+        "Teliti dalam bekerja",
+        "Suka merawat hewan",
+        "Ingin bekerja di Laboratorium",
+        "Suka mendesain pakaian/ruangan",
+        "Mampu berempati kepada orang lain",
+        "Suka berbicara didepan umum",
+        "Mampu melakukan pengetikan dengan cepat",
+        "Senang bekerja dengan mesin",
+        "Suka mengumpulkan sampel (batuan, serangga, dll)",
+        "Mampu memainkan alat musik",
+        "Tertarik menjadi Guru",
+        "Tertarik menjadi pengusaha/bisnis",
+        "Mampu mengoperasikan komputer (Excel/Word)",
+        "Tertarik pada bidang otomotif",
+        "Suka menganalisis data",
+        "Menyukai keindahan",
+        "Suka melakukan pelayanan masyarakat",
+        "Memiliki kemampuan negosiasi yang baik",
+        "Tertarik menjadi staf administrasi",
+        "Suka menggunakan peralatan teknik",
+        "Tertarik pada astronomi",
+        "Senang menciptakan karya seni baru",
+        "Suka menolong sesama",
+        "Optimis",
+        "Suka keteraturan",
+        "Mampu membaca gambar teknik/denah",
+        "Mampu melakukan riset",
+        "Suka mendekorasi sesuatu",
+        "Suka mendengarkan curhat orang lain",
+        "Berani mengambil risiko",
+        "Suka mengelola data",
+        "Suka aktivitas di luar ruangan",
+        "Suka belajar hal baru melalui observasi",
+        "Imajinatif",
+        "Suka mengajar",
+        "Ambisius",
+        "Suka kegiatan rutin yang terukur",
+        "Senang bekerja menggunakan tangan",
+        "Suka membantu orang lain dengan masalah pribadinya",
+        "Senang kegiatan fisik",
+        "Tertarik menjadi ahli teknisi laboratorium medis",
+        "Ingin menjadi seniman",
+        "Mampu melakukan perbaikan kecil pada pipa air, kran, dan lain-lain",
+        "Mampu membuat gambar dengan skala",
+        "Prosedural (Suka mengikuti aturan)",
+        "Suka mengarsip surat dan berkas-berkas lain",
+        "Mampu menjadi seorang pembicara di depan umum yang baik",
+        "Mampu memimpin diskusi kelompok",
+        "Suka melakukan pekerjaan surat menyurat/ masalah perkantoran",
+        "Senang bertemu orang baru",
+        "Bisa bekerja dengan baik dalam system /aturan",
+        "Suka merancang perabotan, pakaian atau poster",
+        "Tertarik menjadi pembawa acara / MC",
+        "Tertarik menjadi ilmuwan peneliti",
+        "Suka memperbaiki alat-alat listrik",
+        "Terbuka",
+        "Tertarik menjadi penaksir biaya",
+        "Suka mendamaikan orang",
+        "Suka mengerjakan teka-teki",
+        "Suka mengelola inventaris atau logistik",
+        "Mampu menulis laporan penelitian",
+        "Pandai bernegosiasi untuk mencapai tujuan organisasi",
+        "Menyukai kegiatan yang membutuhkan konsentrasi tinggi dan detail",
+        "Mampu merancang kampanye iklan",
+        "Mampu menjelaskan konsep ilmiah yang sulit kepada orang awam",
+        "Suka bekerja di organisasi nirlaba",
+        "Tertarik pada bidang desain arsitektur",
+        "Mampu bekerja dengan deadline yang ketat",
+        "Mampu menjaga kerahasiaan data perusahaan"
+
+    ];
 
 
-/* =========================================================
-   POPULATE KELAS
-========================================================= */
+    /* =========================================================
+       VALIDASI SOAL
+       ========================================================= */
 
-function populateClasses() {
+    if (questions.length !== 108) {
 
-    const select =
-        document.getElementById(
-            "user-class"
+        console.error(
+            "ERROR: jumlah soal Holland bukan 108.",
+            questions.length
         );
 
-    const classes =
-        [
-            ...new Set(
-                daftarPeserta
-                    .map(
-                        p =>
-                            String(
-                                p.kelas || ""
-                            ).trim()
-                    )
-                    .filter(Boolean)
-            )
-        ];
+    }
 
-    classes.sort(
-        (a, b) =>
-            a.localeCompare(
-                b,
-                "id",
-                {
-                    numeric: true
-                }
-            )
-    );
 
-    select.innerHTML =
-        '<option value="">-- Pilih Kelas --</option>';
+    /* =========================================================
+       STATE
+       ========================================================= */
 
-    classes.forEach(
-        k => {
+    let currentIdx = 0;
+
+    let answers =
+        new Array(questions.length)
+            .fill(null);
+
+    let userName = "";
+
+    let participantId = "";
+
+    let sessionCode = "";
+
+    let testStartTime = null;
+
+    let daftarPeserta = [];
+
+    let selectedParticipant = null;
+
+    let isSusulan = false;
+
+
+    /* =========================================================
+       URL APPS SCRIPT
+       ========================================================= */
+
+    const PRC_API_URL =
+        "https://script.google.com/macros/s/AKfycbyWpBAb3WQxj8vZ8rlZ2YTjZWQKa3IOB9D7QhZMnxLALnQSJMIt27NefS5za0zF7Ad/exec";
+
+
+    /* =========================================================
+       LOAD DAFTAR PESERTA
+       ========================================================= */
+
+    async function loadDaftarPeserta() {
+
+        const statusEl =
+            document.getElementById(
+                "participant-loading"
+            );
+
+        const btn =
+            document.getElementById(
+                "btn-start"
+            );
+
+        try {
+
+            statusEl.textContent =
+                "Memuat daftar peserta resmi...";
+
+            const response =
+                await fetch(
+                    PRC_API_URL +
+                    "?action=getDaftarPeserta&_=" +
+                    Date.now(),
+                    {
+                        method: "GET",
+                        cache: "no-store"
+                    }
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+
+            }
+
+            const result =
+                await response.json();
+
+            if (
+                result.status !== "success" ||
+                !Array.isArray(result.peserta)
+            ) {
+
+                throw new Error(
+                    result.message ||
+                    "Data peserta tidak valid."
+                );
+
+            }
+
+            daftarPeserta =
+                result.peserta;
+
+            populateClasses();
+
+            statusEl.textContent =
+                "Daftar peserta berhasil dimuat: " +
+                daftarPeserta.length +
+                " peserta.";
+
+            btn.disabled = false;
+
+        } catch (err) {
+
+            console.error(
+                "Gagal memuat daftar peserta:",
+                err
+            );
+
+            statusEl.textContent =
+                "Daftar peserta resmi belum dapat dimuat. " +
+                "Peserta tetap dapat masuk melalui opsi Susulan.";
+
+            btn.disabled = false;
+
+        }
+    }
+
+
+    /* =========================================================
+       POPULATE KELAS
+       ========================================================= */
+
+    function populateClasses() {
+
+        const select =
+            document.getElementById(
+                "user-class"
+            );
+
+        const classes =
+            [
+                ...new Set(
+                    daftarPeserta
+                        .map(
+                            p =>
+                                String(
+                                    p.kelas || ""
+                                ).trim()
+                        )
+                        .filter(Boolean)
+                )
+            ];
+
+        classes.sort(
+            (a, b) =>
+                a.localeCompare(
+                    b,
+                    "id",
+                    {
+                        numeric: true
+                    }
+                )
+        );
+
+        select.innerHTML =
+            '<option value="">-- Pilih Kelas --</option>';
+
+        classes.forEach(k => {
 
             const opt =
                 document.createElement(
@@ -811,63 +795,54 @@ function populateClasses() {
 
             select.appendChild(opt);
 
-        }
-    );
-
-}
-
-
-/* =========================================================
-   KELAS
-========================================================= */
-
-function onClassChange() {
-
-    const kelas =
-        document.getElementById(
-            "user-class"
-        ).value;
-
-    const absen =
-        document.getElementById(
-            "user-absen"
-        );
-
-    document.getElementById(
-        "identity-info"
-    ).style.display =
-        "none";
-
-    selectedParticipant = null;
-
-    absen.disabled =
-        !kelas;
-
-    absen.innerHTML =
-        '<option value="">-- Pilih No. Absen --</option>';
-
-    if (!kelas) {
-
-        return;
-
+        });
     }
 
-    const list =
-        daftarPeserta
-            .filter(
-                p =>
-                    String(
-                        p.kelas || ""
-                    ).trim() === kelas
-            )
-            .sort(
-                (a, b) =>
-                    Number(a.absen) -
-                    Number(b.absen)
+
+    /* =========================================================
+       KELAS
+       ========================================================= */
+
+    function onClassChange() {
+
+        const kelas =
+            document.getElementById(
+                "user-class"
+            ).value;
+
+        const absen =
+            document.getElementById(
+                "user-absen"
             );
 
-    list.forEach(
-        p => {
+        document.getElementById(
+            "identity-info"
+        ).style.display = "none";
+
+        selectedParticipant = null;
+
+        absen.disabled = !kelas;
+
+        absen.innerHTML =
+            '<option value="">-- Pilih No. Absen --</option>';
+
+        if (!kelas) return;
+
+        const list =
+            daftarPeserta
+                .filter(
+                    p =>
+                        String(
+                            p.kelas || ""
+                        ).trim() === kelas
+                )
+                .sort(
+                    (a, b) =>
+                        Number(a.absen) -
+                        Number(b.absen)
+                );
+
+        list.forEach(p => {
 
             const opt =
                 document.createElement(
@@ -875,1201 +850,1324 @@ function onClassChange() {
                 );
 
             opt.value =
-                String(
-                    p.absen || ""
-                );
+                String(p.absen);
 
             opt.textContent =
-                String(
-                    p.absen || ""
-                );
+                String(p.absen);
 
             absen.appendChild(opt);
 
+        });
+    }
+
+
+    /* =========================================================
+       ABSEN
+       ========================================================= */
+
+    function onAbsenChange() {
+
+        const kelas =
+            document.getElementById(
+                "user-class"
+            ).value;
+
+        const absen =
+            document.getElementById(
+                "user-absen"
+            ).value;
+
+        selectedParticipant =
+            daftarPeserta.find(
+                p =>
+                    String(
+                        p.kelas || ""
+                    ).trim() === kelas &&
+                    String(
+                        p.absen || ""
+                    ).trim() === absen
+            ) || null;
+
+        const info =
+            document.getElementById(
+                "identity-info"
+            );
+
+        if (selectedParticipant) {
+
+            document.getElementById(
+                "display-name"
+            ).textContent =
+                selectedParticipant.nama || "-";
+
+            document.getElementById(
+                "display-id"
+            ).textContent =
+                selectedParticipant.id || "-";
+
+            info.style.display = "block";
+
+        } else {
+
+            info.style.display = "none";
+
         }
-    );
-
-}
-
-
-/* =========================================================
-   ABSEN
-========================================================= */
-
-function onAbsenChange() {
-
-    const kelas =
-        document.getElementById(
-            "user-class"
-        ).value;
-
-    const absen =
-        document.getElementById(
-            "user-absen"
-        ).value;
-
-    selectedParticipant =
-        daftarPeserta.find(
-            p =>
-                String(
-                    p.kelas || ""
-                ).trim() === kelas &&
-                String(
-                    p.absen || ""
-                ).trim() === absen
-        ) || null;
-
-    const info =
-        document.getElementById(
-            "identity-info"
-        );
-
-    if (selectedParticipant) {
-
-        document.getElementById(
-            "display-name"
-        ).textContent =
-            selectedParticipant.nama || "-";
-
-        document.getElementById(
-            "display-id"
-        ).textContent =
-            selectedParticipant.id || "-";
-
-        info.style.display =
-            "block";
-
-    } else {
-
-        info.style.display =
-            "none";
-
     }
 
-}
 
+    /* =========================================================
+       SUSULAN
+       ========================================================= */
 
-/* =========================================================
-   SUSULAN
-========================================================= */
+    function toggleSusulan() {
 
-function toggleSusulan() {
-
-    isSusulan =
-        document.getElementById(
-            "is-susulan"
-        ).checked;
-
-    document.getElementById(
-        "official-fields"
-    ).style.display =
-        isSusulan
-            ? "none"
-            : "block";
-
-    document.getElementById(
-        "susulan-fields"
-    ).style.display =
-        isSusulan
-            ? "block"
-            : "none";
-
-    if (isSusulan) {
-
-        selectedParticipant = null;
-
-    } else {
+        isSusulan =
+            document.getElementById(
+                "is-susulan"
+            ).checked;
 
         document.getElementById(
-            "susulan-name"
-        ).value = "";
+            "official-fields"
+        ).style.display =
+            isSusulan
+                ? "none"
+                : "block";
 
         document.getElementById(
-            "susulan-class"
-        ).value = "";
+            "susulan-fields"
+        ).style.display =
+            isSusulan
+                ? "block"
+                : "none";
 
-        document.getElementById(
-            "susulan-absen"
-        ).value = "";
+        if (isSusulan) {
 
-    }
+            selectedParticipant = null;
 
-}
+        } else {
 
-
-/* =========================================================
-   ID SUSULAN
-========================================================= */
-
-function createSusulanId(
-    nama,
-    kelas,
-    absen
-) {
-
-    const key =
-        "PRC_SUSULAN_ID_" +
-        [
-            nama,
-            kelas,
-            absen
-        ]
-        .map(
-            v =>
-                String(v || "")
-                    .trim()
-                    .toUpperCase()
-        )
-        .join("|");
-
-    const existing =
-        localStorage.getItem(key);
-
-    if (existing) {
-
-        return existing;
-
-    }
-
-    const id =
-        "SMUK-SUS-" +
-        Date.now()
-            .toString(36)
-            .toUpperCase();
-
-    localStorage.setItem(
-        key,
-        id
-    );
-
-    return id;
-
-}
-
-
-/* =========================================================
-   KIRIM KE APPS SCRIPT
-========================================================= */
-
-async function sendToPRC(data) {
-
-    try {
-
-        /*
-         * Jangan menggunakan headers JSON.
-         * text/plain menghindari preflight CORS.
-         */
-
-        await fetch(
-            PRC_API_URL,
-            {
-                method: "POST",
-                mode: "no-cors",
-                headers: {
-                    "Content-Type":
-                        "text/plain;charset=utf-8"
-                },
-                body:
-                    JSON.stringify(data),
-                keepalive: true
-            }
-        );
-
-        return true;
-
-    } catch (err) {
-
-        console.error(
-            "Gagal mengirim data PRC:",
-            err
-        );
-
-        return false;
-
-    }
-
-}
-
-
-/* =========================================================
-   SIMPAN MASTER
-========================================================= */
-
-async function saveMasterToSheet() {
-
-    const now =
-        new Date();
-
-    sessionCode =
-        "HOL-" +
-        now.getTime();
-
-    testStartTime =
-        Date.now();
-
-    let nama = "";
-    let kelas = "";
-    let absen = "";
-
-    if (isSusulan) {
-
-        nama =
             document.getElementById(
                 "susulan-name"
-            ).value.trim();
+            ).value = "";
 
-        kelas =
             document.getElementById(
                 "susulan-class"
-            ).value.trim();
+            ).value = "";
 
-        absen =
             document.getElementById(
                 "susulan-absen"
-            ).value.trim();
+            ).value = "";
 
-        participantId =
-            createSusulanId(
+        }
+    }
+
+
+    /* =========================================================
+       ID SUSULAN
+       ========================================================= */
+
+    function createSusulanId(
+        nama,
+        kelas,
+        absen
+    ) {
+
+        const key =
+            "PRC_SUSULAN_ID_" +
+            [
                 nama,
                 kelas,
                 absen
+            ]
+                .map(
+                    v =>
+                        String(v || "")
+                            .trim()
+                            .toUpperCase()
+                )
+                .join("|");
+
+        const existing =
+            localStorage.getItem(key);
+
+        if (existing) {
+
+            return existing;
+
+        }
+
+        const id =
+            "SMUK-SUS-" +
+            Date.now()
+                .toString(36)
+                .toUpperCase();
+
+        localStorage.setItem(
+            key,
+            id
+        );
+
+        return id;
+    }
+
+
+    /* =========================================================
+       KIRIM KE APPS SCRIPT
+       ========================================================= */
+
+    async function sendToPRC(data) {
+
+        if (!data || !data.tes) {
+
+            console.error(
+                "Payload kosong/tidak valid:",
+                data
             );
-
-    } else {
-
-        if (!selectedParticipant) {
 
             return false;
 
         }
 
-        participantId =
-            String(
-                selectedParticipant.id || ""
-            ).trim();
+        try {
 
-        nama =
-            String(
-                selectedParticipant.nama || ""
-            ).trim();
+            const json =
+                JSON.stringify(data);
 
-        kelas =
-            String(
-                selectedParticipant.kelas || ""
-            ).trim();
+            /*
+             * text/plain sengaja digunakan agar
+             * Apps Script menerima data pada
+             * e.postData.contents tanpa preflight.
+             */
 
-        absen =
-            String(
-                selectedParticipant.absen || ""
-            ).trim();
-
-    }
-
-    userName =
-        nama;
-
-    const payload = {
-
-        tes: "MASTER",
-
-        id:
-            participantId,
-
-        tanggal:
-            now.toLocaleDateString(
-                "id-ID"
-            ),
-
-        jam:
-            now.toLocaleTimeString(
-                "id-ID",
+            await fetch(
+                PRC_API_URL,
                 {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit"
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type":
+                            "text/plain;charset=utf-8"
+                    },
+                    body: json,
+                    keepalive: true
                 }
-            ),
-
-        nama:
-            nama,
-
-        absen:
-            absen,
-
-        wa:
-            "",
-
-        kelas:
-            kelas,
-
-        kodeSesi:
-            sessionCode
-
-    };
-
-
-    localStorage.setItem(
-        "PRC_PARTICIPANT",
-        JSON.stringify(payload)
-    );
-
-
-    const sent =
-        await sendToPRC(payload);
-
-    /*
-     * Untuk MASTER kita tidak memblokir peserta
-     * apabila browser tidak bisa memverifikasi
-     * response no-cors.
-     */
-
-    return sent || true;
-
-}
-
-
-/* =========================================================
-   GET PARTICIPANT
-========================================================= */
-
-function getParticipantData() {
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem(
-                "PRC_PARTICIPANT"
-            ) || "null"
-        ) || {};
-
-    } catch (e) {
-
-        return {};
-
-    }
-
-}
-
-
-/* =========================================================
-   SIMPAN HOLLAND
-========================================================= */
-
-async function saveHollandToSheet() {
-
-    const participant =
-        getParticipantData();
-
-    const now =
-        new Date();
-
-    const duration =
-        testStartTime
-            ? Math.round(
-                (
-                    Date.now() -
-                    testStartTime
-                ) / 1000
-            )
-            : "";
-
-    const finalName =
-        String(
-            participant.nama ||
-            userName ||
-            ""
-        ).trim();
-
-    const finalId =
-        String(
-            participant.id ||
-            participantId ||
-            ""
-        ).trim();
-
-
-    /*
-     * Pastikan jawaban dibuat array baru.
-     */
-
-    const finalAnswers =
-        questions.map(
-            (_, index) =>
-                answers[index] === null
-                    ? ""
-                    : answers[index]
-        );
-
-
-    /*
-     * PAYLOAD HOLLAND
-     */
-
-    const payload = {
-
-        tes:
-            "HOLLAND",
-
-        id:
-            finalId,
-
-        tanggal:
-            participant.tanggal ||
-            now.toLocaleDateString(
-                "id-ID"
-            ),
-
-        jam:
-            participant.jam ||
-            now.toLocaleTimeString(
-                "id-ID",
-                {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit"
-                }
-            ),
-
-        nama:
-            finalName,
-
-        absen:
-            participant.absen || "",
-
-        wa:
-            participant.wa || "",
-
-        kelas:
-            participant.kelas || "",
-
-        kodeSesi:
-            participant.kodeSesi ||
-            sessionCode ||
-            "",
-
-        durasi:
-            duration,
-
-        jumlahSoal:
-            questions.length,
-
-        answers:
-            finalAnswers
-
-    };
-
-
-    /*
-     * BACKUP LOKAL
-     */
-
-    localStorage.setItem(
-        "PRC_LAST_HOLLAND",
-        JSON.stringify(payload)
-    );
-
-
-    /*
-     * KIRIM
-     */
-
-    const sent =
-        await sendToPRC(payload);
-
-
-    return {
-
-        success:
-            sent,
-
-        payload:
-            payload
-
-    };
-
-}
-
-
-/* =========================================================
-   MULAI TES
-========================================================= */
-
-async function startTest() {
-
-    if (isSusulan) {
-
-        const nama =
-            document.getElementById(
-                "susulan-name"
-            ).value.trim();
-
-        const kelas =
-            document.getElementById(
-                "susulan-class"
-            ).value.trim();
-
-        if (!nama) {
-
-            alert(
-                "Harap isi nama peserta susulan."
             );
 
-            return;
+            return true;
+
+        } catch (err) {
+
+            console.error(
+                "Gagal mengirim ke Apps Script:",
+                err
+            );
+
+            return false;
+        }
+    }
+
+
+    /* =========================================================
+       MASTER
+       ========================================================= */
+
+    async function saveMasterToSheet() {
+
+        const now =
+            new Date();
+
+        sessionCode =
+            "HOL-" +
+            now.getTime();
+
+        testStartTime =
+            Date.now();
+
+        let nama = "";
+
+        let kelas = "";
+
+        let absen = "";
+
+        if (isSusulan) {
+
+            nama =
+                document.getElementById(
+                    "susulan-name"
+                ).value.trim();
+
+            kelas =
+                document.getElementById(
+                    "susulan-class"
+                ).value.trim();
+
+            absen =
+                document.getElementById(
+                    "susulan-absen"
+                ).value.trim();
+
+            if (!nama) {
+
+                alert(
+                    "Harap isi nama peserta susulan."
+                );
+
+                return false;
+
+            }
+
+            if (!kelas) {
+
+                alert(
+                    "Harap pilih kelas peserta susulan."
+                );
+
+                return false;
+
+            }
+
+            participantId =
+                createSusulanId(
+                    nama,
+                    kelas,
+                    absen
+                );
+
+        } else {
+
+            if (!selectedParticipant) {
+
+                alert(
+                    "Silakan pilih kelas dan nomor absen terlebih dahulu."
+                );
+
+                return false;
+
+            }
+
+            participantId =
+                String(
+                    selectedParticipant.id || ""
+                ).trim();
+
+            nama =
+                String(
+                    selectedParticipant.nama || ""
+                ).trim();
+
+            kelas =
+                String(
+                    selectedParticipant.kelas || ""
+                ).trim();
+
+            absen =
+                String(
+                    selectedParticipant.absen || ""
+                ).trim();
 
         }
 
-        if (!kelas) {
+        userName = nama;
 
-            alert(
-                "Harap pilih kelas peserta susulan."
+
+        const payload = {
+
+            tes: "MASTER",
+
+            id: participantId,
+
+            tanggal:
+                now.toLocaleDateString(
+                    "id-ID"
+                ),
+
+            jam:
+                now.toLocaleTimeString(
+                    "id-ID",
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit"
+                    }
+                ),
+
+            nama: nama,
+
+            absen: absen,
+
+            wa: "",
+
+            kelas: kelas,
+
+            kodeSesi: sessionCode
+
+        };
+
+
+        localStorage.setItem(
+            "PRC_PARTICIPANT",
+            JSON.stringify(payload)
+        );
+
+
+        const sent =
+            await sendToPRC(
+                payload
             );
 
-            return;
+        if (!sent) {
 
-        }
-
-    } else {
-
-        if (!selectedParticipant) {
-
-            alert(
-                "Silakan pilih kelas dan nomor absen terlebih dahulu."
-            );
-
-            return;
-
-        }
-
-    }
-
-
-    const startButton =
-        document.getElementById(
-            "btn-start"
-        );
-
-    startButton.disabled =
-        true;
-
-    startButton.textContent =
-        "MENYIAPKAN TES...";
-
-
-    const saved =
-        await saveMasterToSheet();
-
-    if (!saved) {
-
-        startButton.disabled =
-            false;
-
-        startButton.textContent =
-            "MULAI SEKARANG";
-
-        alert(
-            "Data peserta belum dapat diproses."
-        );
-
-        return;
-
-    }
-
-
-    document.getElementById(
-        "login-screen"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "test-content"
-    ).style.display =
-        "block";
-
-
-    init();
-
-}
-
-
-/* =========================================================
-   INIT
-========================================================= */
-
-function init() {
-
-    currentIdx = 0;
-
-    answers =
-        new Array(
-            questions.length
-        ).fill(null);
-
-
-    const wrapper =
-        document.getElementById(
-            "q-wrapper"
-        );
-
-    const grid =
-        document.getElementById(
-            "q-grid"
-        );
-
-    wrapper.innerHTML =
-        "";
-
-    grid.innerHTML =
-        "";
-
-
-    questions.forEach(
-        (q, i) => {
-
-            const div =
-                document.createElement(
-                    "div"
-                );
-
-            div.className =
-                "question-box" +
-                (
-                    i === 0
-                        ? " active"
-                        : ""
-                );
-
-            div.id =
-                `qbox-${i}`;
-
-
-            div.innerHTML = `
-
-                <div class="question-text">
-                    ${i + 1}. ${q}
-                </div>
-
-                <div class="opt-container">
-
-                    <div
-                        class="option"
-                        id="opt-${i}-Y"
-                        onclick="select(${i}, 'Y')"
-                    >
-                        YA
-                    </div>
-
-                    <div
-                        class="option"
-                        id="opt-${i}-N"
-                        onclick="select(${i}, 'N')"
-                    >
-                        TIDAK
-                    </div>
-
-                </div>
-
-            `;
-
-
-            wrapper.appendChild(
-                div
-            );
-
-
-            const gItem =
-                document.createElement(
-                    "div"
-                );
-
-            gItem.className =
-                "grid-item";
-
-            gItem.id =
-                `grid-${i}`;
-
-            gItem.innerText =
-                i + 1;
-
-            gItem.onclick =
-                () => jump(i);
-
-            grid.appendChild(
-                gItem
+            console.warn(
+                "MASTER tidak dapat diverifikasi."
             );
 
         }
-    );
+
+        return true;
+    }
 
 
-    updateGrid();
+    /* =========================================================
+       PESERTA
+       ========================================================= */
 
-    checkFinishButton();
+    function getParticipantData() {
 
-}
+        try {
 
-
-/* =========================================================
-   PILIH
-========================================================= */
-
-function select(
-    idx,
-    val
-) {
-
-    answers[idx] =
-        val;
-
-
-    document
-        .getElementById(
-            `opt-${idx}-Y`
-        )
-        .classList
-        .remove("selected");
-
-
-    document
-        .getElementById(
-            `opt-${idx}-N`
-        )
-        .classList
-        .remove("selected");
-
-
-    document
-        .getElementById(
-            `opt-${idx}-${val}`
-        )
-        .classList
-        .add("selected");
-
-
-    document
-        .getElementById(
-            `grid-${idx}`
-        )
-        .classList
-        .add("filled");
-
-
-    checkFinishButton();
-
-
-    /*
-     * AUTONEXT
-     */
-
-    if (
-        currentIdx <
-        questions.length - 1
-    ) {
-
-        setTimeout(
-            () => {
-
-                jump(
-                    currentIdx + 1
+            const raw =
+                localStorage.getItem(
+                    "PRC_PARTICIPANT"
                 );
 
-            },
-            200
-        );
+            return raw
+                ? JSON.parse(raw)
+                : {};
 
-    }
+        } catch (e) {
 
-}
+            console.error(
+                "Gagal membaca participant data:",
+                e
+            );
 
+            return {};
 
-/* =========================================================
-   JUMP
-========================================================= */
-
-function jump(idx) {
-
-    if (
-        idx < 0 ||
-        idx >= questions.length
-    ) {
-
-        return;
-
+        }
     }
 
 
-    document
-        .querySelectorAll(
-            ".question-box"
-        )
-        .forEach(
-            b =>
-                b.classList
-                    .remove("active")
-        );
+    /* =========================================================
+       NORMALISASI JAWABAN
+       ========================================================= */
 
+    function normalizeAnswers() {
 
-    currentIdx =
-        idx;
-
-
-    document
-        .getElementById(
-            `qbox-${idx}`
-        )
-        .classList
-        .add("active");
-
-
-    updateGrid();
-
-}
-
-
-/* =========================================================
-   UPDATE GRID
-========================================================= */
-
-function updateGrid() {
-
-    document
-        .querySelectorAll(
-            ".grid-item"
-        )
-        .forEach(
-            i =>
-                i.classList
-                    .remove("current")
-        );
-
-
-    const current =
-        document.getElementById(
-            `grid-${currentIdx}`
-        );
-
-
-    if (current) {
-
-        current.classList.add(
-            "current"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   CEK SELESAI
-========================================================= */
-
-function checkFinishButton() {
-
-    const answered =
-        answers.filter(
-            a =>
-                a !== null &&
-                a !== ""
-        ).length;
-
-
-    const finishButton =
-        document.getElementById(
-            "btn-final"
-        );
-
-
-    if (
-        answered ===
-        questions.length
-    ) {
-
-        finishButton.style.display =
-            "block";
-
-    } else {
-
-        finishButton.style.display =
-            "none";
-
-    }
-
-}
-
-
-/* =========================================================
-   SELESAI
-========================================================= */
-
-async function finishToResult() {
-
-    if (isSaving) {
-
-        return;
-
-    }
-
-
-    const unanswered =
-        answers.filter(
-            a =>
-                a === null ||
-                a === ""
-        ).length;
-
-
-    if (
-        unanswered > 0
-    ) {
-
-        alert(
-            "Masih ada " +
-            unanswered +
-            " soal yang belum dijawab."
-        );
-
-        return;
-
-    }
-
-
-    isSaving =
-        true;
-
-
-    const finishButton =
-        document.getElementById(
-            "btn-final"
-        );
-
-
-    finishButton.disabled =
-        true;
-
-    finishButton.textContent =
-        "MENYIMPAN HASIL...";
-
-
-    try {
-
-        const result =
-            await saveHollandToSheet();
-
-
-        if (!result) {
+        if (
+            !Array.isArray(answers) ||
+            answers.length !== 108
+        ) {
 
             throw new Error(
-                "Hasil Holland tidak dapat diproses."
+                "Jumlah jawaban Holland harus tepat 108."
             );
 
         }
 
+        const normalized =
+            answers.map(
+                function(value, index) {
 
-        finishButton.textContent =
-            "HASIL TERKIRIM";
+                    const v =
+                        String(
+                            value == null
+                                ? ""
+                                : value
+                        )
+                            .trim()
+                            .toUpperCase();
 
+                    if (
+                        v !== "Y" &&
+                        v !== "N"
+                    ) {
 
-        document.getElementById(
-            "test-content"
-        ).style.display =
-            "none";
+                        throw new Error(
+                            "Jawaban nomor " +
+                            (index + 1) +
+                            " tidak valid."
+                        );
 
+                    }
 
-        document.getElementById(
-            "result-screen"
-        ).style.display =
-            "block";
+                    return v;
 
+                }
+            );
 
-    } catch (err) {
-
-        console.error(
-            "Gagal menyimpan Holland:",
-            err
-        );
-
-
-        isSaving =
-            false;
-
-
-        finishButton.disabled =
-            false;
-
-        finishButton.textContent =
-            "SELESAI & REKAP JAWABAN";
-
-
-        alert(
-            "Terjadi kendala saat memproses hasil Holland. Silakan coba kembali."
-        );
-
+        return normalized;
     }
 
-}
+
+    /* =========================================================
+       SIMPAN HOLLAND
+       ========================================================= */
+
+    async function saveHollandToSheet() {
+
+        const participant =
+            getParticipantData();
+
+        const now =
+            new Date();
+
+        const finalAnswers =
+            normalizeAnswers();
 
 
-/* =========================================================
-   DOWNLOAD TXT
-========================================================= */
-
-function downloadTXT() {
-
-    const participant =
-        getParticipantData();
-
-
-    let text =
-        "REKAP RIASEC HOLLAND - PRC\n";
+        const duration =
+            testStartTime
+                ? Math.round(
+                    (
+                        Date.now() -
+                        testStartTime
+                    ) / 1000
+                )
+                : "";
 
 
-    text +=
-        "=================================\n";
+        const finalId =
+            String(
+                participant.id ||
+                participantId ||
+                ""
+            ).trim();
 
 
-    text +=
-        `JUMLAH SOAL   : ${questions.length}\n`;
-
-
-    text +=
-        `ID PESERTA    : ${
-            participant.id ||
-            participantId ||
-            ""
-        }\n`;
-
-
-    text +=
-        `NAMA PESERTA  : ${
-            (
+        const finalName =
+            String(
                 participant.nama ||
                 userName ||
                 ""
-            ).toUpperCase()
-        }\n`;
+            ).trim();
 
 
-    text +=
-        `KELAS         : ${
-            participant.kelas ||
-            ""
-        }\n`;
+        if (!finalId) {
 
-
-    text +=
-        `NO. ABSEN     : ${
-            participant.absen ||
-            ""
-        }\n`;
-
-
-    text +=
-        `KODE SESI     : ${
-            participant.kodeSesi ||
-            sessionCode ||
-            ""
-        }\n`;
-
-
-    text +=
-        `TANGGAL       : ${
-            new Date()
-                .toLocaleString(
-                    "id-ID"
-                )
-        }\n`;
-
-
-    text +=
-        "=================================\n\n";
-
-
-    answers.forEach(
-        (a, i) => {
-
-            text +=
-                `${i + 1}:${
-                    a || ""
-                }\n`;
+            throw new Error(
+                "ID peserta kosong."
+            );
 
         }
+
+
+        if (!finalName) {
+
+            throw new Error(
+                "Nama peserta kosong."
+            );
+
+        }
+
+
+        /*
+         * PAYLOAD FINAL HOLLAND
+         *
+         * Apps Script:
+         *
+         * A ID
+         * B TANGGAL
+         * C JAM
+         * D NAMA
+         * E ABSEN
+         * F WA
+         * G KELAS
+         * H KODE SESI
+         * I DURASI
+         * J R
+         * K I
+         * L A
+         * M S
+         * N E
+         * O C
+         * P KODE RIASEC
+         * Q dst ANSWERS 1-108
+         */
+
+        const payload = {
+
+            tes: "HOLLAND",
+
+            id: finalId,
+
+            tanggal:
+                participant.tanggal ||
+                now.toLocaleDateString(
+                    "id-ID"
+                ),
+
+            jam:
+                participant.jam ||
+                now.toLocaleTimeString(
+                    "id-ID",
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit"
+                    }
+                ),
+
+            nama: finalName,
+
+            absen:
+                participant.absen || "",
+
+            wa:
+                participant.wa || "",
+
+            kelas:
+                participant.kelas || "",
+
+            kodeSesi:
+                participant.kodeSesi ||
+                sessionCode ||
+                "",
+
+            durasi:
+                duration,
+
+            /*
+             * Penting:
+             * scoring di Apps Script akan menggunakan
+             * scores jika dikirim.
+             *
+             * Di sini jawaban tetap menjadi sumber utama.
+             */
+
+            answers:
+                finalAnswers
+
+        };
+
+
+        /*
+         * BACKUP LOKAL
+         */
+
+        localStorage.setItem(
+            "PRC_LAST_HOLLAND",
+            JSON.stringify(payload)
+        );
+
+
+        /*
+         * KIRIM KE APPS SCRIPT
+         */
+
+        const sent =
+            await sendToPRC(
+                payload
+            );
+
+
+        return {
+
+            success: sent,
+
+            payload: payload
+
+        };
+    }
+
+
+    /* =========================================================
+       START
+       ========================================================= */
+
+    async function startTest() {
+
+        if (isSusulan) {
+
+            const nama =
+                document.getElementById(
+                    "susulan-name"
+                ).value.trim();
+
+            if (!nama) {
+
+                alert(
+                    "Harap isi nama peserta susulan."
+                );
+
+                return;
+
+            }
+
+        } else {
+
+            if (!selectedParticipant) {
+
+                alert(
+                    "Silakan pilih kelas dan nomor absen terlebih dahulu."
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        const button =
+            document.getElementById(
+                "btn-start"
+            );
+
+        button.disabled = true;
+
+        button.textContent =
+            "MENYIAPKAN TES...";
+
+
+        try {
+
+            const saved =
+                await saveMasterToSheet();
+
+            if (!saved) {
+
+                button.disabled = false;
+
+                button.textContent =
+                    "MULAI SEKARANG";
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "login-screen"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "test-content"
+            ).style.display = "block";
+
+
+            init();
+
+        } catch (err) {
+
+            console.error(
+                "Gagal memulai tes:",
+                err
+            );
+
+            alert(
+                "Gagal menyiapkan tes."
+            );
+
+            button.disabled = false;
+
+            button.textContent =
+                "MULAI SEKARANG";
+
+        }
+
+    }
+
+
+    /* =========================================================
+       DOM READY
+       ========================================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        loadDaftarPeserta
     );
 
 
-    const blob =
-        new Blob(
-            [text],
-            {
-                type:
-                    "text/plain;charset=utf-8"
+    /* =========================================================
+       INIT
+       ========================================================= */
+
+    function init() {
+
+        const wrapper =
+            document.getElementById(
+                "q-wrapper"
+            );
+
+        const grid =
+            document.getElementById(
+                "q-grid"
+            );
+
+        wrapper.innerHTML = "";
+
+        grid.innerHTML = "";
+
+
+        questions.forEach(
+            (q, i) => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+                div.className =
+                    "question-box " +
+                    (
+                        i === 0
+                            ? "active"
+                            : ""
+                    );
+
+                div.id =
+                    "qbox-" + i;
+
+
+                div.innerHTML = `
+
+                    <div class="question-text">
+                        ${i + 1}. ${q}
+                    </div>
+
+                    <div class="opt-container">
+
+                        <div
+                            class="option"
+                            id="opt-${i}-Y"
+                            onclick="select(${i}, 'Y')"
+                        >
+                            YA
+                        </div>
+
+                        <div
+                            class="option"
+                            id="opt-${i}-N"
+                            onclick="select(${i}, 'N')"
+                        >
+                            TIDAK
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                wrapper.appendChild(
+                    div
+                );
+
+
+                const gItem =
+                    document.createElement(
+                        "div"
+                    );
+
+                gItem.className =
+                    "grid-item";
+
+                gItem.id =
+                    "grid-" + i;
+
+                gItem.innerText =
+                    i + 1;
+
+                gItem.onclick =
+                    () => jump(i);
+
+                grid.appendChild(
+                    gItem
+                );
+
             }
         );
 
 
-    const a =
-        document.createElement(
-            "a"
-        );
+        updateGrid();
+
+    }
 
 
-    const safeName =
-        (
-            participant.nama ||
-            userName ||
-            "PESERTA"
-        )
-        .replace(
-            /[^a-zA-Z0-9_-]+/g,
-            "_"
-        );
+    /* =========================================================
+       SELECT
+       ========================================================= */
+
+    function select(
+        idx,
+        val
+    ) {
+
+        answers[idx] =
+            val === "Y"
+                ? "Y"
+                : "N";
 
 
-    a.href =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    a.download =
-        `RIASEC_${questions.length}_${safeName}.txt`;
-
-
-    document.body.appendChild(
-        a
-    );
-
-
-    a.click();
-
-
-    document.body.removeChild(
-        a
-    );
-
-
-    setTimeout(
-        () => {
-
-            URL.revokeObjectURL(
-                a.href
+        document
+            .getElementById(
+                "opt-" +
+                idx +
+                "-Y"
+            )
+            .classList
+            .remove(
+                "selected"
             );
 
-        },
-        1000
-    );
 
-}
+        document
+            .getElementById(
+                "opt-" +
+                idx +
+                "-N"
+            )
+            .classList
+            .remove(
+                "selected"
+            );
 
 
-/* =========================================================
-   DOM READY
-========================================================= */
+        document
+            .getElementById(
+                "opt-" +
+                idx +
+                "-" +
+                answers[idx]
+            )
+            .classList
+            .add(
+                "selected"
+            );
 
-document.addEventListener(
-    "DOMContentLoaded",
-    loadDaftarPeserta
-);
+
+        document
+            .getElementById(
+                "grid-" +
+                idx
+            )
+            .classList
+            .add(
+                "filled"
+            );
+
+
+        if (
+            currentIdx <
+            questions.length - 1
+        ) {
+
+            setTimeout(
+                () => {
+
+                    jump(
+                        currentIdx + 1
+                    );
+
+                },
+                200
+            );
+
+        }
+
+
+        checkFinishButton();
+
+    }
+
+
+    /* =========================================================
+       JUMP
+       ========================================================= */
+
+    function jump(idx) {
+
+        document
+            .querySelectorAll(
+                ".question-box"
+            )
+            .forEach(
+                b =>
+                    b.classList
+                        .remove(
+                            "active"
+                        )
+            );
+
+
+        currentIdx =
+            idx;
+
+
+        document
+            .getElementById(
+                "qbox-" +
+                idx
+            )
+            .classList
+            .add(
+                "active"
+            );
+
+
+        updateGrid();
+
+    }
+
+
+    /* =========================================================
+       GRID
+       ========================================================= */
+
+    function updateGrid() {
+
+        document
+            .querySelectorAll(
+                ".grid-item"
+            )
+            .forEach(
+                i =>
+                    i.classList
+                        .remove(
+                            "current"
+                        )
+            );
+
+
+        const current =
+            document.getElementById(
+                "grid-" +
+                currentIdx
+            );
+
+
+        if (current) {
+
+            current.classList.add(
+                "current"
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       CHECK FINISH
+       ========================================================= */
+
+    function checkFinishButton() {
+
+        const answered =
+            answers.filter(
+                a =>
+                    a === "Y" ||
+                    a === "N"
+            ).length;
+
+
+        if (
+            answered ===
+            questions.length
+        ) {
+
+            document.getElementById(
+                "btn-final"
+            ).style.display =
+                "block";
+
+        }
+
+    }
+
+
+    /* =========================================================
+       FINISH
+       ========================================================= */
+
+    async function finishToResult() {
+
+        const answered =
+            answers.filter(
+                a =>
+                    a === "Y" ||
+                    a === "N"
+            ).length;
+
+
+        if (
+            answered !==
+            108
+        ) {
+
+            alert(
+                "Harap jawab seluruh 108 soal terlebih dahulu."
+            );
+
+            return;
+
+        }
+
+
+        const finishButton =
+            document.getElementById(
+                "btn-final"
+            );
+
+
+        finishButton.disabled =
+            true;
+
+        finishButton.textContent =
+            "MENYIMPAN HASIL...";
+
+
+        try {
+
+            /*
+             * Validasi final sebelum dikirim.
+             */
+
+            const normalized =
+                normalizeAnswers();
+
+
+            if (
+                normalized.length !== 108
+            ) {
+
+                throw new Error(
+                    "Jumlah jawaban bukan 108."
+                );
+
+            }
+
+
+            /*
+             * Simpan payload.
+             */
+
+            const result =
+                await saveHollandToSheet();
+
+
+            /*
+             * Karena no-cors tidak memberikan
+             * response body, browser tidak dapat
+             * membaca status Apps Script.
+             *
+             * Namun request sudah dikirim.
+             */
+
+            if (
+                !result ||
+                !result.success
+            ) {
+
+                console.warn(
+                    "Request telah dikirim tetapi status server tidak dapat dibaca browser karena no-cors."
+                );
+
+            }
+
+
+            finishButton.textContent =
+                "HASIL TERSIMPAN";
+
+
+            document.getElementById(
+                "test-content"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "result-screen"
+            ).style.display =
+                "block";
+
+
+        } catch (err) {
+
+            console.error(
+                "Gagal menyimpan Holland:",
+                err
+            );
+
+
+            finishButton.disabled =
+                false;
+
+
+            finishButton.textContent =
+                "SELESAI & REKAP JAWABAN";
+
+
+            alert(
+                "Terjadi kendala saat menyimpan hasil Holland:\n\n" +
+                err.message
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       DOWNLOAD TXT LOKAL
+       ========================================================= */
+
+    function downloadTXT() {
+
+        const participant =
+            getParticipantData();
+
+
+        let text =
+            "REKAP RIASEC HOLLAND (108) - PRC\n";
+
+        text +=
+            "=================================\n";
+
+        text +=
+            "ID PESERTA   : " +
+            (
+                participant.id ||
+                participantId ||
+                ""
+            ) +
+            "\n";
+
+
+        text +=
+            "NAMA PESERTA : " +
+            (
+                participant.nama ||
+                userName ||
+                ""
+            ).toUpperCase() +
+            "\n";
+
+
+        text +=
+            "KELAS        : " +
+            (
+                participant.kelas ||
+                ""
+            ) +
+            "\n";
+
+
+        text +=
+            "NO. ABSEN    : " +
+            (
+                participant.absen ||
+                ""
+            ) +
+            "\n";
+
+
+        text +=
+            "TANGGAL      : " +
+            new Date()
+                .toLocaleString(
+                    "id-ID"
+                ) +
+            "\n";
+
+
+        text +=
+            "=================================\n\n";
+
+
+        answers.forEach(
+            (a, i) => {
+
+                text +=
+                    (
+                        i + 1
+                    ) +
+                    ":" +
+                    (
+                        a || ""
+                    ) +
+                    "\n";
+
+            }
+        );
+
+
+        const blob =
+            new Blob(
+                [text],
+                {
+                    type:
+                        "text/plain;charset=utf-8"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const a =
+            document.createElement(
+                "a"
+            );
+
+
+        a.href = url;
+
+
+        a.download =
+            "RIASEC_108_" +
+            (
+                participant.nama ||
+                userName ||
+                "Peserta"
+            )
+                .replace(
+                    /[\\\/:*?"<>|]/g,
+                    ""
+                )
+                .replace(
+                    /\s+/g,
+                    "_"
+                ) +
+            ".txt";
+
+
+        document.body.appendChild(
+            a
+        );
+
+
+        a.click();
+
+
+        a.remove();
+
+
+        setTimeout(
+            () => {
+
+                URL.revokeObjectURL(
+                    url
+                );
+
+            },
+            1000
+        );
+
+    }
 
 </script>
 
