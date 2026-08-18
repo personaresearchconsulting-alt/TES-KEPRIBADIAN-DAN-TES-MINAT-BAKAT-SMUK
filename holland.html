@@ -193,7 +193,7 @@
     let userName = "";
 
     // ===== PRC GOOGLE SHEETS CONNECTION =====
-    const PRC_API_URL = "https://script.google.com/macros/s/AKfycbzUQPw9ot16sShrZDz2e0gDdQROJ_kFLyKiCrSjpUNKGf0i9_pncJoLE7yChgXPFlHd/exec";
+    const PRC_API_URL = "https://script.google.com/macros/s/AKfycbyPSBX3Lk-HB68_Scmy2kNxLiBMsINJXe_qO-e8XGF3IOThKbcSydNpADW2qGO09fem/exec";
     let participantId = "";
     let sessionCode = "";
     let testStartTime = null;
@@ -372,7 +372,7 @@
         const duration = testStartTime ? Math.round((Date.now() - testStartTime) / 1000) : "";
 
         const payload = {
-            tes: "MINAT1",
+            tes: "HOLLAND",
             id: participant.id || participantId || "",
             tanggal: participant.tanggal || now.toLocaleDateString("id-ID"),
             jam: participant.jam || now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
@@ -485,7 +485,7 @@
         const blob = new Blob([text], {type:'text/plain'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `MINAT_1_${userName.replace(/\s+/g,'_')}.txt`;
+        a.download = `RIASEC_108_${userName.replace(/\s+/g,'_')}.txt`;
         a.click();
     }
 </script>
