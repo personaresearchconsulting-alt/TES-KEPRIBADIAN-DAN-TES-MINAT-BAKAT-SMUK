@@ -171,68 +171,156 @@
     async function loadDaftarPeserta() {
         const statusEl = document.getElementById('participant-loading');
         const btn = document.getElementById('btn-start');
+        const classSelect = document.getElementById('user-class');
 
         try {
             statusEl.textContent = 'Memuat daftar peserta resmi...';
 
-            const response = await fetch(PRC_API_URL + '?action=getDaftarPeserta', {
-                method: 'GET',
-                cache: 'no-store'
-            });
+            const response = await fetch(
+                PRC_API_URL + '?action=getDaftarPeserta&_=' + Date.now(),
+                {
+                    method: 'GET',
+                    cache: 'no-store',
+                    redirect: 'follow'
+                }
+            );
 
-            if (!response.ok) throw new Error('HTTP ' + response.status);
-
-            const result = await response.json();
-
-            if (result.status !== 'success' || !Array.isArray(result.peserta)) {
-                throw new Error(result.message || 'Data peserta tidak valid.');
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
             }
 
-            daftarPeserta = result.peserta;
+            const raw = await response.json();
+
+            // Backend lama/baru dapat memakai nama properti yang berbeda.
+            const rows =
+                Array.isArray(raw) ? raw :
+                Array.isArray(raw.peserta) ? raw.peserta :
+                Array.isArray(raw.data) ? raw.data :
+                Array.isArray(raw.rows) ? raw.rows :
+                Array.isArray(raw.participants) ? raw.participants :
+                null;
+
+            if (!rows) {
+                throw new Error(raw && raw.message ? raw.message : 'Data peserta tidak ditemukan.');
+            }
+
+            daftarPeserta = rows.map(normalizeParticipant).filter(p =>
+                p.kelas || p.absen || p.nama || p.id
+            );
+
             populateClasses();
 
-            statusEl.textContent = 'Daftar peserta berhasil dimuat: ' + daftarPeserta.length + ' peserta.';
-            btn.disabled = false;
+            if (daftarPeserta.length) {
+                statusEl.textContent =
+                    'Daftar peserta berhasil dimuat: ' +
+                    daftarPeserta.length + ' peserta.';
+                btn.disabled = false;
+            } else {
+                throw new Error('Daftar peserta kosong.');
+            }
 
         } catch (err) {
             console.error('Gagal memuat daftar peserta:', err);
-            statusEl.textContent = 'Silakan pilih kelas di bawah atau gunakan Opsi Susulan.';
+
+            // Fallback agar dropdown kelas tetap dapat digunakan bila
+            // browser/GitHub Pages gagal membaca response Google Apps Script.
             populateFallbackClasses();
+
+            statusEl.textContent =
+                'Daftar peserta resmi belum dapat dimuat. ' +
+                'Coba muat ulang halaman.';
+
+            // Jangan membuat tombol aktif tanpa peserta resmi.
             btn.disabled = false;
         }
     }
 
+    function normalizeParticipant(p) {
+        p = p || {};
+
+        return {
+            id: String(
+                p.id ??
+                p.idPeserta ??
+                p.id_peserta ??
+                p.ID ??
+                p['ID Peserta'] ??
+                ''
+            ).trim(),
+
+            nama: String(
+                p.nama ??
+                p.name ??
+                p.Nama ??
+                p['Nama Peserta'] ??
+                ''
+            ).trim(),
+
+            kelas: String(
+                p.kelas ??
+                p.class ??
+                p.Kelas ??
+                p['Kelas'] ??
+                ''
+            ).trim(),
+
+            absen: String(
+                p.absen ??
+                p.no_absen ??
+                p.noAbsen ??
+                p.nomor_absen ??
+                p.nomor ??
+                p['No. Absen'] ??
+                p['NO. ABSEN'] ??
+                ''
+            ).trim()
+        };
+    }
+
     function populateClasses() {
         const select = document.getElementById('user-class');
-        const classes = [...new Set(daftarPeserta.map(p => String(p.kelas || '').trim()).filter(Boolean))];
 
-        if (classes.length === 0) {
-            populateFallbackClasses();
-            return;
-        }
+        const classes = [...new Set(
+            daftarPeserta
+                .map(p => String(p.kelas || '').trim())
+                .filter(Boolean)
+        )];
 
-        classes.sort((a, b) => a.localeCompare(b, 'id', { numeric: true }));
+        classes.sort((a, b) =>
+            a.localeCompare(b, 'id', { numeric: true })
+        );
 
         select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+
         classes.forEach(k => {
             const opt = document.createElement('option');
             opt.value = k;
             opt.textContent = k;
             select.appendChild(opt);
         });
+
+        select.disabled = false;
     }
 
     function populateFallbackClasses() {
         const select = document.getElementById('user-class');
-        const defaultClasses = ["X A", "X B", "X C", "X D", "X E", "XI A", "XI B", "XII A"];
-        
+        if (!select) return;
+
+        const existing = Array.from(select.options).map(o => o.value);
+        if (existing.length > 1) return;
+
+        const fallbackClasses = ['X A', 'X B', 'X C', 'X D', 'X E'];
+
         select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
-        defaultClasses.forEach(k => {
+
+        fallbackClasses.forEach(k => {
             const opt = document.createElement('option');
             opt.value = k;
             opt.textContent = k;
             select.appendChild(opt);
         });
+
+        select.disabled = false;
     }
 
     function onClassChange() {
@@ -249,38 +337,41 @@
 
         const list = daftarPeserta
             .filter(p => String(p.kelas || '').trim() === kelas)
-            .sort((a, b) => Number(a.absen) - Number(b.absen));
-
-        if (list.length > 0) {
-            list.forEach(p => {
-                const opt = document.createElement('option');
-                opt.value = String(p.absen);
-                opt.textContent = String(p.absen);
-                absen.appendChild(opt);
+            .sort((a, b) => {
+                const na = Number(a.absen);
+                const nb = Number(b.absen);
+                if (Number.isNaN(na) && Number.isNaN(nb)) return String(a.absen).localeCompare(String(b.absen), 'id', {numeric:true});
+                if (Number.isNaN(na)) return 1;
+                if (Number.isNaN(nb)) return -1;
+                return na - nb;
             });
-        } else {
-            for (let i = 1; i <= 40; i++) {
-                const opt = document.createElement('option');
-                opt.value = String(i);
-                opt.textContent = String(i);
-                absen.appendChild(opt);
-            }
-        }
+
+        list.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = String(p.absen);
+            opt.textContent = String(p.absen);
+            absen.appendChild(opt);
+        });
     }
 
     function onAbsenChange() {
         const kelas = document.getElementById('user-class').value;
         const absen = document.getElementById('user-absen').value;
 
-        selectedParticipant = daftarPeserta.find(
-            p => String(p.kelas || '').trim() === kelas && String(p.absen || '').trim() === absen
+        selectedParticipant = daftarPeserta.find(p =>
+            String(p.kelas || '').trim() === kelas &&
+            String(p.absen || '').trim() === absen
         ) || null;
 
         const info = document.getElementById('identity-info');
 
         if (selectedParticipant) {
-            document.getElementById('display-name').textContent = selectedParticipant.nama || '-';
-            document.getElementById('display-id').textContent = selectedParticipant.id || '-';
+            document.getElementById('display-name').textContent =
+                selectedParticipant.nama || '-';
+
+            document.getElementById('display-id').textContent =
+                selectedParticipant.id || '-';
+
             info.style.display = 'block';
         } else {
             info.style.display = 'none';
@@ -290,8 +381,11 @@
     function toggleSusulan() {
         isSusulan = document.getElementById('is-susulan').checked;
 
-        document.getElementById('official-fields').style.display = isSusulan ? 'none' : 'block';
-        document.getElementById('susulan-fields').style.display = isSusulan ? 'block' : 'none';
+        document.getElementById('official-fields').style.display =
+            isSusulan ? 'none' : 'block';
+
+        document.getElementById('susulan-fields').style.display =
+            isSusulan ? 'block' : 'none';
 
         if (isSusulan) {
             selectedParticipant = null;
@@ -303,32 +397,64 @@
     }
 
     function createSusulanId(nama, kelas, absen) {
-        const key = 'PRC_SUSULAN_ID_' + [nama, kelas, absen].map(v => String(v || '').trim().toUpperCase()).join('|');
+        const key =
+            'PRC_SUSULAN_ID_' +
+            [nama, kelas, absen]
+                .map(v => String(v || '').trim().toUpperCase())
+                .join('|');
+
         const existing = localStorage.getItem(key);
         if (existing) return existing;
 
-        const id = 'SMUK-SUS-' + Date.now().toString(36).toUpperCase();
+        const id =
+            'SMUK-SUS-' +
+            Date.now().toString(36).toUpperCase();
+
         localStorage.setItem(key, id);
         return id;
     }
 
     async function sendToPRC(data) {
+        const body = JSON.stringify(data);
+
         try {
+            // text/plain menghindari preflight CORS pada Google Apps Script.
             await fetch(PRC_API_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(data),
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: body,
                 keepalive: true
             });
+
+            return true;
         } catch (e) {
-            console.error("Gagal mengirim data ke backend PRC:", e);
+            console.error('Fetch POST gagal:', e);
+
+            // Fallback untuk browser yang gagal melakukan fetch ke Apps Script.
+            try {
+                if (navigator.sendBeacon) {
+                    const blob = new Blob(
+                        [body],
+                        { type: 'text/plain;charset=utf-8' }
+                    );
+                    const sent = navigator.sendBeacon(PRC_API_URL, blob);
+                    if (sent) return true;
+                }
+            } catch (beaconError) {
+                console.error('Beacon POST gagal:', beaconError);
+            }
+
+            return false;
         }
     }
 
-    function saveMasterToSheet() {
+    async function saveMasterToSheet() {
         const now = new Date();
-        sessionCode = "RMIB-" + now.getTime();
+
+        sessionCode = 'RMIB-' + now.getTime();
         testStartTime = Date.now();
 
         let nama = '';
@@ -339,90 +465,204 @@
             nama = document.getElementById('susulan-name').value.trim();
             kelas = document.getElementById('susulan-class').value.trim();
             absen = document.getElementById('susulan-absen').value.trim();
-            participantId = createSusulanId(nama, kelas, absen);
-        } else {
-            kelas = document.getElementById('user-class').value.trim();
-            absen = document.getElementById('user-absen').value.trim();
 
-            if (selectedParticipant) {
-                participantId = String(selectedParticipant.id || '').trim();
-                nama = String(selectedParticipant.nama || '').trim();
-            } else {
-                nama = "Peserta " + kelas + " Absen " + absen;
-                participantId = createSusulanId(nama, kelas, absen);
-            }
+            participantId = createSusulanId(nama, kelas, absen);
+
+        } else {
+            if (!selectedParticipant) return false;
+
+            participantId = String(selectedParticipant.id || '').trim();
+            nama = String(selectedParticipant.nama || '').trim();
+            kelas = String(selectedParticipant.kelas || '').trim();
+            absen = String(selectedParticipant.absen || '').trim();
         }
 
         const payload = {
-            tes: "MASTER",
+            tes: 'MASTER',
             id: participantId,
-            tanggal: now.toLocaleDateString("id-ID"),
-            jam: now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+            tanggal: now.toLocaleDateString('id-ID'),
+            jam: now.toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }),
             nama: nama,
             absen: absen,
-            wa: "",
+            wa: '',
             kelas: kelas,
             kodeSesi: sessionCode
         };
 
-        localStorage.setItem("PRC_PARTICIPANT", JSON.stringify(payload));
-        sendToPRC(payload);
+        localStorage.setItem(
+            'PRC_PARTICIPANT',
+            JSON.stringify(payload)
+        );
+
+        const sent = await sendToPRC(payload);
+
+        if (!sent) {
+            console.error('MASTER tidak dapat dikirim ke backend.');
+            return false;
+        }
+
         return true;
     }
 
     function getParticipantData() {
+
         try {
-            return JSON.parse(localStorage.getItem("PRC_PARTICIPANT") || "null") || {};
+
+            return JSON.parse(
+                localStorage.getItem(
+                    "PRC_PARTICIPANT"
+                ) || "null"
+            ) || {};
+
         } catch (e) {
+
             return {};
         }
     }
 
-    async function saveRMIBToSheet(name, gender, answers) {
-        const participant = getParticipantData();
-        const now = new Date();
-        const duration = testStartTime ? Math.round((Date.now() - testStartTime) / 1000) : "";
+    async function saveRMIBToSheet(
+        name,
+        gender,
+        answers
+    ) {
+
+        const participant =
+            getParticipantData();
+
+        const now =
+            new Date();
+
+        const duration =
+            testStartTime
+                ? Math.round(
+                    (
+                        Date.now() -
+                        testStartTime
+                    ) / 1000
+                )
+                : "";
+
+        const masterName =
+            String(
+                participant.nama ||
+                name ||
+                ""
+            ).trim();
+
+        const masterId =
+            String(
+                participant.id ||
+                participantId ||
+                ""
+            ).trim();
 
         const payload = {
+
             tes: "RMIB",
-            id: String(participant.id || participantId || "").trim(),
-            tanggal: participant.tanggal || now.toLocaleDateString("id-ID"),
-            jam: participant.jam || now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
-            nama: String(participant.nama || name || "").trim(),
+
+            id: masterId,
+
+            tanggal:
+                participant.tanggal ||
+                now.toLocaleDateString(
+                    "id-ID"
+                ),
+
+            jam:
+                participant.jam ||
+                now.toLocaleTimeString(
+                    "id-ID",
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                ),
+
+            nama: masterName,
+
             gender: gender,
-            absen: participant.absen || "",
-            kelas: participant.kelas || "",
-            kodeSesi: participant.kodeSesi || sessionCode || "",
+
+            absen:
+                participant.absen || "",
+
+            kelas:
+                participant.kelas || "",
+
+            kodeSesi:
+                participant.kodeSesi ||
+                sessionCode ||
+                "",
+
             durasi: duration,
-            answers: answers.slice()
+
+            answers:
+                answers.slice()
         };
 
-        localStorage.setItem("PRC_LAST_RMIB", JSON.stringify(payload));
+        localStorage.setItem(
+            "PRC_LAST_RMIB",
+            JSON.stringify(payload)
+        );
+
         await sendToPRC(payload);
+
         return payload;
     }
 
-    function startTest() {
-        const gender = document.getElementById('gender').value;
-        if (!gender) return alert('Silakan pilih jenis kelamin terlebih dahulu.');
+    async function startTest() {
 
-        if (isSusulan) {
-            const nama = document.getElementById('susulan-name').value.trim();
-            if (!nama) return alert('Harap isi nama peserta susulan.');
-        } else {
-            const kelas = document.getElementById('user-class').value;
-            const absen = document.getElementById('user-absen').value;
-            if (!kelas || !absen) return alert('Silakan pilih kelas dan nomor absen terlebih dahulu.');
+        const gender = document.getElementById('gender').value;
+        if (!gender) {
+            return alert('Silakan pilih jenis kelamin terlebih dahulu.');
         }
 
-        if (!saveMasterToSheet()) return;
+        if (isSusulan) {
 
-        document.getElementById('setup-screen').style.display = 'none';
-        document.getElementById('test-screen').style.display = 'block';
+            const nama =
+                document.getElementById(
+                    'susulan-name'
+                ).value.trim();
+
+            if (!nama) {
+                return alert(
+                    'Harap isi nama peserta susulan.'
+                );
+            }
+
+        } else {
+
+            if (!selectedParticipant) {
+
+                return alert(
+                    'Silakan pilih kelas dan nomor absen terlebih dahulu.'
+                );
+            }
+        }
+
+        const masterSaved = await saveMasterToSheet();
+        if (!masterSaved) {
+            return alert('Data peserta belum berhasil dikirim ke server. Silakan periksa koneksi internet lalu coba lagi.');
+        }
+
+        document.getElementById(
+            'setup-screen'
+        ).style.display = 'none';
+
+        document.getElementById(
+            'test-screen'
+        ).style.display = 'block';
+
         renderJobs();
     }
 
-    document.addEventListener('DOMContentLoaded', loadDaftarPeserta);
+    document.addEventListener(
+        'DOMContentLoaded',
+        loadDaftarPeserta
+    );
 
     function renderJobs() {
         const gender = document.getElementById('gender').value;
@@ -442,26 +682,23 @@
     }
 
     function processInput(el, g) {
-        let val = el.value.replace(/[^0-9]/g, ''); 
-        el.value = val;
+        let val = el.value.replace(/[^0-9]/g, ''); el.value = val;
         let inputs = Array.from(document.querySelectorAll(`.group-${g}`));
         let allVals = inputs.map(i => i.value).filter(v => v !== "");
         let num = parseInt(val);
         if(num < 1 || num > 12 || allVals.filter(v => v === val).length > 1) {
             el.classList.add('error');
         } else {
-            el.classList.remove('error'); 
-            el.classList.add('filled');
-            let next = inputs.find(i => i.value === ""); 
-            if(next && val !== "") next.focus();
+            el.classList.remove('error'); el.classList.add('filled');
+            let next = inputs.find(i => i.value === ""); if(next && val !== "") next.focus();
         }
     }
 
     async function finishAndDownload() {
-        const keys = ["A","B","C","D","E","F","G","H","I"];
-        const participant = getParticipantData();
-        const name = participant.nama || "";
-        const gender = document.getElementById('gender').value;
+    const keys = ["A","B","C","D","E","F","G","H","I"];
+    const participant = getParticipantData();
+    const name = participant.nama || "";
+    const gender = document.getElementById('gender').value;
 
         for(let g of keys) {
             let vals = Array.from(document.querySelectorAll(`.group-${g}`)).map(i => i.value);
@@ -486,19 +723,13 @@
         });
 
         const finishButton = document.querySelector('#test-screen .btn');
-        if (finishButton) { 
-            finishButton.disabled = true; 
-            finishButton.textContent = 'MENYIMPAN HASIL...'; 
-        }
+        if (finishButton) { finishButton.disabled = true; finishButton.textContent = 'MENYIMPAN HASIL...'; }
 
         try {
             await saveRMIBToSheet(name, gender, allAnswers);
         } catch (err) {
             console.error(err);
-            if (finishButton) { 
-                finishButton.disabled = false; 
-                finishButton.textContent = 'SELESAI & UNDUH HASIL (.TXT)'; 
-            }
+            if (finishButton) { finishButton.disabled = false; finishButton.textContent = 'SELESAI & UNDUH HASIL (.TXT)'; }
             return alert('Hasil RMIB gagal disimpan ke server. Silakan coba klik tombol lagi.');
         }
 
