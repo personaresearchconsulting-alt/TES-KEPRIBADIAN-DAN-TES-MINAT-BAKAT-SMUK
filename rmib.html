@@ -449,7 +449,7 @@
         const now = new Date();
 
         sessionCode =
-            "RMIB-" + now.getTime();
+            "MINAT2-" + now.getTime();
 
         testStartTime =
             Date.now();
@@ -606,7 +606,7 @@
 
         const payload = {
 
-            tes: "RMIB",
+            tes: "MINAT2",
 
             id: masterId,
 
@@ -746,7 +746,7 @@
             if(vals.includes("") || new Set(vals).size !== 12) return alert(`Data Kelompok ${g} belum lengkap atau ada angka ganda.`);
         }
 
-        let text = "REKAP JAWABAN RMIB - PERSONA RESEARCH & CONSULTING\n";
+        let text = "REKAP JAWABAN MINAT2 - PERSONA RESEARCH & CONSULTING\n";
         text += "================================================\n";
         const participant = getParticipantData();
         text += `ID PESERTA   : ${participant.id || participantId || ""}\n`;
@@ -772,13 +772,13 @@
         } catch (err) {
             console.error(err);
             if (finishButton) { finishButton.disabled = false; finishButton.textContent = 'SELESAI & UNDUH HASIL (.TXT)'; }
-            return alert('Hasil RMIB gagal disimpan ke server. Silakan coba klik tombol lagi.');
+            return alert('Hasil MINAT2 gagal disimpan ke server. Silakan coba klik tombol lagi.');
         }
 
         const blob = new Blob([text], { type: 'text/plain' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `RMIB_${name.replace(/\s+/g, '_')}.txt`;
+        link.download = `MINAT2_${name.replace(/\s+/g, '_')}.txt`;
         link.click();
 
         document.getElementById('test-screen').style.display = 'none';
