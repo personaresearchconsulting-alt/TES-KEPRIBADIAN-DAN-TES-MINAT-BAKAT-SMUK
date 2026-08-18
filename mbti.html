@@ -492,7 +492,7 @@
         );
 
         const payload = {
-            tes: "MBTI",
+            tes: "KEPRIBADIAN1",
             id: participantId,
             nama: userName,
             absen: participant.absen || "",
@@ -512,7 +512,7 @@
         const participant = JSON.parse(
             localStorage.getItem("PRC_PARTICIPANT") || "{}"
         );
-        let text = "REKAP MBTI 70 - PERSONA RESEARCH & CONSULTING\n";
+        let text = "REKAP KEPRIBADIAN 1 - PERSONA RESEARCH & CONSULTING\n";
         text += "ID PESERTA : " + (participant.id || participantId) + "\n";
         text += "NAMA : " + userName.toUpperCase() + "\n";
         text += "KELAS : " + (participant.kelas || "") + "\n";
@@ -520,7 +520,7 @@
         answers.forEach((a, i) => { text += `${i+1}:${a}\n`; });
         const blob = new Blob([text], {type:'text/plain'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = `MBTI70_${userName.replace(/\s+/g,'_')}.txt`; a.click();
+        a.download = `KEP1_${userName.replace(/\s+/g,'_')}.txt`; a.click();
     }
 </script>
 </body>
