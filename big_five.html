@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TES KEPRIBADIAN II - Persona Research & Consulting</title>
+    <title>Big Five Inventory - Persona Research & Consulting</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #0a192f; --accent: #c5a059; --bg: #fdfaf5; --white: #ffffff; }
@@ -46,7 +46,7 @@
 <div id="quiz-container">
     <div class="header">
         <div class="brand">Persona Research & Consulting</div>
-        <div style="font-size: 0.8rem; color: var(--accent); font-weight: 700; letter-spacing: 2px; margin-top: 5px;">TES KEPRIBADIAN II</div>
+        <div style="font-size: 0.8rem; color: var(--accent); font-weight: 700; letter-spacing: 2px; margin-top: 5px;">TES KEPRIBADIAN II (BFI)</div>
     </div>
 
     <div id="login-screen">
@@ -89,7 +89,7 @@
         <div id="susulan-fields" style="display:none;">
             <div class="identity-row">
                 <label for="susulan-name">NAMA PESERTA</label>
-                <input type="text" id="susulan-name" placeholder="Masukkan Nama Lengkap Peserta...">
+                <input type="text" id="susulan-name" placeholder="Masukkan Nama Lengkap Peserta..." autocomplete="off">
             </div>
             <div class="identity-row">
                 <label for="susulan-class">KELAS</label>
@@ -104,14 +104,14 @@
             </div>
             <div class="identity-row">
                 <label for="susulan-absen">NO. ABSEN (opsional)</label>
-                <input type="text" id="susulan-absen" inputmode="numeric" placeholder="Contoh: 34">
+                <input type="text" id="susulan-absen" inputmode="numeric" placeholder="Contoh: 34" autocomplete="off">
             </div>
         </div>
 
         <button class="btn" onclick="startTest()">MULAI TES BFI</button>
     </div>
 
-    <div id="test-content"    <div id="test-content" style="display:none">
+    <div id="test-content" style="display:none">
         <div id="q-wrapper"></div>
         <div class="nav-grid" id="q-grid"></div>
         <button id="finish-btn" class="btn" style="display:none; background:#28a745; color:white;" onclick="finishTest()">SELESAI & SIMPAN HASIL</button>
@@ -119,7 +119,7 @@
 
     <div id="result-screen" style="display:none; text-align:center;">
         <h3 style="color:var(--primary)">Tes Selesai!</h3>
-        <p>Jawaban Anda telah berhasil diolah dan disimpan ke sistem rekapitulasi.</p>
+        <p style="color: #666; margin-bottom: 25px;">Jawaban Anda telah berhasil diolah dan disimpan ke sistem rekapitulasi.</p>
         <button class="btn" onclick="downloadTXT()">UNDUH REKAP (.TXT)</button>
     </div>
 </div>
@@ -138,6 +138,11 @@
         "Mudah Bergaul", "Kadang-kadang Bersikap Kasar Kepada Orang Lain", "Membuat Rencana Dan Melaksanakannya", "Mudah Gugup", "Suka Berpikir Serta Bermain Dengan Ide-ide",
         "Minat Terhadap Seni Tidak Terlalu Besar", "Suka Bekerja Sama Dengan Orang Lain", "Mudah Terganggu Konsentrasinya", "Memiliki Pengetahuan Luas Dalam Bidang Seni, Musik, Dan Sastra"
     ];
+
+    // Validasi jumlah soal BFI saat halaman di-load
+    if (questions.length !== 44) {
+        console.error("ERROR: Jumlah soal Big Five Inventory (BFI) harus 44.");
+    }
 
     const options = ["Sangat Tidak Sesuai", "Tidak Sesuai", "Netral", "Sesuai", "Sangat Sesuai"];
     let answers = new Array(questions.length).fill(null);
@@ -160,8 +165,10 @@
                 body: JSON.stringify(data),
                 keepalive: true
             });
+            return true;
         } catch (e) {
             console.error("Gagal mengirim data ke backend PRC:", e);
+            throw e;
         }
     }
 
@@ -179,11 +186,23 @@
 
             const result = await response.json();
 
-            if (result.status !== "success" || !Array.isArray(result.peserta)) {
-                throw new Error(result.message || "Data peserta tidak valid.");
+            let peserta = [];
+            if (Array.isArray(result)) {
+                peserta = result;
+            } else if (Array.isArray(result.peserta)) {
+                peserta = result.peserta;
+            } else if (Array.isArray(result.data)) {
+                peserta = result.data;
             }
 
-            daftarPeserta = result.peserta;
+            if (!peserta.length) {
+                throw new Error(
+                    result.message ||
+                    "Data peserta kosong atau format respons tidak dikenali."
+                );
+            }
+
+            daftarPeserta = peserta;
             populateClasses();
 
             statusEl.textContent =
@@ -200,7 +219,7 @@
         const select = document.getElementById("user-class");
         const classes = [...new Set(
             daftarPeserta
-                .map(p => String(p.kelas || "").trim())
+                .map(p => String(p.kelas ?? p.Kelas ?? p.class ?? "").trim())
                 .filter(Boolean)
         )];
 
@@ -228,7 +247,7 @@
         if (!kelas) return;
 
         const list = daftarPeserta
-            .filter(p => String(p.kelas || "").trim() === kelas)
+            .filter(p => String(p.kelas ?? p.Kelas ?? p.class ?? "").trim() === kelas)
             .sort((a, b) => Number(a.absen) - Number(b.absen));
 
         list.forEach(p => {
@@ -245,17 +264,17 @@
 
         selectedParticipant = daftarPeserta.find(
             p =>
-                String(p.kelas || "").trim() === kelas &&
-                String(p.absen || "").trim() === absen
+                String(p.kelas ?? p.Kelas ?? p.class ?? "").trim() === kelas &&
+                String(p.absen ?? p.Absen ?? p.no_absen ?? p.noAbsen ?? "").trim() === absen
         ) || null;
 
         const info = document.getElementById("identity-info");
 
         if (selectedParticipant) {
             document.getElementById("display-name").textContent =
-                selectedParticipant.nama || "-";
+                selectedParticipant.nama ?? selectedParticipant.Nama ?? "-";
             document.getElementById("display-id").textContent =
-                selectedParticipant.id || "-";
+                selectedParticipant.id ?? selectedParticipant.ID ?? "-";
             info.style.display = "block";
         } else {
             info.style.display = "none";
@@ -349,7 +368,11 @@
         localStorage.setItem("PRC_PARTICIPANT_ID", participantId);
         localStorage.setItem("PRC_PARTICIPANT_NAME", userName);
 
-        await sendToPRC(masterPayload);
+        try {
+            await sendToPRC(masterPayload);
+        } catch (e) {
+            console.error("Gagal mengirim data MASTER:", e);
+        }
 
         document.getElementById("login-screen").style.display = "none";
         document.getElementById("test-content").style.display = "block";
@@ -361,6 +384,9 @@
     function init() {
         const wrapper = document.getElementById('q-wrapper');
         const grid = document.getElementById('q-grid');
+        wrapper.innerHTML = '';
+        grid.innerHTML = '';
+
         questions.forEach((q, i) => {
             const div = document.createElement('div');
             div.className = `question-box ${i===0?'active':''}`;
@@ -372,7 +398,9 @@
             wrapper.appendChild(div);
 
             const gItem = document.createElement('div');
-            gItem.className = 'grid-item'; gItem.id = `grid-${i}`; gItem.innerText = i+1;
+            gItem.className = 'grid-item'; 
+            gItem.id = `grid-${i}`; 
+            gItem.innerText = i+1;
             gItem.onclick = () => jump(i);
             grid.appendChild(gItem);
         });
@@ -381,11 +409,23 @@
 
     function select(idx, val) {
         answers[idx] = val;
-        for(let j=1; j<=5; j++) document.getElementById(`opt-${idx}-${j}`).classList.remove('selected');
+        
+        for(let j=1; j<=5; j++) {
+            document.getElementById(`opt-${idx}-${j}`).classList.remove('selected');
+        }
         document.getElementById(`opt-${idx}-${val}`).classList.add('selected');
+        
         document.getElementById(`grid-${idx}`).classList.add('filled');
-        if(currentIdx < questions.length - 1) setTimeout(() => jump(currentIdx + 1), 200);
-        if(answers.filter(a => a !== null).length === questions.length) document.getElementById('finish-btn').style.display = 'block';
+        
+        // Autonext jika belum mencapai soal terakhir
+        if(currentIdx < questions.length - 1) {
+            setTimeout(() => jump(currentIdx + 1), 200);
+        }
+
+        // Tampilkan tombol selesai jika SEMUA 44 soal sudah terisi
+        if(answers.filter(a => a !== null).length === questions.length) {
+            document.getElementById('finish-btn').style.display = 'block';
+        }
     }
 
     function jump(idx) {
@@ -401,7 +441,14 @@
     }
 
     async function finishTest() {
-        if(answers.includes(null)) return alert("Mohon lengkapi seluruh jawaban terlebih dahulu.");
+        const unanswered = answers
+            .map((answer, index) => answer === null ? index + 1 : null)
+            .filter(Boolean);
+
+        if (unanswered.length > 0) {
+            alert("Jawaban belum lengkap. Silakan lengkapi seluruh 44 soal terlebih dahulu.\n\nNomor yang belum dijawab: Q" + unanswered.join(", Q"));
+            return;
+        }
 
         const finishBtn = document.getElementById('finish-btn');
         finishBtn.disabled = true;
@@ -414,17 +461,22 @@
         );
 
         const payload = {
-            tes: "KEPIBADIAN2",
+            tes: "BIGFIVE",
             id: participantId,
             nama: userName,
             absen: participant.absen || "",
             kelas: participant.kelas || "",
             kodeSesi: sessionCode,
             durasi: String(duration),
-            answers: answers
+            jumlahSoal: 44,
+            answers: answers.slice()
         };
 
-        await sendToPRC(payload);
+        try {
+            await sendToPRC(payload);
+        } catch (e) {
+            console.error("Gagal mengirim payload BFI:", e);
+        }
 
         document.getElementById('test-content').style.display = 'none';
         document.getElementById('result-screen').style.display = 'block';
@@ -434,15 +486,22 @@
         const participant = JSON.parse(
             localStorage.getItem("PRC_PARTICIPANT") || "{}"
         );
-        let text = "REKAP KEPRIBADIAN 2 - PERSONA RESEARCH & CONSULTING\n";
+        let text = "REKAP BIG FIVE - PERSONA RESEARCH & CONSULTING\n\n";
         text += "ID PESERTA : " + (participant.id || participantId) + "\n";
-        text += "NAMA : " + userName.toUpperCase() + "\n";
-        text += "KELAS : " + (participant.kelas || "") + "\n";
-        text += "NO. ABSEN : " + (participant.absen || "") + "\n---\n";
-        answers.forEach((a, i) => { text += `${i+1}:${a}\n`; });
-        const blob = new Blob([text], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = `KEPRIBADIAN 2_${userName.replace(/\s+/g,'_')}.txt`; a.click();
+        text += "NAMA       : " + userName.toUpperCase() + "\n";
+        text += "KELAS      : " + (participant.kelas || "") + "\n";
+        text += "NO. ABSEN  : " + (participant.absen || "") + "\n";
+        text += "----------------------------------------\n\n";
+        
+        answers.forEach((a, i) => { 
+            text += `Q${i + 1} : ${a || '-'}\n`; 
+        });
+
+        const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+        const a = document.createElement('a'); 
+        a.href = URL.createObjectURL(blob);
+        a.download = `BFI_${userName.replace(/\s+/g,'_')}.txt`; 
+        a.click();
     }
 </script>
 </body>
