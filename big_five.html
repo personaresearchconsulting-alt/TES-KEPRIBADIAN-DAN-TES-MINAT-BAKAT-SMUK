@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Big Five Inventory - Persona Research & Consulting</title>
+    <title>TES KEPRIBADIAN II - Persona Research & Consulting</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #0a192f; --accent: #c5a059; --bg: #fdfaf5; --white: #ffffff; }
@@ -46,7 +46,7 @@
 <div id="quiz-container">
     <div class="header">
         <div class="brand">Persona Research & Consulting</div>
-        <div style="font-size: 0.8rem; color: var(--accent); font-weight: 700; letter-spacing: 2px; margin-top: 5px;">TES KEPRIBADIAN II (BFI)</div>
+        <div style="font-size: 0.8rem; color: var(--accent); font-weight: 700; letter-spacing: 2px; margin-top: 5px;">TES KEPRIBADIAN II</div>
     </div>
 
     <div id="login-screen">
@@ -414,7 +414,7 @@
         );
 
         const payload = {
-            tes: "BIGFIVE",
+            tes: "KEPIBADIAN2",
             id: participantId,
             nama: userName,
             absen: participant.absen || "",
@@ -434,7 +434,7 @@
         const participant = JSON.parse(
             localStorage.getItem("PRC_PARTICIPANT") || "{}"
         );
-        let text = "REKAP BIG FIVE - PERSONA RESEARCH & CONSULTING\n";
+        let text = "REKAP KEPRIBADIAN 2 - PERSONA RESEARCH & CONSULTING\n";
         text += "ID PESERTA : " + (participant.id || participantId) + "\n";
         text += "NAMA : " + userName.toUpperCase() + "\n";
         text += "KELAS : " + (participant.kelas || "") + "\n";
@@ -442,7 +442,7 @@
         answers.forEach((a, i) => { text += `${i+1}:${a}\n`; });
         const blob = new Blob([text], {type:'text/plain'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = `BFI_${userName.replace(/\s+/g,'_')}.txt`; a.click();
+        a.download = `KEPRIBADIAN 2_${userName.replace(/\s+/g,'_')}.txt`; a.click();
     }
 </script>
 </body>
