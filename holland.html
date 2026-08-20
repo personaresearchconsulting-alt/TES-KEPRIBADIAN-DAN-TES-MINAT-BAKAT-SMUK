@@ -132,7 +132,7 @@
         }
 
         .btn:disabled {
-            opacity: 0.6;
+            opacity: .6;
             cursor: not-allowed;
         }
 
@@ -173,12 +173,6 @@
             font-size: 1em;
             box-sizing: border-box;
             background: #fff;
-            cursor: pointer;
-        }
-
-        select:disabled {
-            background: #f3f3f3;
-            cursor: not-allowed;
         }
 
         .identity-row {
@@ -214,14 +208,7 @@
             color: #777;
             margin: 6px 0 10px;
             text-align: center;
-        }
-
-        .status-success {
-            color: #198754;
-        }
-
-        .status-error {
-            color: #dc3545;
+            font-weight: bold;
         }
 
         .susulan-box {
@@ -256,15 +243,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -277,2056 +257,586 @@
         <h2 style="margin:0; color:var(--primary); font-size:1.2em;">
             Persona Research & Consulting
         </h2>
-
         <p style="color:var(--accent); font-weight:bold; margin:5px 0; font-size:.85em;">
-            TES MINAT
+            TES MINAT (HOLLAND 108)
         </p>
     </div>
 
-    <!-- =====================================================
-         LOGIN
-    ====================================================== -->
-
+    <!-- LOGIN -->
     <div id="login-screen">
-
         <div class="instruction-box">
             <strong>Identitas Peserta:</strong><br>
             Pilih <b>kelas</b> dan <b>nomor absen</b>.
             Nama dan ID peserta akan muncul otomatis dari daftar peserta resmi.
-            Jika peserta belum ada di daftar, gunakan pilihan
-            <b>Peserta Susulan</b>.
+            Jika peserta belum ada di daftar, gunakan pilihan <b>Peserta Susulan</b>.
         </div>
 
         <div id="participant-loading" class="status-text">
-            Menghubungkan ke daftar peserta...
+            Memuat daftar peserta...
         </div>
-
-        <!-- PESERTA RESMI -->
 
         <div id="official-fields">
-
             <div class="identity-row">
-
-                <label for="user-class">
-                    KELAS
-                </label>
-
-                <select
-                    id="user-class"
-                    onchange="onClassChange()"
-                >
-                    <option value="">
-                        -- Memuat Kelas --
-                    </option>
+                <label for="user-class">KELAS</label>
+                <select id="user-class" onchange="onClassChange()">
+                    <option value="">-- Pilih Kelas --</option>
                 </select>
-
             </div>
 
             <div class="identity-row">
-
-                <label for="user-absen">
-                    NO. ABSEN
-                </label>
-
-                <select
-                    id="user-absen"
-                    onchange="onAbsenChange()"
-                    disabled
-                >
-                    <option value="">
-                        -- Pilih Kelas Terlebih Dahulu --
-                    </option>
+                <label for="user-absen">NO. ABSEN</label>
+                <select id="user-absen" onchange="onAbsenChange()" disabled>
+                    <option value="">-- Pilih No. Absen --</option>
                 </select>
-
             </div>
 
-            <div
-                id="identity-info"
-                class="identity-info"
-                style="display:none;"
-            >
-
-                <div>
-                    Nama:
-                    <b id="display-name">-</b>
-                </div>
-
-                <div>
-                    ID Peserta:
-                    <b id="display-id">-</b>
-                </div>
-
+            <div id="identity-info" class="identity-info" style="display:none;">
+                <div>Nama: <b id="display-name">-</b></div>
+                <div>ID Peserta: <b id="display-id">-</b></div>
             </div>
-
         </div>
-
-        <!-- PESERTA SUSULAN -->
 
         <div class="susulan-box">
-
             <label>
-
-                <input
-                    type="checkbox"
-                    id="is-susulan"
-                    onchange="toggleSusulan()"
-                >
-
+                <input type="checkbox" id="is-susulan" onchange="toggleSusulan()">
                 Peserta belum terdaftar / peserta susulan
-
             </label>
-
         </div>
 
-        <div
-            id="susulan-fields"
-            style="display:none;"
-        >
-
+        <div id="susulan-fields" style="display:none;">
             <div class="identity-row">
-
-                <label for="susulan-name">
-                    NAMA PESERTA
-                </label>
-
-                <input
-                    type="text"
-                    id="susulan-name"
-                    placeholder="Masukkan Nama Lengkap Peserta..."
-                >
-
+                <label for="susulan-name">NAMA PESERTA</label>
+                <input type="text" id="susulan-name" placeholder="Masukkan Nama Lengkap Peserta..." autocomplete="off">
             </div>
 
             <div class="identity-row">
-
-                <label for="susulan-class">
-                    KELAS
-                </label>
+                <label for="susulan-class">KELAS</label>
 
                 <select id="susulan-class">
-
-                    <option value="">
-                        -- Pilih Kelas --
-                    </option>
-
+                    <option value="">-- Pilih Kelas --</option>
                     <option value="X A">X A</option>
                     <option value="X B">X B</option>
                     <option value="X C">X C</option>
                     <option value="X D">X D</option>
                     <option value="X E">X E</option>
-
                 </select>
-
             </div>
 
             <div class="identity-row">
-
-                <label for="susulan-absen">
-                    NO. ABSEN (opsional)
-                </label>
-
-                <input
-                    type="text"
-                    id="susulan-absen"
-                    inputmode="numeric"
-                    placeholder="Contoh: 34"
-                >
-
+                <label for="susulan-absen">NO. ABSEN (opsional)</label>
+                <input type="text" id="susulan-absen" inputmode="numeric" placeholder="Contoh: 34" autocomplete="off">
             </div>
-
         </div>
 
-        <button
-            id="btn-start"
-            class="btn"
-            onclick="startTest()"
-            disabled
-        >
-            MEMUAT DATA PESERTA...
+        <button id="btn-start" class="btn" onclick="startTest()">
+            MULAI SEKARANG
         </button>
-
     </div>
 
-
-    <!-- =====================================================
-         TEST
-    ====================================================== -->
-
-    <div
-        id="test-content"
-        style="display:none"
-    >
-
+    <!-- TEST CONTENT -->
+    <div id="test-content" style="display:none">
         <div id="q-wrapper"></div>
-
-        <div
-            class="nav-grid"
-            id="q-grid"
-        ></div>
-
-        <button
-            id="btn-final"
-            class="btn btn-finish"
-            onclick="finishToResult()"
-        >
+        <div class="nav-grid" id="q-grid"></div>
+        <button id="btn-final" class="btn btn-finish" onclick="finishToResult()">
             SELESAI & REKAP JAWABAN
         </button>
-
     </div>
 
-
-    <!-- =====================================================
-         HASIL
-    ====================================================== -->
-
-    <div
-        id="result-screen"
-        style="display:none; text-align:center;"
-    >
-
-        <h3 style="color:var(--primary)">
-            Tes Selesai
-        </h3>
-
-        <p
-            style="
-                font-size:.9em;
-                color:#666;
-                margin-bottom:20px;
-            "
-        >
+    <!-- RESULT -->
+    <div id="result-screen" style="display:none; text-align:center;">
+        <h3 style="color:var(--primary)">Tes Selesai</h3>
+        <p style="font-size:.9em; color:#666; margin-bottom:20px;">
             Seluruh jawaban telah direkap.
             Silakan unduh hasil dan kirimkan ke Admin.
         </p>
-
-        <button
-            class="btn"
-            onclick="downloadTXT()"
-        >
+        <button class="btn" onclick="downloadTXT()">
             UNDUH HASIL (.TXT)
         </button>
-
     </div>
 
 </div>
 
-
 <script>
-
-    /* =========================================================
-       MASA AKSES
-    ========================================================= */
-
-    if (new Date() > new Date("2029-07-01")) {
-
-        document.body.innerHTML =
-            "Akses telah berakhir.";
-
-    }
-
-
-    /* =========================================================
-       SOAL HOLLAND - 108
-    ========================================================= */
-
     const questions = [
-
-        "Senang menonton drama",
-        "Senang Melatih Orang",
-        "Mampu bermain dalam drama / berakting",
-        "Suka membaca mengenai topik-topik khusus atas keinginan sendiri",
-        "Mampu melakukan percobaan atau penelitian ilmiah",
-        "Artistik",
-        "Mampu memprogram komputer untuk mempelajari masalah ilmiah",
-        "Tertarik menjadi pengawas konstruksi bangunan",
-        "Suka dalam memecahkan soal eksak",
-        "Mampu melakukan dan menyukai tugas administratif",
-        "Bisa mempengaruhi dan membujuk orang lain",
-        "Prosedural (Mengikuti aturan)",
-        "Suka menggunakan aplikasi pencatatan keuangan",
-        "Suka memperbaiki motor",
-        "Bisa mengekspresikan diri secara kreatif",
-        "Ingin bekerja dibagian Staff keuangan",
-        "Mampu menyebutkan makanan yang memiliki protein tinggi",
-        "Suka membantu orang lain",
-        "Suka menulis cerita atau puisi",
-        "Aktif dalam organisasi sosial",
-        "Percaya diri",
-        "Mampu membukukan pengeluaran/ pemasukan",
-        "Menyukai kegiatan memancing/berkebun",
-        "Mampu mengoperasikan proyektor / kamera",
-        "Mampu membuat sketsa/lukisan/gambar",
-        "Mudah bergaul",
-        "Memiliki jiwa kepemimpinan",
-        "Mampu menyusun arsip dengan rapi",
-        "Tertarik menjadi Polisi/TNI/Pilot",
-        "Tertarik menjadi Psikolog",
-        "Tertarik menjadi penari/penyanyi",
-        "Mampu bekerjasama dalam tim",
-        "Suka tantangan",
-        "Suka bekerja di dalam ruangan",
-        "Mampu memperbaiki peralatan rumah tangga",
-        "Mampu menggunakan Mikroskop",
-        "Tertarik menjadi penulis/jurnalis",
-        "Suka memberikan bimbingan kepada orang lain",
-        "Tertarik menjadi Direktur",
-        "Teliti dalam bekerja",
-        "Suka merawat hewan",
-        "Ingin bekerja di Laboratorium",
-        "Suka mendesain pakaian/ruangan",
-        "Mampu berempati kepada orang lain",
-        "Suka berbicara didepan umum",
-        "Mampu melakukan pengetikan dengan cepat",
-        "Senang bekerja dengan mesin",
-        "Suka mengumpulkan sampel (batuan, serangga, dll)",
-        "Mampu memainkan alat musik",
-        "Tertarik menjadi Guru",
-        "Tertarik menjadi pengusaha/bisnis",
-        "Mampu mengoperasikan komputer (Excel/Word)",
-        "Tertarik pada bidang otomotif",
-        "Suka menganalisis data",
-        "Menyukai keindahan",
-        "Suka melakukan pelayanan masyarakat",
-        "Memiliki kemampuan negosiasi yang baik",
-        "Tertarik menjadi staf administrasi",
-        "Suka menggunakan peralatan teknik",
-        "Tertarik pada astronomi",
-        "Senang menciptakan karya seni baru",
-        "Suka menolong sesama",
-        "Optimis",
-        "Suka keteraturan",
-        "Mampu membaca gambar teknik/denah",
-        "Mampu melakukan riset",
-        "Suka mendekorasi sesuatu",
-        "Suka mendengarkan curhat orang lain",
-        "Berani mengambil risiko",
-        "Suka mengelola data",
-        "Suka aktivitas di luar ruangan",
-        "Suka belajar hal baru melalui observasi",
-        "Imajinatif",
-        "Suka mengajar",
-        "Ambisius",
-        "Suka kegiatan rutin yang terukur",
-        "Senang bekerja menggunakan tangan",
-        "Suka membantu orang lain dengan masalah pribadinya",
-        "Senang kegiatan fisik",
-        "Tertarik menjadi ahli teknisi laboratorium medis",
-        "Ingin menjadi seniman",
-        "Mampu melakukan perbaikan kecil pada pipa air, kran, dan lain-lain",
-        "Mampu membuat gambar dengan skala",
-        "Prosedural (Suka mengikuti aturan)",
-        "Suka mengarsip surat dan berkas-berkas lain",
-        "Mampu menjadi seorang pembicara di depan umum yang baik",
-        "Mampu memimpin diskusi kelompok",
-        "Suka melakukan pekerjaan surat menyurat/ masalah perkantoran",
-        "Senang bertemu orang baru",
-        "Bisa bekerja dengan baik dalam system /aturan",
-        "Suka merancang perabotan, pakaian atau poster",
-        "Tertarik menjadi pembawa acara / MC",
-        "Tertarik menjadi ilmuwan peneliti",
-        "Suka memperbaiki alat-alat listrik",
-        "Terbuka",
-        "Tertarik menjadi penaksir biaya",
-        "Suka mendamaikan orang",
-        "Suka mengerjakan teka-teki",
-        "Suka mengelola inventaris atau logistik",
-        "Mampu menulis laporan penelitian",
-        "Pandai bernegosiasi untuk mencapai tujuan organisasi",
-        "Menyukai kegiatan yang membutuhkan konsentrasi tinggi dan detail",
-        "Mampu merancang kampanye iklan",
-        "Mampu menjelaskan konsep ilmiah yang sulit kepada orang awam",
-        "Suka bekerja di organisasi nirlaba",
-        "Tertarik pada bidang desain arsitektur",
-        "Mampu bekerja dengan deadline yang ketat",
-        "Mampu menjaga kerahasiaan data perusahaan"
-
+        "Senang menonton drama", "Senang Melatih Orang", "Mampu bermain dalam drama / berakting",
+        "Suka membaca mengenai topik-topik khusus atas keinginan sendiri", "Mampu melakukan percobaan atau penelitian ilmiah",
+        "Artistik", "Mampu memprogram komputer untuk mempelajari masalah ilmiah", "Tertarik menjadi pengawas konstruksi bangunan",
+        "Suka dalam memecahkan soal eksak", "Mampu melakukan dan menyukai tugas administratif", "Bisa mempengaruhi dan membujuk orang lain",
+        "Prosedural (Mengikuti aturan)", "Suka menggunakan aplikasi pencatatan keuangan", "Suka memperbaiki motor",
+        "Bisa mengekspresikan diri secara kreatif", "Ingin bekerja dibagian Staff keuangan", "Mampu menyebutkan makanan yang memiliki protein tinggi",
+        "Suka membantu orang lain", "Suka menulis cerita atau puisi", "Aktif dalam organisasi sosial", "Percaya diri",
+        "Mampu membukukan pengeluaran/ pemasukan", "Menyukai kegiatan memancing/berkebun", "Mampu mengoperasikan proyektor / kamera",
+        "Mampu membuat sketsa/lukisan/gambar", "Mudah bergaul", "Memiliki jiwa kepemimpinan", "Mampu menyusun arsip dengan rapi",
+        "Tertarik menjadi Polisi/TNI/Pilot", "Tertarik menjadi Psikolog", "Tertarik menjadi penari/penyanyi", "Mampu bekerjasama dalam tim",
+        "Suka tantangan", "Suka bekerja di dalam ruangan", "Mampu memperbaiki peralatan rumah tangga", "Mampu menggunakan Mikroskop",
+        "Tertarik menjadi penulis/jurnalis", "Suka memberikan bimbingan kepada orang lain", "Tertarik menjadi Direktur", "Teliti dalam bekerja",
+        "Suka merawat hewan", "Ingin bekerja di Laboratorium", "Suka mendesain pakaian/ruangan", "Mampu berempati kepada orang lain",
+        "Suka berbicara didepan umum", "Mampu melakukan pengetikan dengan cepat", "Senang bekerja dengan mesin", "Suka mengumpulkan sampel (batuan, serangga, dll)",
+        "Mampu memainkan alat musik", "Tertarik menjadi Guru", "Tertarik menjadi pengusaha/bisnis", "Mampu mengoperasikan komputer (Excel/Word)",
+        "Tertarik pada bidang otomotif", "Suka menganalisis data", "Menyukai keindahan", "Suka melakukan pelayanan masyarakat",
+        "Memiliki kemampuan negosiasi yang baik", "Tertarik menjadi staf administrasi", "Suka menggunakan peralatan teknik", "Tertarik pada astronomi",
+        "Senang menciptakan karya seni baru", "Suka menolong sesama", "Optimis", "Suka keteraturan", "Mampu membaca gambar teknik/denah",
+        "Mampu melakukan riset", "Suka mendekorasi sesuatu", "Suka mendengarkan curhat orang lain", "Berani mengambil risiko",
+        "Suka mengelola data", "Suka aktivitas di luar ruangan", "Suka belajar hal baru melalui observasi", "Imajinatif", "Suka mengajar",
+        "Ambisius", "Suka kegiatan rutin yang terukur", "Senang bekerja menggunakan tangan", "Suka membantu orang lain dengan masalah pribadinya",
+        "Senang kegiatan fisik", "Tertarik menjadi ahli teknisi laboratorium medis", "Ingin menjadi seniman", "Mampu melakukan perbaikan kecil pada pipa air, kran, dan lain-lain",
+        "Mampu membuat gambar dengan skala", "Prosedural (Suka mengikuti aturan)", "Suka mengarsip surat dan berkas-berkas lain", "Mampu menjadi seorang pembicara di depan umum yang baik",
+        "Mampu memimpin diskusi kelompok", "Suka melakukan pekerjaan surat menyurat/ masalah perkantoran", "Senang bertemu orang baru", "Bisa bekerja dengan baik dalam system /aturan",
+        "Suka merancang perabotan, pakaian atau poster", "Tertarik menjadi pembawa acara / MC", "Tertarik menjadi ilmuwan peneliti", "Suka memperbaiki alat-alat listrik",
+        "Terbuka", "Tertarik menjadi penaksir biaya", "Suka mendamaikan orang", "Suka mengerjakan teka-teki", "Suka mengelola inventaris atau logistik",
+        "Mampu menulis laporan penelitian", "Pandai bernegosiasi untuk mencapai tujuan organisasi", "Menyukai kegiatan yang membutuhkan konsentrasi tinggi dan detail",
+        "Mampu merancang kampanye iklan", "Mampu menjelaskan konsep ilmiah yang sulit kepada orang awam", "Suka bekerja di organisasi nirlaba", "Tertarik pada bidang desain arsitektur",
+        "Mampu bekerja dengan deadline yang ketat", "Mampu menjaga kerahasiaan data perusahaan"
     ];
 
-
-    /* =========================================================
-       VARIABEL
-    ========================================================= */
-
     let currentIdx = 0;
-
-    let answers =
-        new Array(
-            questions.length
-        ).fill(null);
-
+    let answers = new Array(questions.length).fill(null);
     let userName = "";
-
-    const PRC_API_URL =
-        "https://script.google.com/macros/s/AKfycbyWpBAb3WQxj8vZ8rlZ2YTjZWQKa3IOB9D7QhZMnxLALnQSJMIt27NefS5za0zF7Ad/exec";
-
     let participantId = "";
     let sessionCode = "";
     let testStartTime = null;
 
     let daftarPeserta = [];
-
     let selectedParticipant = null;
-
     let isSusulan = false;
 
+    // URL Apps Script Aktif
+    const PRC_API_URL = "https://script.google.com/macros/s/AKfycbyWpBAb3WQzXj8vZ8rlZ2YTjZWQKa3IOB9D7QhZMnxLALnQSJMIt27NefS5za0zF7Ad/exec";
 
-    /* =========================================================
-       LOAD DAFTAR PESERTA
-       ========================================================= */
+    function getPropValue(obj, possibleKeys) {
+        if (!obj) return "";
+        for (let k of possibleKeys) {
+            if (obj[k] !== undefined && obj[k] !== null) return String(obj[k]).trim();
+        }
+        return "";
+    }
 
-    async function loadDaftarPeserta() {
+    function loadDaftarPeserta() {
+        const statusEl = document.getElementById("participant-loading");
 
-        const statusEl =
-            document.getElementById(
-                "participant-loading"
-            );
+        statusEl.textContent = "Memuat daftar peserta resmi...";
+        statusEl.style.color = "#777";
 
-        const classSelect =
-            document.getElementById(
-                "user-class"
-            );
+        const callbackName = "prc_cb_" + Date.now();
 
-        const absenSelect =
-            document.getElementById(
-                "user-absen"
-            );
+        window[callbackName] = function(result) {
+            delete window[callbackName];
+            const scriptEl = document.getElementById(callbackName);
+            if (scriptEl) scriptEl.remove();
 
-        const startButton =
-            document.getElementById(
-                "btn-start"
-            );
-
-
-        try {
-
-            statusEl.textContent =
-                "Memuat daftar peserta resmi...";
-
-            statusEl.className =
-                "status-text";
-
-
-            const url =
-                PRC_API_URL +
-                "?action=getDaftarPeserta&_=" +
-                Date.now();
-
-
-            const response =
-                await fetch(
-                    url,
-                    {
-                        method: "GET",
-                        cache: "no-store",
-                        redirect: "follow"
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "HTTP " +
-                    response.status
-                );
-
+            let rawList = [];
+            if (Array.isArray(result)) {
+                rawList = result;
+            } else if (result && result.data && Array.isArray(result.data)) {
+                rawList = result.data;
             }
 
-
-            const text =
-                await response.text();
-
-
-            if (!text) {
-
-                throw new Error(
-                    "Respons server kosong."
-                );
-
+            if (!rawList.length) {
+                statusEl.textContent = "Daftar otomatis tidak tersedia. Silakan centang Peserta Susulan.";
+                statusEl.style.color = "#dc3545";
+                return;
             }
 
-
-            let result;
-
-            try {
-
-                result =
-                    JSON.parse(text);
-
-            } catch (jsonError) {
-
-                console.error(
-                    "Respons bukan JSON:",
-                    text
-                );
-
-                throw new Error(
-                    "Respons Apps Script bukan JSON."
-                );
-
-            }
-
-
-            if (
-                !result ||
-                result.status !== "success" ||
-                !Array.isArray(result.peserta)
-            ) {
-
-                throw new Error(
-                    result &&
-                    result.message
-                        ? result.message
-                        : "Format daftar peserta tidak valid."
-                );
-
-            }
-
-
-            daftarPeserta =
-                result.peserta
-                    .filter(
-                        p =>
-                            p &&
-                            String(
-                                p.kelas || ""
-                            ).trim() !== ""
-                    );
-
-
-            if (
-                daftarPeserta.length === 0
-            ) {
-
-                throw new Error(
-                    "Daftar peserta kosong."
-                );
-
-            }
-
+            daftarPeserta = rawList.map(p => ({
+                id: getPropValue(p, ['id', 'ID', 'Id', 'kode', 'KODE']),
+                nama: getPropValue(p, ['nama', 'Nama', 'NAMA', 'name', 'NAME']),
+                kelas: getPropValue(p, ['kelas', 'Kelas', 'KELAS', 'class', 'CLASS']),
+                absen: getPropValue(p, ['absen', 'Absen', 'ABSEN', 'no_absen', 'noAbsen', 'NO_ABSEN'])
+            }));
 
             populateClasses();
 
+            statusEl.textContent = "Daftar peserta berhasil dimuat (" + daftarPeserta.length + " peserta).";
+            statusEl.style.color = "#28a745";
+        };
 
-            statusEl.textContent =
-                "Daftar peserta berhasil dimuat: " +
-                daftarPeserta.length +
-                " peserta.";
+        const script = document.createElement("script");
+        script.id = callbackName;
+        script.src = PRC_API_URL + "?action=getDaftarPeserta&callback=" + callbackName + "&_=" + Date.now();
+        script.onerror = function() {
+            delete window[callbackName];
+            script.remove();
+            statusEl.textContent = "Gagal terhubung ke daftar otomatis. Gunakan opsi Peserta Susulan.";
+            statusEl.style.color = "#dc3545";
+        };
 
-            statusEl.className =
-                "status-text status-success";
-
-
-            startButton.disabled =
-                false;
-
-            startButton.textContent =
-                "MULAI SEKARANG";
-
-
-            classSelect.disabled =
-                false;
-
-            absenSelect.disabled =
-                true;
-
-
-        } catch (err) {
-
-            console.error(
-                "Gagal memuat daftar peserta:",
-                err
-            );
-
-
-            /*
-             * PENTING:
-             * Jangan membuat dropdown kelas
-             * seolah-olah rusak.
-             */
-
-            classSelect.innerHTML =
-                '<option value="">-- Data peserta gagal dimuat --</option>';
-
-            classSelect.disabled =
-                true;
-
-
-            absenSelect.innerHTML =
-                '<option value="">-- Tidak tersedia --</option>';
-
-            absenSelect.disabled =
-                true;
-
-
-            statusEl.textContent =
-                "Daftar peserta resmi belum dapat dimuat. " +
-                "Gunakan opsi Peserta Susulan jika diperlukan.";
-
-            statusEl.className =
-                "status-text status-error";
-
-
-            /*
-             * Tetap izinkan peserta susulan.
-             */
-
-            startButton.disabled =
-                false;
-
-            startButton.textContent =
-                "MULAI SEKARANG";
-
-        }
-
+        document.body.appendChild(script);
     }
-
-
-    /* =========================================================
-       POPULATE KELAS
-       ========================================================= */
 
     function populateClasses() {
+        const select = document.getElementById("user-class");
+        const rawClasses = daftarPeserta.map(p => p.kelas).filter(Boolean);
+        const uniqueClasses = [...new Set(rawClasses)];
 
-        const select =
-            document.getElementById(
-                "user-class"
-            );
+        uniqueClasses.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
 
+        select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
 
-        const classes =
-            [
-                ...new Set(
-                    daftarPeserta
-                        .map(
-                            p =>
-                                String(
-                                    p.kelas || ""
-                                ).trim()
-                        )
-                        .filter(
-                            Boolean
-                        )
-                )
-            ];
-
-
-        classes.sort(
-            (a, b) =>
-                a.localeCompare(
-                    b,
-                    "id",
-                    {
-                        numeric: true
-                    }
-                )
-        );
-
-
-        select.innerHTML =
-            '<option value="">-- Pilih Kelas --</option>';
-
-
-        classes.forEach(
-            kelas => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value =
-                    kelas;
-
-                option.textContent =
-                    kelas;
-
-                select.appendChild(
-                    option
-                );
-
-            }
-        );
-
-
-        select.disabled =
-            false;
-
+        uniqueClasses.forEach(k => {
+            const opt = document.createElement("option");
+            opt.value = k;
+            opt.textContent = k;
+            select.appendChild(opt);
+        });
     }
-
-
-    /* =========================================================
-       PILIH KELAS
-    ========================================================= */
 
     function onClassChange() {
+        const selectedKelas = document.getElementById("user-class").value;
+        const selectAbsen = document.getElementById("user-absen");
 
-        const kelas =
-            document.getElementById(
-                "user-class"
-            ).value;
+        document.getElementById("identity-info").style.display = "none";
+        selectedParticipant = null;
 
+        selectAbsen.innerHTML = '<option value="">-- Pilih No. Absen --</option>';
 
-        const absen =
-            document.getElementById(
-                "user-absen"
-            );
-
-
-        const info =
-            document.getElementById(
-                "identity-info"
-            );
-
-
-        selectedParticipant =
-            null;
-
-
-        info.style.display =
-            "none";
-
-
-        absen.innerHTML =
-            '<option value="">-- Pilih No. Absen --</option>';
-
-
-        if (!kelas) {
-
-            absen.disabled =
-                true;
-
+        if (!selectedKelas) {
+            selectAbsen.disabled = true;
             return;
-
         }
 
+        const filtered = daftarPeserta.filter(p => p.kelas === selectedKelas);
 
-        const list =
-            daftarPeserta
-                .filter(
-                    p =>
-                        String(
-                            p.kelas || ""
-                        ).trim() === kelas
-                )
-                .sort(
-                    (a, b) => {
+        filtered.sort((a, b) => (parseInt(a.absen, 10) || 0) - (parseInt(b.absen, 10) || 0));
 
-                        const aNum =
-                            parseInt(
-                                String(
-                                    a.absen || ""
-                                ).replace(
-                                    /\D/g,
-                                    ""
-                                ),
-                                10
-                            );
+        filtered.forEach(p => {
+            const opt = document.createElement("option");
+            opt.value = p.id || p.absen;
+            opt.dataset.id = p.id;
+            opt.dataset.nama = p.nama;
+            opt.dataset.absen = p.absen;
+            opt.textContent = p.absen ? `${p.absen} - ${p.nama}` : p.nama;
+            selectAbsen.appendChild(opt);
+        });
 
-                        const bNum =
-                            parseInt(
-                                String(
-                                    b.absen || ""
-                                ).replace(
-                                    /\D/g,
-                                    ""
-                                ),
-                                10
-                            );
-
-                        if (
-                            Number.isNaN(aNum) &&
-                            Number.isNaN(bNum)
-                        ) {
-                            return String(
-                                a.absen || ""
-                            ).localeCompare(
-                                String(
-                                    b.absen || ""
-                                )
-                            );
-                        }
-
-                        if (
-                            Number.isNaN(aNum)
-                        ) {
-                            return 1;
-                        }
-
-                        if (
-                            Number.isNaN(bNum)
-                        ) {
-                            return -1;
-                        }
-
-                        return aNum - bNum;
-
-                    }
-                );
-
-
-        if (list.length === 0) {
-
-            absen.innerHTML =
-                '<option value="">-- Tidak ada peserta --</option>';
-
-            absen.disabled =
-                true;
-
-            return;
-
-        }
-
-
-        list.forEach(
-            peserta => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value =
-                    String(
-                        peserta.absen || ""
-                    ).trim();
-
-                option.textContent =
-                    String(
-                        peserta.absen || ""
-                    ).trim();
-
-                absen.appendChild(
-                    option
-                );
-
-            }
-        );
-
-
-        absen.disabled =
-            false;
-
+        selectAbsen.disabled = false;
     }
-
-
-    /* =========================================================
-       PILIH ABSEN
-    ========================================================= */
 
     function onAbsenChange() {
+        const selectAbsen = document.getElementById("user-absen");
+        const selectedOption = selectAbsen.options[selectAbsen.selectedIndex];
 
-        const kelas =
-            document.getElementById(
-                "user-class"
-            ).value;
-
-
-        const absen =
-            document.getElementById(
-                "user-absen"
-            ).value;
-
-
-        const info =
-            document.getElementById(
-                "identity-info"
-            );
-
-
-        selectedParticipant =
-            daftarPeserta.find(
-                peserta => {
-
-                    const pesertaKelas =
-                        String(
-                            peserta.kelas || ""
-                        ).trim();
-
-                    const pesertaAbsen =
-                        String(
-                            peserta.absen || ""
-                        ).trim();
-
-                    return (
-                        pesertaKelas === kelas &&
-                        pesertaAbsen === absen
-                    );
-
-                }
-            ) || null;
-
-
-        if (
-            selectedParticipant
-        ) {
-
-            document.getElementById(
-                "display-name"
-            ).textContent =
-                String(
-                    selectedParticipant.nama || "-"
-                );
-
-
-            document.getElementById(
-                "display-id"
-            ).textContent =
-                String(
-                    selectedParticipant.id || "-"
-                );
-
-
-            info.style.display =
-                "block";
-
-
-        } else {
-
-            info.style.display =
-                "none";
-
+        if (!selectedOption || !selectedOption.value) {
+            selectedParticipant = null;
+            document.getElementById("identity-info").style.display = "none";
+            return;
         }
 
+        const targetId = selectedOption.dataset.id;
+        const targetAbsen = selectedOption.dataset.absen;
+        const selectedKelas = document.getElementById("user-class").value;
+
+        selectedParticipant = daftarPeserta.find(p => 
+            p.kelas === selectedKelas && (p.id === targetId || p.absen === targetAbsen)
+        ) || null;
+
+        if (selectedParticipant) {
+            document.getElementById("display-name").textContent = selectedParticipant.nama || "-";
+            document.getElementById("display-id").textContent = selectedParticipant.id || "-";
+            document.getElementById("identity-info").style.display = "block";
+        } else {
+            document.getElementById("identity-info").style.display = "none";
+        }
     }
-
-
-    /* =========================================================
-       TOGGLE SUSULAN
-    ========================================================= */
 
     function toggleSusulan() {
+        isSusulan = document.getElementById("is-susulan").checked;
 
-        isSusulan =
-            document.getElementById(
-                "is-susulan"
-            ).checked;
-
-
-        document.getElementById(
-            "official-fields"
-        ).style.display =
-            isSusulan
-                ? "none"
-                : "block";
-
-
-        document.getElementById(
-            "susulan-fields"
-        ).style.display =
-            isSusulan
-                ? "block"
-                : "none";
-
+        document.getElementById("official-fields").style.display = isSusulan ? "none" : "block";
+        document.getElementById("susulan-fields").style.display = isSusulan ? "block" : "none";
 
         if (isSusulan) {
-
-            selectedParticipant =
-                null;
-
+            selectedParticipant = null;
+        } else {
+            document.getElementById("susulan-name").value = "";
+            document.getElementById("susulan-class").value = "";
+            document.getElementById("susulan-absen").value = "";
         }
-
     }
 
+    function createSusulanId(nama, kelas, absen) {
+        const key = "PRC_SUSULAN_ID_" + [nama, kelas, absen].map(v => String(v || "").trim().toUpperCase()).join("|");
+        const existing = localStorage.getItem(key);
+        if (existing) return existing;
 
-    /* =========================================================
-       CREATE ID SUSULAN
-    ========================================================= */
-
-    function createSusulanId(
-        nama,
-        kelas,
-        absen
-    ) {
-
-        const key =
-            "PRC_SUSULAN_ID_" +
-            [
-                nama,
-                kelas,
-                absen
-            ]
-                .map(
-                    value =>
-                        String(
-                            value || ""
-                        )
-                            .trim()
-                            .toUpperCase()
-                )
-                .join("|");
-
-
-        const existing =
-            localStorage.getItem(
-                key
-            );
-
-
-        if (existing) {
-
-            return existing;
-
-        }
-
-
-        const id =
-            "SMUK-SUS-" +
-            Date.now()
-                .toString(36)
-                .toUpperCase();
-
-
-        localStorage.setItem(
-            key,
-            id
-        );
-
-
+        const id = "SMUK-SUS-" + Date.now().toString(36).toUpperCase();
+        localStorage.setItem(key, id);
         return id;
-
     }
-
-
-    /* =========================================================
-       KIRIM KE APPS SCRIPT
-    ========================================================= */
 
     async function sendToPRC(data) {
-
+        if (!data || !data.tes) return false;
         try {
-
-            await fetch(
-                PRC_API_URL,
-                {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: {
-                        "Content-Type":
-                            "text/plain;charset=utf-8"
-                    },
-                    body:
-                        JSON.stringify(data),
-                    keepalive: true
-                }
-            );
-
-
+            await fetch(PRC_API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(data),
+                keepalive: true
+            });
             return true;
-
-
-        } catch (error) {
-
-            console.error(
-                "Gagal mengirim data:",
-                error
-            );
-
+        } catch (err) {
+            console.error("Gagal mengirim ke Apps Script:", err);
             return false;
-
         }
-
     }
-
-
-    /* =========================================================
-       SIMPAN MASTER
-    ========================================================= */
 
     async function saveMasterToSheet() {
+        const now = new Date();
+        sessionCode = "HOL-" + now.getTime();
+        testStartTime = Date.now();
 
-        const now =
-            new Date();
-
-
-        sessionCode =
-            "HOL-" +
-            now.getTime();
-
-
-        testStartTime =
-            Date.now();
-
-
-        let nama = "";
-        let kelas = "";
-        let absen = "";
-
+        let nama = "", kelas = "", absen = "";
 
         if (isSusulan) {
+            nama = document.getElementById("susulan-name").value.trim();
+            kelas = document.getElementById("susulan-class").value.trim();
+            absen = document.getElementById("susulan-absen").value.trim();
 
-            nama =
-                document.getElementById(
-                    "susulan-name"
-                ).value.trim();
+            if (!nama) { alert("Harap isi nama peserta susulan."); return false; }
+            if (!kelas) { alert("Harap pilih kelas peserta susulan."); return false; }
 
-
-            kelas =
-                document.getElementById(
-                    "susulan-class"
-                ).value.trim();
-
-
-            absen =
-                document.getElementById(
-                    "susulan-absen"
-                ).value.trim();
-
-
-            if (!nama) {
-
-                alert(
-                    "Harap isi nama peserta susulan."
-                );
-
-                return false;
-
-            }
-
-
-            if (!kelas) {
-
-                alert(
-                    "Harap pilih kelas peserta susulan."
-                );
-
-                return false;
-
-            }
-
-
-            participantId =
-                createSusulanId(
-                    nama,
-                    kelas,
-                    absen
-                );
-
-
+            participantId = createSusulanId(nama, kelas, absen);
+            selectedParticipant = { id: participantId, nama: nama, kelas: kelas, absen: absen };
         } else {
-
             if (!selectedParticipant) {
-
-                alert(
-                    "Silakan pilih kelas dan nomor absen terlebih dahulu."
-                );
-
+                alert("Silakan pilih kelas dan nomor absen terlebih dahulu.");
                 return false;
-
             }
-
-
-            participantId =
-                String(
-                    selectedParticipant.id || ""
-                ).trim();
-
-
-            nama =
-                String(
-                    selectedParticipant.nama || ""
-                ).trim();
-
-
-            kelas =
-                String(
-                    selectedParticipant.kelas || ""
-                ).trim();
-
-
-            absen =
-                String(
-                    selectedParticipant.absen || ""
-                ).trim();
-
-
-            if (
-                !participantId ||
-                !nama ||
-                !kelas
-            ) {
-
-                alert(
-                    "Data peserta tidak lengkap. Silakan pilih ulang kelas dan nomor absen."
-                );
-
-                return false;
-
-            }
-
+            participantId = selectedParticipant.id;
+            nama = selectedParticipant.nama;
+            kelas = selectedParticipant.kelas;
+            absen = selectedParticipant.absen;
         }
 
+        userName = nama;
 
-        userName =
-            nama;
-
-
+        // "MASTER" dicocokkan langsung ke Apps Script Backend
         const payload = {
-
             tes: "MASTER",
-
-            id:
-                participantId,
-
-            tanggal:
-                now.toLocaleDateString(
-                    "id-ID"
-                ),
-
-            jam:
-                now.toLocaleTimeString(
-                    "id-ID",
-                    {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit"
-                    }
-                ),
-
-            nama:
-                nama,
-
-            absen:
-                absen,
-
-            wa:
-                "",
-
-            kelas:
-                kelas,
-
-            kodeSesi:
-                sessionCode
-
+            id: participantId,
+            tanggal: now.toLocaleDateString("id-ID"),
+            jam: now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+            nama: nama,
+            absen: absen,
+            wa: "",
+            kelas: kelas,
+            kodeSesi: sessionCode
         };
 
-
-        localStorage.setItem(
-            "PRC_PARTICIPANT",
-            JSON.stringify(
-                payload
-            )
-        );
-
-
-        await sendToPRC(
-            payload
-        );
-
-
+        localStorage.setItem("PRC_PARTICIPANT", JSON.stringify(payload));
+        await sendToPRC(payload);
         return true;
-
     }
-
-
-    /* =========================================================
-       AMBIL DATA PESERTA
-    ========================================================= */
 
     function getParticipantData() {
-
         try {
-
-            return JSON.parse(
-                localStorage.getItem(
-                    "PRC_PARTICIPANT"
-                ) || "null"
-            ) || {};
-
-        } catch (error) {
-
+            const raw = localStorage.getItem("PRC_PARTICIPANT");
+            return raw ? JSON.parse(raw) : {};
+        } catch (e) {
             return {};
-
         }
-
     }
 
-
-    /* =========================================================
-       SIMPAN HOLLAND
-    ========================================================= */
+    function normalizeAnswers() {
+        if (!Array.isArray(answers) || answers.length !== 108) {
+            throw new Error("Jumlah jawaban Holland harus tepat 108.");
+        }
+        return answers.map((value, index) => {
+            const v = String(value == null ? "" : value).trim().toUpperCase();
+            if (v !== "Y" && v !== "N") {
+                throw new Error("Jawaban nomor " + (index + 1) + " belum diisi.");
+            }
+            return v;
+        });
+    }
 
     async function saveHollandToSheet() {
+        const participant = getParticipantData();
+        const now = new Date();
+        const finalAnswers = normalizeAnswers();
 
-        const participant =
-            getParticipantData();
+        const duration = testStartTime ? Math.round((Date.now() - testStartTime) / 1000) : "";
+        const finalId = String(participant.id || participantId || "").trim();
+        const finalName = String(participant.nama || userName || "").trim();
 
+        if (!finalId || !finalName) {
+            throw new Error("Identitas peserta tidak valid.");
+        }
 
-        const now =
-            new Date();
-
-
-        const duration =
-            testStartTime
-                ? Math.round(
-                    (
-                        Date.now() -
-                        testStartTime
-                    ) / 1000
-                )
-                : "";
-
-
-        const finalName =
-            String(
-                participant.nama ||
-                userName ||
-                ""
-            ).trim();
-
-
-        const finalId =
-            String(
-                participant.id ||
-                participantId ||
-                ""
-            ).trim();
-
-
+        // "HOLLAND" dicocokkan langsung ke Apps Script Backend
         const payload = {
-
             tes: "HOLLAND",
-
-            id:
-                finalId,
-
-            tanggal:
-                participant.tanggal ||
-                now.toLocaleDateString(
-                    "id-ID"
-                ),
-
-            jam:
-                participant.jam ||
-                now.toLocaleTimeString(
-                    "id-ID",
-                    {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit"
-                    }
-                ),
-
-            nama:
-                finalName,
-
-            absen:
-                participant.absen ||
-                "",
-
-            wa:
-                participant.wa ||
-                "",
-
-            kelas:
-                participant.kelas ||
-                "",
-
-            kodeSesi:
-                participant.kodeSesi ||
-                sessionCode ||
-                "",
-
-            durasi:
-                duration,
-
-            answers:
-                answers.slice()
-
+            id: finalId,
+            tanggal: participant.tanggal || now.toLocaleDateString("id-ID"),
+            jam: participant.jam || now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+            nama: finalName,
+            absen: participant.absen || "",
+            wa: participant.wa || "",
+            kelas: participant.kelas || "",
+            kodeSesi: participant.kodeSesi || sessionCode || "",
+            durasi: String(duration),
+            jumlahSoal: 108,
+            answers: finalAnswers
         };
 
-
-        localStorage.setItem(
-            "PRC_LAST_HOLLAND",
-            JSON.stringify(
-                payload
-            )
-        );
-
-
-        const sent =
-            await sendToPRC(
-                payload
-            );
-
-
-        return {
-            success: sent,
-            payload: payload
-        };
-
+        localStorage.setItem("PRC_LAST_HOLLAND", JSON.stringify(payload));
+        const sent = await sendToPRC(payload);
+        return { success: sent, payload: payload };
     }
-
-
-    /* =========================================================
-       START TEST
-    ========================================================= */
 
     async function startTest() {
-
         if (isSusulan) {
-
-            const nama =
-                document.getElementById(
-                    "susulan-name"
-                ).value.trim();
-
-
-            const kelas =
-                document.getElementById(
-                    "susulan-class"
-                ).value.trim();
-
-
-            if (!nama) {
-
-                alert(
-                    "Harap isi nama peserta susulan."
-                );
-
-                return;
-
-            }
-
-
-            if (!kelas) {
-
-                alert(
-                    "Harap pilih kelas peserta susulan."
-                );
-
-                return;
-
-            }
-
+            const nama = document.getElementById("susulan-name").value.trim();
+            if (!nama) return alert("Harap isi nama peserta susulan.");
         } else {
-
-            if (!selectedParticipant) {
-
-                alert(
-                    "Silakan pilih kelas dan nomor absen terlebih dahulu."
-                );
-
-                return;
-
-            }
-
+            if (!selectedParticipant) return alert("Silakan pilih kelas dan nomor absen terlebih dahulu.");
         }
 
-
-        const button =
-            document.getElementById(
-                "btn-start"
-            );
-
-
-        button.disabled =
-            true;
-
-
-        button.textContent =
-            "MENYIAPKAN TES...";
-
-
-        const saved =
-            await saveMasterToSheet();
-
-
-        if (!saved) {
-
-            button.disabled =
-                false;
-
-            button.textContent =
-                "MULAI SEKARANG";
-
-            return;
-
-        }
-
-
-        document.getElementById(
-            "login-screen"
-        ).style.display =
-            "none";
-
-
-        document.getElementById(
-            "test-content"
-        ).style.display =
-            "block";
-
-
-        init();
-
-    }
-
-
-    /* =========================================================
-       INIT
-    ========================================================= */
-
-    function init() {
-
-        const wrapper =
-            document.getElementById(
-                "q-wrapper"
-            );
-
-
-        const grid =
-            document.getElementById(
-                "q-grid"
-            );
-
-
-        wrapper.innerHTML =
-            "";
-
-
-        grid.innerHTML =
-            "";
-
-
-        currentIdx =
-            0;
-
-
-        answers =
-            new Array(
-                questions.length
-            ).fill(null);
-
-
-        questions.forEach(
-            (question, index) => {
-
-                const div =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                div.className =
-                    "question-box" +
-                    (
-                        index === 0
-                            ? " active"
-                            : ""
-                    );
-
-
-                div.id =
-                    "qbox-" +
-                    index;
-
-
-                div.innerHTML = `
-
-                    <div class="question-text">
-                        ${index + 1}. ${question}
-                    </div>
-
-                    <div class="opt-container">
-
-                        <div
-                            class="option"
-                            id="opt-${index}-Y"
-                            onclick="select(${index}, 'Y')"
-                        >
-                            YA
-                        </div>
-
-                        <div
-                            class="option"
-                            id="opt-${index}-N"
-                            onclick="select(${index}, 'N')"
-                        >
-                            TIDAK
-                        </div>
-
-                    </div>
-
-                `;
-
-
-                wrapper.appendChild(
-                    div
-                );
-
-
-                const gridItem =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                gridItem.className =
-                    "grid-item";
-
-
-                gridItem.id =
-                    "grid-" +
-                    index;
-
-
-                gridItem.innerText =
-                    index + 1;
-
-
-                gridItem.onclick =
-                    () => jump(index);
-
-
-                grid.appendChild(
-                    gridItem
-                );
-
-            }
-        );
-
-
-        document.getElementById(
-            "btn-final"
-        ).style.display =
-            "none";
-
-
-        updateGrid();
-
-    }
-
-
-    /* =========================================================
-       PILIH JAWABAN
-    ========================================================= */
-
-    function select(
-        index,
-        value
-    ) {
-
-        answers[index] =
-            value;
-
-
-        const yes =
-            document.getElementById(
-                `opt-${index}-Y`
-            );
-
-
-        const no =
-            document.getElementById(
-                `opt-${index}-N`
-            );
-
-
-        yes.classList.remove(
-            "selected"
-        );
-
-
-        no.classList.remove(
-            "selected"
-        );
-
-
-        document.getElementById(
-            `opt-${index}-${value}`
-        )
-            .classList
-            .add(
-                "selected"
-            );
-
-
-        document.getElementById(
-            `grid-${index}`
-        )
-            .classList
-            .add(
-                "filled"
-            );
-
-
-        checkFinishButton();
-
-
-        /*
-         * AUTONEXT
-         */
-
-        if (
-            currentIdx <
-            questions.length - 1
-        ) {
-
-            setTimeout(
-                () => {
-
-                    jump(
-                        currentIdx + 1
-                    );
-
-                },
-                200
-            );
-
-        }
-
-    }
-
-
-    /* =========================================================
-       JUMP
-    ========================================================= */
-
-    function jump(index) {
-
-        document
-            .querySelectorAll(
-                ".question-box"
-            )
-            .forEach(
-                box =>
-                    box.classList.remove(
-                        "active"
-                    )
-            );
-
-
-        currentIdx =
-            index;
-
-
-        const box =
-            document.getElementById(
-                `qbox-${index}`
-            );
-
-
-        if (box) {
-
-            box.classList.add(
-                "active"
-            );
-
-        }
-
-
-        updateGrid();
-
-    }
-
-
-    /* =========================================================
-       UPDATE GRID
-    ========================================================= */
-
-    function updateGrid() {
-
-        document
-            .querySelectorAll(
-                ".grid-item"
-            )
-            .forEach(
-                item =>
-                    item.classList.remove(
-                        "current"
-                    )
-            );
-
-
-        const current =
-            document.getElementById(
-                `grid-${currentIdx}`
-            );
-
-
-        if (current) {
-
-            current.classList.add(
-                "current"
-            );
-
-        }
-
-    }
-
-
-    /* =========================================================
-       CEK SEMUA TERJAWAB
-    ========================================================= */
-
-    function checkFinishButton() {
-
-        const answered =
-            answers.filter(
-                answer =>
-                    answer !== null
-            ).length;
-
-
-        const finish =
-            document.getElementById(
-                "btn-final"
-            );
-
-
-        if (
-            answered ===
-            questions.length
-        ) {
-
-            finish.style.display =
-                "block";
-
-        } else {
-
-            finish.style.display =
-                "none";
-
-        }
-
-    }
-
-
-    /* =========================================================
-       FINISH
-    ========================================================= */
-
-    async function finishToResult() {
-
-        const answered =
-            answers.filter(
-                answer =>
-                    answer !== null
-            ).length;
-
-
-        if (
-            answered !==
-            questions.length
-        ) {
-
-            alert(
-                "Harap jawab seluruh 108 soal terlebih dahulu."
-            );
-
-            return;
-
-        }
-
-
-        const finishButton =
-            document.getElementById(
-                "btn-final"
-            );
-
-
-        finishButton.disabled =
-            true;
-
-
-        finishButton.textContent =
-            "MENYIMPAN HASIL...";
-
+        const button = document.getElementById("btn-start");
+        button.disabled = true;
+        button.textContent = "MENYIAPKAN TES...";
 
         try {
+            const saved = await saveMasterToSheet();
+            if (!saved) {
+                button.disabled = false;
+                button.textContent = "MULAI SEKARANG";
+                return;
+            }
 
+            document.getElementById("login-screen").style.display = "none";
+            document.getElementById("test-content").style.display = "block";
+            init();
+        } catch (err) {
+            console.error("Gagal memulai tes:", err);
+            alert("Gagal menyiapkan tes.");
+            button.disabled = false;
+            button.textContent = "MULAI SEKARANG";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadDaftarPeserta);
+
+    function init() {
+        const wrapper = document.getElementById("q-wrapper");
+        const grid = document.getElementById("q-grid");
+        wrapper.innerHTML = "";
+        grid.innerHTML = "";
+
+        questions.forEach((q, i) => {
+            const div = document.createElement("div");
+            div.className = "question-box " + (i === 0 ? "active" : "");
+            div.id = "qbox-" + i;
+
+            div.innerHTML = `
+                <div class="question-text">${i + 1}. ${q}</div>
+                <div class="opt-container">
+                    <div class="option" id="opt-${i}-Y" onclick="select(${i}, 'Y')">YA</div>
+                    <div class="option" id="opt-${i}-N" onclick="select(${i}, 'N')">TIDAK</div>
+                </div>
+            `;
+            wrapper.appendChild(div);
+
+            const gItem = document.createElement("div");
+            gItem.className = "grid-item";
+            gItem.id = "grid-" + i;
+            gItem.innerText = i + 1;
+            gItem.onclick = () => jump(i);
+            grid.appendChild(gItem);
+        });
+
+        updateGrid();
+    }
+
+    function select(idx, val) {
+        answers[idx] = val === "Y" ? "Y" : "N";
+
+        document.getElementById("opt-" + idx + "-Y").classList.remove("selected");
+        document.getElementById("opt-" + idx + "-N").classList.remove("selected");
+        document.getElementById("opt-" + idx + "-" + answers[idx]).classList.add("selected");
+        document.getElementById("grid-" + idx).classList.add("filled");
+
+        if (currentIdx < questions.length - 1) {
+            setTimeout(() => { jump(currentIdx + 1); }, 200);
+        }
+
+        checkFinishButton();
+    }
+
+    function jump(idx) {
+        document.querySelectorAll(".question-box").forEach(b => b.classList.remove("active"));
+        currentIdx = idx;
+        document.getElementById("qbox-" + idx).classList.add("active");
+        updateGrid();
+    }
+
+    function updateGrid() {
+        document.querySelectorAll(".grid-item").forEach(i => i.classList.remove("current"));
+        const current = document.getElementById("grid-" + currentIdx);
+        if (current) current.classList.add("current");
+    }
+
+    function checkFinishButton() {
+        const answered = answers.filter(a => a === "Y" || a === "N").length;
+        if (answered === questions.length) {
+            document.getElementById("btn-final").style.display = "block";
+        }
+    }
+
+    async function finishToResult() {
+        const unanswered = answers
+            .map((ans, idx) => (ans !== "Y" && ans !== "N") ? idx + 1 : null)
+            .filter(Boolean);
+
+        if (unanswered.length > 0) {
+            alert("Harap jawab seluruh 108 soal terlebih dahulu.\n\nNomor yang belum dijawab: " + unanswered.join(", "));
+            return;
+        }
+
+        const finishButton = document.getElementById("btn-final");
+        finishButton.disabled = true;
+        finishButton.textContent = "MENYIMPAN HASIL...";
+
+        try {
             await saveHollandToSheet();
 
-
-            finishButton.textContent =
-                "HASIL TERSIMPAN";
-
-
-            document.getElementById(
-                "test-content"
-            ).style.display =
-                "none";
-
-
-            document.getElementById(
-                "result-screen"
-            ).style.display =
-                "block";
-
-
-        } catch (error) {
-
-            console.error(
-                "Gagal menyimpan Holland:",
-                error
-            );
-
-
-            finishButton.disabled =
-                false;
-
-
-            finishButton.textContent =
-                "SELESAI & REKAP JAWABAN";
-
-
-            alert(
-                "Terjadi kendala saat menyimpan hasil Holland. Silakan coba kembali."
-            );
-
+            finishButton.textContent = "HASIL TERSIMPAN";
+            document.getElementById("test-content").style.display = "none";
+            document.getElementById("result-screen").style.display = "block";
+        } catch (err) {
+            console.error("Gagal menyimpan Holland:", err);
+            finishButton.disabled = false;
+            finishButton.textContent = "SELESAI & REKAP JAWABAN";
+            alert("Terjadi kendala saat menyimpan hasil Holland:\n\n" + err.message);
         }
-
     }
-
-
-    /* =========================================================
-       DOWNLOAD TXT
-    ========================================================= */
 
     function downloadTXT() {
+        const participant = getParticipantData();
 
-        const participant =
-            getParticipantData();
+        let text = "REKAP RIASEC HOLLAND (108) - PRC\n";
+        text += "=================================\n";
+        text += "ID PESERTA   : " + (participant.id || participantId || "") + "\n";
+        text += "NAMA PESERTA : " + (participant.nama || userName || "").toUpperCase() + "\n";
+        text += "KELAS        : " + (participant.kelas || "") + "\n";
+        text += "NO. ABSEN    : " + (participant.absen || "") + "\n";
+        text += "TANGGAL      : " + new Date().toLocaleString("id-ID") + "\n";
+        text += "=================================\n\n";
 
+        answers.forEach((a, i) => {
+            text += `Q${i + 1} : ${a || '-'}\n`;
+        });
 
-        let text =
-            "REKAP RIASEC HOLLAND (108) - PRC\n";
-
-
-        text +=
-            "=================================\n";
-
-
-        text +=
-            `ID PESERTA   : ${
-                participant.id ||
-                participantId ||
-                ""
-            }\n`;
-
-
-        text +=
-            `NAMA PESERTA : ${
-                userName ||
-                participant.nama ||
-                ""
-            }\n`;
-
-
-        text +=
-            `KELAS        : ${
-                participant.kelas ||
-                ""
-            }\n`;
-
-
-        text +=
-            `NO. ABSEN    : ${
-                participant.absen ||
-                ""
-            }\n`;
-
-
-        text +=
-            `TANGGAL      : ${
-                new Date()
-                    .toLocaleString("id-ID")
-            }\n`;
-
-
-        text +=
-            "=================================\n\n";
-
-
-        answers.forEach(
-            (answer, index) => {
-
-                text +=
-                    `${index + 1}:${answer || ""}\n`;
-
-            }
-        );
-
-
-        const blob =
-            new Blob(
-                [text],
-                {
-                    type:
-                        "text/plain;charset=utf-8"
-                }
-            );
-
-
-        const url =
-            URL.createObjectURL(
-                blob
-            );
-
-
-        const link =
-            document.createElement(
-                "a"
-            );
-
-
-        link.href =
-            url;
-
-
-        link.download =
-            `RIASEC_108_${
-                (
-                    userName ||
-                    "PESERTA"
-                )
-                    .replace(
-                        /\s+/g,
-                        "_"
-                    )
-            }.txt`;
-
-
-        document.body.appendChild(
-            link
-        );
-
-
-        link.click();
-
-
-        document.body.removeChild(
-            link
-        );
-
-
-        setTimeout(
-            () => {
-
-                URL.revokeObjectURL(
-                    url
-                );
-
-            },
-            1000
-        );
-
+        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "RIASEC_108_" + (participant.nama || userName || "Peserta").replace(/[\\\/:*?"<>|]/g, "").replace(/\s+/g, "_") + ".txt";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => { URL.revokeObjectURL(url); }, 1000);
     }
-
-
-    /* =========================================================
-       DOM READY
-    ========================================================= */
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
-
-            loadDaftarPeserta();
-
-        }
-    );
-
 </script>
 
 </body>
