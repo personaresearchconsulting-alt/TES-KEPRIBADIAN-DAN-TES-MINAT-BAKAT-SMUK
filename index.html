@@ -1,340 +1,1269 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asesmen Psikologi — SMUK Kesuma Mataram</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        :root {
-            --bg-main: #f1f5f9;
-            --surface: #ffffff;
-            --indigo-deep: #1e1b4b;
-            --indigo-accent: #4338ca;
-            --border-line: #cbd5e1;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Persona Research & Consulting | Latihan CAT Online</title>
+  <style>
+    :root {
+      --bg-main: #FAF9F6;
+      --bg-alt: #F4EEE6;
+      --card-bg: #FFFFFF;
+      --text-main: #172033;
+      --text-muted: #6F7278;
+      --accent-rose: #C9A6A6;
+      --accent-lavender: #B8B1C8;
+      --border-color: #E2E8F0;
+      --btn-primary: #172033;
+      --btn-primary-hover: #2A364F;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex; flex-direction: column;
-            line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
-        }
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
 
-        /* Ambient Glow Background untuk bagian bawah */
-        .ambient-bg {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            height: 600px;
-            background: radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 60%, rgba(236, 72, 153, 0.08) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
+    /* HEADER & NAV */
+    header {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-        .container { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
 
-        /* =========================================================
-           HERO HEADER (PERSIS KONSEP 3)
-        ========================================================= */
-        header { padding: 50px 0 30px; }
+    .brand-logo {
+      text-decoration: none;
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      display: inline-block;
+    }
 
-        .hero-banner {
-            background: var(--surface);
-            border: 1px solid var(--border-line);
-            border-radius: 20px;
-            padding: 48px;
-            position: relative;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        }
+    .nav-links {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
 
-        .brand-label {
-            display: inline-block;
-            font-size: 0.8rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: var(--indigo-accent);
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
 
-        .main-title {
-            font-size: 2.4rem;
-            font-weight: 800;
-            color: var(--indigo-deep);
-            letter-spacing: -0.02em;
-            margin-bottom: 4px;
-        }
+    .nav-links a:hover {
+      color: var(--accent-rose);
+    }
 
-        .school-info { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
-        .academic-year { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); margin-bottom: 20px; }
-        .subtitle { font-size: 0.95rem; color: var(--text-muted); max-width: 650px; border-top: 1px solid var(--border-line); padding-top: 16px; }
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
 
-        .section-header { margin: 36px 0 20px; border-bottom: 2px solid var(--indigo-deep); padding-bottom: 8px; }
-        .section-title { font-size: 1.1rem; font-weight: 800; color: var(--indigo-deep); letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+    .btn-cart {
+      background-color: var(--bg-alt);
+      border: 1px solid var(--border-color);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-        /* =========================================================
-           MENU CARD AREA (SESUAI FILE ASLI: WARNA, GRADASI, ANIMASI)
-        ========================================================= */
-        .test-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; padding-bottom: 60px; }
+    .btn-login {
+      background-color: var(--btn-primary);
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+    }
 
-        .card {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 32px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: fadeInUp 0.6s ease-out backwards;
-        }
+    /* HERO */
+    .hero {
+      background-color: var(--bg-alt);
+      padding: 60px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
 
-        .card:nth-child(1) { animation-delay: 0.1s; }
-        .card:nth-child(2) { animation-delay: 0.2s; }
-        .card:nth-child(3) { animation-delay: 0.3s; }
-        .card:nth-child(4) { animation-delay: 0.4s; }
+    .hero-content {
+      max-width: 700px;
+      margin: 0 auto;
+    }
 
-        /* Hover Effect dari File Asli */
-        .card:hover {
-            transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 20px 35px -10px var(--card-shadow);
-            border-color: var(--accent-color);
-        }
+    .hero-tag {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
 
-        /* Top Bar Accent Glow */
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-gradient));
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-        }
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
 
-        .card:hover::before { opacity: 1; }
+    .hero p {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
 
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        
-        .card-number {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--accent-color);
-            opacity: 0.85;
-            line-height: 1;
-        }
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
 
-        .icon-box {
-            width: 52px; height: 52px;
-            border-radius: 16px;
-            background: var(--icon-bg);
-            color: var(--accent-color);
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.4s ease;
-        }
+    .btn-hero-main {
+      background-color: var(--btn-primary);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
 
-        .card:hover .icon-box {
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-gradient));
-            color: #ffffff;
-            transform: rotate(-6deg) scale(1.1);
-            box-shadow: 0 8px 16px var(--card-shadow);
-        }
+    .btn-hero-sec {
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 12px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
 
-        .test-title { font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
-        .test-desc { font-size: 0.92rem; color: #64748b; margin-bottom: 28px; line-height: 1.6; }
+    /* MAIN CONTAINER */
+    .section-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 50px 20px;
+    }
 
-        /* Tombol Aksi Animatis */
-        .btn-action {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            width: 100%; padding: 14px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            color: #0f172a;
-            font-weight: 700; font-size: 0.9rem;
-            border-radius: 14px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
+    .section-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
 
-        .btn-action i { transition: transform 0.3s ease; }
+    .section-header h2 {
+      font-size: 26px;
+      color: var(--text-main);
+    }
 
-        .card:hover .btn-action {
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-gradient));
-            color: #ffffff;
-            border-color: transparent;
-            box-shadow: 0 6px 18px var(--card-shadow);
-        }
+    .section-header p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
 
-        .card:hover .btn-action i { transform: translateX(6px); }
+    /* CATEGORY TABS */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
 
-        /* Tema Warna per Card (File Asli) */
-        .card-holland {
-            --accent-color: #0284c7;
-            --accent-gradient: #38bdf8;
-            --icon-bg: #e0f2fe;
-            --card-shadow: rgba(2, 132, 199, 0.25);
-        }
+    .tab-btn {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
 
-        .card-rmib {
-            --accent-color: #4f46e5;
-            --accent-gradient: #818cf8;
-            --icon-bg: #e0e7ff;
-            --card-shadow: rgba(79, 70, 229, 0.25);
-        }
+    .tab-btn.active {
+      background-color: var(--btn-primary);
+      color: #fff;
+      border-color: var(--btn-primary);
+    }
 
-        .card-bigfive {
-            --accent-color: #9333ea;
-            --accent-gradient: #c084fc;
-            --icon-bg: #f3e8ff;
-            --card-shadow: rgba(147, 51, 234, 0.25);
-        }
+    /* CATALOG GRID */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
 
-        .card-mbti {
-            --accent-color: #db2777;
-            --accent-gradient: #f472b6;
-            --icon-bg: #fce7f3;
-            --card-shadow: rgba(219, 39, 119, 0.25);
-        }
+    .product-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-        /* =========================================================
-           FOOTER
-        ========================================================= */
-        footer { background: var(--surface); border-top: 1px solid var(--border-line); padding: 32px 0; margin-top: auto; position: relative; z-index: 1; }
-        .footer-content { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-        .footer-brand { font-size: 0.9rem; font-weight: 800; color: var(--indigo-deep); }
-        .footer-sub { font-size: 0.8rem; color: var(--text-muted); }
-        
-        .footer-wa {
-            display: inline-flex; align-items: center; gap: 8px;
-            color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0;
-            padding: 8px 18px; border-radius: 30px; font-size: 0.85rem; font-weight: 700;
-            text-decoration: none; transition: all 0.25s ease;
-        }
+    .product-card.complete-card {
+      border: 2px solid var(--accent-rose);
+      background-color: #FFFDFD;
+    }
 
-        .footer-wa:hover { background: #dcfce7; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(22, 101, 52, 0.1); }
+    .product-category {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .product-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 4px 0 8px 0;
+    }
 
-        @media (max-width: 768px) {
-            .test-grid { grid-template-columns: 1fr; }
-            .hero-banner { padding: 28px; }
-            .main-title { font-size: 1.8rem; }
-            .footer-content { flex-direction: column; text-align: center; }
-        }
-    </style>
+    .product-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* PRICING OPTIONS IN CARD */
+    .price-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .price-options.single-option {
+      grid-template-columns: 1fr;
+    }
+
+    .price-box {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px;
+      text-align: center;
+      background-color: var(--bg-main);
+    }
+
+    .price-duration {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .price-amount {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin: 4px 0 8px 0;
+    }
+
+    .btn-select {
+      width: 100%;
+      background-color: var(--btn-primary);
+      color: #fff;
+      border: none;
+      padding: 8px 0;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-select:hover {
+      background-color: var(--btn-primary-hover);
+    }
+
+    /* DURATION SELECTOR UI */
+    .duration-selector-container {
+      margin-top: auto;
+    }
+
+    .duration-selector-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .duration-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .duration-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-main);
+      border-radius: 6px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .duration-option:hover {
+      border-color: var(--text-muted);
+    }
+
+    .duration-option.selected {
+      border-color: var(--btn-primary);
+      background-color: #FFFFFF;
+      box-shadow: 0 0 0 1px var(--btn-primary);
+    }
+
+    .duration-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .duration-radio {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--btn-primary);
+      cursor: pointer;
+    }
+
+    .duration-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .duration-price {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    /* PRICING SUMMARY SECTION */
+    .pricing-summary {
+      background-color: var(--bg-alt);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .summary-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .summary-card h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .summary-price {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    /* CARA MEMBELI */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .step-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .step-num {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent-rose);
+      margin-bottom: 8px;
+    }
+
+    .step-card h4 {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .step-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* TENTANG KAMI */
+    .about-section {
+      background-color: var(--bg-alt);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .about-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 28px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .about-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .about-card p {
+      font-size: 14px;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .about-tag {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    .b2b-steps {
+      list-style: none;
+      margin: 16px 0;
+      padding: 0;
+    }
+
+    .b2b-steps li {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .b2b-steps li span {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .cta-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-proposal {
+      background-color: var(--btn-primary);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-proposal-sec {
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 10px 18px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      display: inline-block;
+      text-align: center;
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: var(--card-bg);
+      border-top: 1px solid var(--border-color);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer-links {
+      margin: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* MODAL & DRAWER */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+    }
+
+    .modal-box {
+      background-color: var(--card-bg);
+      width: 90%;
+      max-width: 440px;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      justify-content: flex-end;
+      z-index: 200;
+    }
+
+    .drawer-box {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 400px;
+      height: 100%;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .drawer-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .cart-item-title {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .cart-item-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .btn-remove {
+      background: none;
+      border: none;
+      color: #d9534f;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .drawer-footer {
+      border-top: 1px solid var(--border-color);
+      padding-top: 16px;
+      margin-top: 20px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 800;
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+
+    .btn-checkout {
+      width: 100%;
+      background-color: var(--btn-primary);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* RESPONSIVE MOBILE */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .brand-logo { font-size: 12px; }
+    }
+
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 24px; }
+      .product-grid { grid-template-columns: 1fr; }
+      .tabs { flex-wrap: wrap; }
+      .price-options { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-    <div class="ambient-bg"></div>
 
-    <div class="container">
-        <!-- HEADER PERSIS KONSEP 3 -->
-        <header>
-            <div class="hero-banner">
-                <span class="brand-label">PERSONA RESEARCH & CONSULTING</span>
-                <h1 class="main-title">TES KEPRIBADIAN MINAT BAKAT</h1>
-                <div class="school-info">SMU KESUMA MATARAM</div>
-                <div class="academic-year">TAHUN AJARAN 2026/2027</div>
-                <p class="subtitle">Pilih salah satu modul tes di bawah ini untuk memulai pemetaan minat, bakat, dan potensi kepribadian kamu.</p>
-            </div>
-        </header>
+  <!-- HEADER -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand-logo">PERSONA RESEARCH & CONSULTING</a>
 
-        <div class="section-header">
-            <h2 class="section-title"><i data-lucide="compass" style="width:20px;"></i> MODUL TES TERSEDIA</h2>
-        </div>
+      <nav class="nav-links">
+        <a href="#beranda">Beranda</a>
+        <a href="#latihan">Latihan CAT</a>
+        <a href="#harga">Harga</a>
+        <a href="#cara-membeli">Cara Membeli</a>
+        <a href="#tentang-kami">Tentang Kami</a>
+        <a href="#kontak">Kontak</a>
+      </nav>
 
-        <!-- MENU Tes SESUAI FILE ASLI (WARNA, GRADASI, EFEK HOVER & ANIMASI) -->
-        <main class="test-grid">
-            <article class="card card-holland">
-                <div>
-                    <div class="card-header">
-                        <span class="card-number">01</span>
-                        <div class="icon-box"><i data-lucide="compass"></i></div>
-                    </div>
-                    <h3 class="test-title">TES MINAT 1</h3>
-                    <p class="test-desc">Cari tahu bidang dan aktivitas yang paling sesuai dengan minat kamu.</p>
-                </div>
-                <a href="holland.html" class="btn-action">
-                    <span>MULAI TES</span> <i data-lucide="arrow-right"></i>
-                </a>
-            </article>
+      <div class="nav-actions">
+        <button class="btn-cart" onclick="openCart()">
+          🛒 <span id="cart-count">0</span>
+        </button>
+        <button class="btn-login" onclick="openModal('login-modal')">Login</button>
+      </div>
+    </div>
+  </header>
 
-            <article class="card card-rmib">
-                <div>
-                    <div class="card-header">
-                        <span class="card-number">02</span>
-                        <div class="icon-box"><i data-lucide="briefcase"></i></div>
-                    </div>
-                    <h3 class="test-title">TES MINAT DAN BAKAT 2</h3>
-                    <p class="test-desc">Kenali bidang pekerjaan dan aktivitas yang paling menarik bagi kamu.</p>
-                </div>
-                <a href="rmib.html" class="btn-action">
-                    <span>MULAI TES</span> <i data-lucide="arrow-right"></i>
-                </a>
-            </article>
+  <!-- HERO SECTION -->
+  <section class="hero" id="beranda">
+    <div class="hero-content">
+      <div class="hero-tag">Test Preparation • Research • Consulting</div>
+      <h1>Persiapan Tes yang Lebih Terarah</h1>
+      <p>Latihan CAT online untuk membantu Anda berlatih dengan lebih terstruktur dan memahami bentuk tes sebelum menghadapi seleksi.</p>
+      <div class="hero-buttons">
+        <a href="#latihan" class="btn-hero-main">LIHAT LATIHAN</a>
+        <a href="#cara-membeli" class="btn-hero-sec">CARA MEMBELI</a>
+      </div>
+    </div>
+  </section>
 
-            <article class="card card-bigfive">
-                <div>
-                    <div class="card-header">
-                        <span class="card-number">03</span>
-                        <div class="icon-box"><i data-lucide="sliders"></i></div>
-                    </div>
-                    <h3 class="test-title">TES KEPRIBADIAN 1</h3>
-                    <p class="test-desc">Kenali lima aspek utama yang menggambarkan kecenderungan kepribadian kamu.</p>
-                </div>
-                <a href="mbti.html" class="btn-action">
-                    <span>MULAI TES</span> <i data-lucide="arrow-right"></i>
-                </a>
-            </article>
-
-            <article class="card card-mbti">
-                <div>
-                    <div class="card-header">
-                        <span class="card-number">04</span>
-                        <div class="icon-box"><i data-lucide="brain"></i></div>
-                    </div>
-                    <h3 class="test-title">TES KEPRIBADIAN 2</h3>
-                    <p class="test-desc">Kenali kecenderungan cara kamu berpikir, berinteraksi, dan mengambil keputusan.</p>
-                </div>
-                <a href="big_five.html" class="btn-action">
-                    <span>MULAI TES</span> <i data-lucide="arrow-right"></i>
-                </a>
-            </article>
-        </main>
+  <!-- KATALOG LATIHAN -->
+  <section class="section-container" id="latihan">
+    <div class="section-header">
+      <h2>Pilih Latihan</h2>
+      <p>Pilih jenis tes yang ingin Anda latih.</p>
     </div>
 
-    <!-- FOOTER -->
-    <footer>
-        <div class="container footer-content">
-            <div>
-                <div class="footer-brand">PERSONA RESEARCH & CONSULTING</div>
-                <div class="footer-sub">&copy; 2026 Persona Research & Consulting. All rights reserved.</div>
-            </div>
-            <a href="https://wa.me/6287742515786" target="_blank" class="footer-wa">
-                <i data-lucide="message-circle" style="width: 18px;"></i> WA: 087742515786
-            </a>
-        </div>
-    </footer>
+    <!-- TABS CATEGORY -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="filterCategory('POLRI', this)">POLRI</button>
+      <button class="tab-btn" onclick="filterCategory('TNI', this)">TNI</button>
+      <button class="tab-btn" onclick="filterCategory('KEDINASAN', this)">KEDINASAN</button>
+    </div>
 
-    <script>
-        lucide.createIcons();
-    </script>
+    <!-- PRODUCT GRID -->
+    <div class="product-grid" id="product-list">
+      <!-- Dynamic Products Inserted via JS -->
+    </div>
+  </section>
+
+  <!-- STRUKTUR HARGA SEDERHANA -->
+  <section class="pricing-summary section-container" id="harga">
+    <div class="section-header">
+      <h2>Harga</h2>
+      <p>Pilihan paket akses yang fleksibel sesuai kebutuhan belajar Anda.</p>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>14 Hari</h3>
+        <div class="summary-price">Rp30.000</div>
+        <p style="font-size: 12px; color: var(--text-muted);">Akses individual 14 hari penuh.</p>
+      </div>
+      <div class="summary-card">
+        <h3>30 Hari</h3>
+        <div class="summary-price">Rp50.000</div>
+        <p style="font-size: 12px; color: var(--text-muted);">Akses individual 30 hari penuh.</p>
+      </div>
+      <div class="summary-card" style="border: 1px solid var(--accent-rose);">
+        <h3>Complete Package</h3>
+        <div class="summary-price">Rp125.000</div>
+        <p style="font-size: 12px; color: var(--text-muted);">Paket bundel lengkap 30 hari.</p>
+      </div>
+    </div>
+    <div style="text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-muted);">
+      Harga sudah termasuk akses latihan sesuai produk yang dipilih.
+    </div>
+  </section>
+
+  <!-- CARA MEMBELI -->
+  <section class="section-container" id="cara-membeli">
+    <div class="section-header">
+      <h2>Cara Membeli</h2>
+      <p>Proses praktis dalam 4 langkah mudah.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h4>Pilih Tes</h4>
+        <p>Pilih modul latihan yang ingin Anda gunakan dari katalog.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h4>Pilih Masa Akses</h4>
+        <p>Tentukan pilihan masa aktif 14 Hari atau 30 Hari.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h4>Bayar</h4>
+        <p>Lakukan pembayaran instan menggunakan QRIS.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <h4>Mulai Latihan</h4>
+        <p>Setelah terverifikasi, akses latihan akan langsung aktif.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TENTANG KAMI -->
+  <section class="about-section section-container" id="tentang-kami">
+    <div class="section-header">
+      <h2>Tentang Kami</h2>
+      <p>Mengenal Persona Research & Consulting dan Layanan Kami.</p>
+    </div>
+
+    <div class="about-grid">
+      <!-- B2C / INDIVIDU -->
+      <div class="about-card">
+        <div>
+          <h3>Layanan Individu</h3>
+          <p>Persona Research & Consulting menyediakan latihan tes berbasis CAT untuk membantu peserta mempersiapkan diri menghadapi berbagai jenis seleksi secara lebih terarah dan terstruktur.</p>
+          <p style="font-size: 13px; color: var(--text-muted);">Akses dapat langsung dipilih secara mandiri melalui katalog latihan yang tersedia pada platform ini.</p>
+        </div>
+        <div class="about-tag">Test Preparation • Research • Consulting</div>
+      </div>
+
+      <!-- B2B / ORGANISASI -->
+      <div class="about-card">
+        <div>
+          <h3>Layanan Organisasi & B2B</h3>
+          <p>Persona Research & Consulting juga melayani kebutuhan B2B dan institusi, termasuk sekolah, lembaga pendidikan, perusahaan, dan organisasi yang membutuhkan layanan yang disesuaikan dengan kebutuhan mereka.</p>
+          <p style="font-size: 13px; color: var(--text-muted);">Kami menyediakan layanan untuk kebutuhan penyusunan, pengembangan, maupun konsultasi tes sesuai objektif organisasi.</p>
+          
+          <ul class="b2b-steps">
+            <li><span>1.</span> Hubungi Persona Research & Consulting</li>
+            <li><span>2.</span> Sampaikan Kebutuhan & Minta Proposal</li>
+            <li><span>3.</span> Diskusi & Penyesuaian Layanan</li>
+          </ul>
+        </div>
+
+        <div class="cta-container">
+          <a href="mailto:persona.research.consulting@gmail.com?subject=Permintaan%20Proposal%20Layanan%20B2B" class="btn-proposal">MINTA PROPOSAL (EMAIL)</a>
+          <a href="https://wa.me/6287742515786?text=Halo%20Persona%20Research%20%26%20Consulting,%20saya%20ingin%20meminta%20proposal%20layanan%20untuk%20organisasi." target="_blank" class="btn-proposal-sec">MINTA PROPOSAL (WA)</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER & KONTAK -->
+  <footer id="kontak">
+    <div style="font-weight: 800; font-size: 16px; color: var(--text-main); margin-bottom: 4px;">
+      PERSONA RESEARCH & CONSULTING
+    </div>
+    <div style="font-size: 12px; margin-bottom: 12px;">Test Preparation • Research • Consulting</div>
+    
+    <div class="footer-links">
+      <a href="mailto:persona.research.consulting@gmail.com">Email Us</a>
+      <span>•</span>
+      <a href="https://wa.me/6287742515786" target="_blank">WhatsApp Chat</a>
+    </div>
+
+    <div style="margin-top: 16px; font-size: 12px;">
+      © 2026 Persona Research & Consulting. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- CART DRAWER -->
+  <div class="drawer-overlay" id="cart-drawer">
+    <div class="drawer-box">
+      <div class="drawer-header">
+        <h3 style="font-size: 16px;">Keranjang Anda</h3>
+        <button class="drawer-close" onclick="closeCart()">×</button>
+      </div>
+
+      <div class="cart-items" id="cart-content">
+        <!-- Dynamic Cart Content -->
+      </div>
+
+      <div class="drawer-footer" id="cart-footer">
+        <div class="total-row">
+          <span>Total:</span>
+          <span id="cart-total">Rp0</span>
+        </div>
+        <button class="btn-checkout" onclick="goToCheckout()">LANJUTKAN PEMBAYARAN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal-overlay" id="checkout-modal">
+    <div class="modal-box">
+      <h3 style="font-size: 18px; margin-bottom: 16px;">Checkout</h3>
+      
+      <div id="checkout-summary" style="background: var(--bg-main); padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 13px;">
+        <!-- Summary Dynamic -->
+      </div>
+
+      <div class="form-group">
+        <label>Nama Lengkap</label>
+        <input type="text" id="cust-name" placeholder="Masukkan nama Anda">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="cust-email" placeholder="nama@email.com">
+      </div>
+      <div class="form-group">
+        <label>Nomor WhatsApp</label>
+        <input type="tel" id="cust-phone" placeholder="081234567890">
+      </div>
+
+      <button class="btn-checkout" onclick="processPayment()">BAYAR SEKARANG</button>
+      <button style="width: 100%; background: none; border: none; margin-top: 8px; cursor: pointer; font-size: 12px; color: var(--text-muted);" onclick="closeModal('checkout-modal')">Batal</button>
+    </div>
+  </div>
+
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal-box">
+      <h3 style="font-size: 18px; margin-bottom: 16px;">Login Peserta</h3>
+      
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="email@domain.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="Password Anda">
+      </div>
+
+      <button class="btn-checkout" onclick="performLogin()">MASUK</button>
+
+      <div style="text-align: center; margin-top: 14px; font-size: 12px; color: var(--text-muted);">
+        <a href="#" style="color: var(--text-main);">Belum punya akun? Daftar</a> | 
+        <a href="#" style="color: var(--text-main);">Lupa password?</a>
+      </div>
+      <button style="width: 100%; background: none; border: none; margin-top: 12px; cursor: pointer; font-size: 12px; color: var(--text-muted);" onclick="closeModal('login-modal')">Tutup</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD MODAL -->
+  <div class="modal-overlay" id="dashboard-modal">
+    <div class="modal-box" style="max-width: 500px;">
+      <h3 style="font-size: 18px; margin-bottom: 4px;">Halo, Peserta PRC</h3>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Selamat datang kembali di portal latihan Anda.</p>
+
+      <div style="font-weight: 700; font-size: 14px; margin-bottom: 10px;">Latihan Saya</div>
+
+      <div style="border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-weight: 700; font-size: 13px;">Tes Kecerdasan — POLRI</div>
+          <div style="font-size: 11px; color: var(--text-muted);">30 Hari • Aktif sampai 17 Oktober 2026</div>
+        </div>
+        <button class="btn-select" style="padding: 6px 12px;" onclick="alert('Membuka modul latihan...')">MULAI LATIHAN</button>
+      </div>
+
+      <div style="border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; background: #FFF5F5;">
+        <div>
+          <div style="font-weight: 700; font-size: 13px;">Tes Kecermatan — POLRI</div>
+          <div style="font-size: 11px; color: var(--text-muted);">14 Hari • Sudah berakhir</div>
+        </div>
+        <button class="btn-select" style="padding: 6px 12px; background: #6F7278;" onclick="alert('Mengarahkan ke pembelian...')">BELI LAGI</button>
+      </div>
+
+      <button class="btn-checkout" style="background: var(--bg-alt); color: var(--text-main); border: 1px solid var(--border-color);" onclick="closeModal('dashboard-modal')">Keluar</button>
+    </div>
+  </div>
+
+  <!-- CONFLICT CONFIRMATION MODAL -->
+  <div class="modal-overlay" id="conflict-modal">
+    <div class="modal-box">
+      <h3 style="font-size: 16px; margin-bottom: 8px;">Ganti Pilihan Durasi?</h3>
+      <p id="conflict-msg" style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;"></p>
+      
+      <button class="btn-checkout" id="btn-confirm-replace">Ganti Durasi</button>
+      <button style="width: 100%; background: none; border: none; margin-top: 8px; cursor: pointer; font-size: 12px; color: var(--text-muted);" onclick="closeModal('conflict-modal')">Batal</button>
+    </div>
+  </div>
+
+  <script>
+    /* PRODUCTS DATA STRUCTURE */
+    const PRODUCTS_DATA = [
+      // POLRI
+      { baseId: 'polri-kecerdasan', category: 'POLRI', title: 'Tes Kecerdasan', desc: 'Latihan CAT Tes Kecerdasan POLRI.', p14: 30000, p30: 50000 },
+      { baseId: 'polri-kepribadian', category: 'POLRI', title: 'Tes Kepribadian', desc: 'Latihan CAT Tes Kepribadian POLRI.', p14: 30000, p30: 50000 },
+      { baseId: 'polri-tkp', category: 'POLRI', title: 'TKP', desc: 'Latihan CAT Tes Karakteristik Pribadi POLRI.', p14: 30000, p30: 50000 },
+      { baseId: 'polri-kecermatan', category: 'POLRI', title: 'Tes Kecermatan', desc: 'Latihan Tes Kecermatan & Angka Hilang.', p14: 30000, p30: 50000 },
+      { baseId: 'polri-komputer', category: 'POLRI', title: 'Tes Komputer', desc: 'Latihan CAT Pengetahuan Komputer.', p14: 30000, p30: 50000 },
+      { baseId: 'polri-ami', category: 'POLRI', title: 'AMI', desc: 'Latihan CAT Penelusuran Mental Kepribadian.', p14: 30000, p30: 50000 },
+      { baseId: 'polri-pmk', category: 'POLRI', title: 'PMK', desc: 'Latihan CAT Penelusuran Masalah Kemasyarakatan.', p14: 30000, p30: 50000 },
+      { baseId: 'polri-complete', category: 'POLRI', title: 'Complete POLRI', desc: 'Bundel lengkap: Kecerdasan + Kepribadian + Kecermatan.', isComplete: true, p30: 125000 },
+
+      // TNI
+      { baseId: 'tni-kecerdasan', category: 'TNI', title: 'Tes Kecerdasan Umum', desc: 'Latihan CAT Kecerdasan Umum Seleksi TNI.', p14: 30000, p30: 50000 },
+      { baseId: 'tni-armyalpha', category: 'TNI', title: 'Army Alpha — CAT', desc: 'Simulasi Psikotes Army Alpha berbasis CAT.', p14: 30000, p30: 50000 },
+      { baseId: 'tni-mental', category: 'TNI', title: 'Mental Kepribadian Militer', desc: 'Latihan Tes Mental Kepribadian Militer.', p14: 30000, p30: 50000 },
+      { baseId: 'tni-koran', category: 'TNI', title: 'Tes Koran', desc: 'Latihan Ketahanan & Ketelitian Tes Koran.', p14: 30000, p30: 50000 },
+
+      // KEDINASAN
+      { baseId: 'kedinasan-tiu', category: 'KEDINASAN', title: 'TIU', desc: 'Tes Intelegensia Umum Seleksi Kedinasan.', p14: 30000, p30: 50000 },
+      { baseId: 'kedinasan-twk', category: 'KEDINASAN', title: 'TWK', desc: 'Tes Wawasan Kebangsaan Seleksi Kedinasan.', p14: 30000, p30: 50000 },
+      { baseId: 'kedinasan-tkp', category: 'KEDINASAN', title: 'TKP', desc: 'Tes Karakteristik Pribadi Seleksi Kedinasan.', p14: 30000, p30: 50000 },
+      { baseId: 'kedinasan-complete', category: 'KEDINASAN', title: 'SKD Complete', desc: 'Bundel lengkap SKD: TIU + TWK + TKP.', isComplete: true, p30: 125000 }
+    ];
+
+    /* CART STATE */
+    let cart = JSON.parse(localStorage.getItem('prc_cart')) || [];
+    let currentCategory = 'POLRI';
+
+    /* RENDER CATALOG */
+    function renderProducts() {
+      const list = document.getElementById('product-list');
+      list.innerHTML = '';
+
+      const filtered = PRODUCTS_DATA.filter(p => p.category === currentCategory);
+
+      filtered.forEach(p => {
+        const card = document.createElement('div');
+        card.className = `product-card ${p.isComplete ? 'complete-card' : ''}`;
+
+        if (p.isComplete) {
+          card.innerHTML = `
+            <div>
+              <div class="product-category">${p.category} • BUNDEL LENGKAP</div>
+              <div class="product-title">${p.title}</div>
+              <div class="product-desc">${p.desc}</div>
+            </div>
+            <div class="price-options single-option">
+              <div class="price-box">
+                <div class="price-duration">30 HARI</div>
+                <div class="price-amount">Rp${p.p30.toLocaleString('id-ID')}</div>
+                <button class="btn-select" onclick="addToCart('${p.baseId}', '${p.title}', '${p.category}', 30, ${p.p30})">PILIH ${p.title.toUpperCase()}</button>
+              </div>
+            </div>
+          `;
+        } else {
+          card.innerHTML = `
+            <div>
+              <div class="product-category">${p.category}</div>
+              <div class="product-title">${p.title}</div>
+              <div class="product-desc">${p.desc}</div>
+            </div>
+            <div class="duration-selector-container">
+              <div class="duration-selector-label">Pilih Masa Akses</div>
+              <div class="duration-options">
+                <label class="duration-option selected" id="opt-14-${p.baseId}" onclick="selectDurationOption('${p.baseId}', 14)">
+                  <div class="duration-left">
+                    <input type="radio" name="duration-${p.baseId}" value="14" class="duration-radio" checked>
+                    <span class="duration-text">14 Hari</span>
+                  </div>
+                  <span class="duration-price">Rp${p.p14.toLocaleString('id-ID')}</span>
+                </label>
+                <label class="duration-option" id="opt-30-${p.baseId}" onclick="selectDurationOption('${p.baseId}', 30)">
+                  <div class="duration-left">
+                    <input type="radio" name="duration-${p.baseId}" value="30" class="duration-radio">
+                    <span class="duration-text">30 Hari</span>
+                  </div>
+                  <span class="duration-price">Rp${p.p30.toLocaleString('id-ID')}</span>
+                </label>
+              </div>
+              <button class="btn-select" onclick="handleProductSelect('${p.baseId}')">PILIH TES</button>
+            </div>
+          `;
+        }
+        list.appendChild(card);
+      });
+    }
+
+    function selectDurationOption(baseId, duration) {
+      const opt14 = document.getElementById(`opt-14-${baseId}`);
+      const opt30 = document.getElementById(`opt-30-${baseId}`);
+      
+      if (!opt14 || !opt30) return;
+
+      if (duration === 14) {
+        opt14.classList.add('selected');
+        opt30.classList.remove('selected');
+      } else {
+        opt30.classList.add('selected');
+        opt14.classList.remove('selected');
+      }
+    }
+
+    function handleProductSelect(baseId) {
+      const product = PRODUCTS_DATA.find(p => p.baseId === baseId);
+      if (!product) return;
+
+      const selectedRadio = document.querySelector(`input[name="duration-${baseId}"]:checked`);
+      const duration = selectedRadio ? parseInt(selectedRadio.value) : 14;
+      const price = duration === 30 ? product.p30 : product.p14;
+
+      addToCart(product.baseId, product.title, product.category, duration, price);
+    }
+
+    function filterCategory(cat, btn) {
+      currentCategory = cat;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderProducts();
+    }
+
+    /* CART LOGIC WITH SINGLE-SELECTION CHECK */
+    function addToCart(baseId, title, category, duration, price) {
+      const fullId = `${baseId}-${duration}`;
+      
+      // Cek apakah produk yang sama dengan durasi BERBEDA sudah ada
+      const existingConflictIndex = cart.findIndex(item => item.baseId === baseId && item.duration !== duration);
+
+      if (existingConflictIndex > -1) {
+        const existingItem = cart[existingConflictIndex];
+        document.getElementById('conflict-msg').innerText = `Anda sudah memilih ${title} untuk ${existingItem.duration} Hari. Ganti menjadi ${duration} Hari?`;
+        
+        document.getElementById('btn-confirm-replace').onclick = function() {
+          cart.splice(existingConflictIndex, 1);
+          cart.push({ id: fullId, baseId, title, category, duration, price });
+          saveAndUpdateCart();
+          closeModal('conflict-modal');
+          openCart();
+        };
+
+        openModal('conflict-modal');
+        return;
+      }
+
+      // Jika durasi persis sama, hindari duplicate
+      const existingSame = cart.find(item => item.id === fullId);
+      if (!existingSame) {
+        cart.push({ id: fullId, baseId, title, category, duration, price });
+      }
+
+      saveAndUpdateCart();
+      openCart();
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(item => item.id !== id);
+      saveAndUpdateCart();
+    }
+
+    function saveAndUpdateCart() {
+      localStorage.setItem('prc_cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      document.getElementById('cart-count').innerText = cart.length;
+      const cartContent = document.getElementById('cart-content');
+      const cartFooter = document.getElementById('cart-footer');
+
+      if (cart.length === 0) {
+        cartContent.innerHTML = `
+          <div style="text-align: center; padding: 40px 0; color: var(--text-muted);">
+            <p style="margin-bottom: 12px;">Keranjang masih kosong</p>
+            <button class="btn-hero-sec" onclick="closeCart()" style="font-size: 12px; padding: 8px 16px;">Pilih Latihan</button>
+          </div>
+        `;
+        cartFooter.style.display = 'none';
+        return;
+      }
+
+      cartFooter.style.display = 'block';
+      cartContent.innerHTML = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        total += item.price;
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        row.innerHTML = `
+          <div>
+            <div class="cart-item-title">${item.title}</div>
+            <div class="cart-item-sub">${item.category} • ${item.duration} Hari</div>
+            <div style="font-weight: 700; font-size: 13px; margin-top: 2px;">Rp${item.price.toLocaleString('id-ID')}</div>
+          </div>
+          <button class="btn-remove" onclick="removeFromCart('${item.id}')">Hapus</button>
+        `;
+        cartContent.appendChild(row);
+      });
+
+      document.getElementById('cart-total').innerText = `Rp${total.toLocaleString('id-ID')}`;
+    }
+
+    function openCart() {
+      updateCartUI();
+      document.getElementById('cart-drawer').style.display = 'flex';
+    }
+
+    function closeCart() {
+      document.getElementById('cart-drawer').style.display = 'none';
+    }
+
+    /* MODAL HELPERS */
+    function openModal(id) {
+      document.getElementById(id).style.display = 'flex';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    /* CHECKOUT FLOW */
+    function goToCheckout() {
+      closeCart();
+      const summary = document.getElementById('checkout-summary');
+      let total = 0;
+      let html = '<strong>Pesanan Anda:</strong><ul style="margin-top:6px; padding-left:16px;">';
+
+      cart.forEach(item => {
+        total += item.price;
+        html += `<li>${item.title} (${item.duration} Hari) - Rp${item.price.toLocaleString('id-ID')}</li>`;
+      });
+
+      html += `</ul><div style="margin-top:8px; font-weight:800;">Total: Rp${total.toLocaleString('id-ID')}</div>`;
+      summary.innerHTML = html;
+
+      openModal('checkout-modal');
+    }
+
+    function processPayment() {
+      const name = document.getElementById('cust-name').value;
+      const email = document.getElementById('cust-email').value;
+      const phone = document.getElementById('cust-phone').value;
+
+      if (!name || !email || !phone) {
+        alert('Mohon lengkapi Data Peserta.');
+        return;
+      }
+
+      alert('Mengarahkan ke Sistem Pembayaran QRIS...');
+      cart = [];
+      saveAndUpdateCart();
+      closeModal('checkout-modal');
+    }
+
+    function performLogin() {
+      closeModal('login-modal');
+      openModal('dashboard-modal');
+    }
+
+    /* INIT */
+    renderProducts();
+    updateCartUI();
+  </script>
 </body>
 </html>
